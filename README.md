@@ -1,8 +1,9 @@
-# legacyplayers_bot
-A discord bot for tracking legacyplayers
+# Legacyplayers discord bot
+*A discord bot for tracking legacyplayers*
 
-To join press this link https://discordapp.com/oauth2/authorize?client_id=511864830886543361&scope=bot&permissions=0 make sure the bot has permissions to view the channel.
+## Setup
+To invite the bot press [this link](https://discordapp.com/oauth2/authorize?client_id=511864830886543361&scope=bot&permissions=0) as the server owner. Invite the bot to the server(s) of your choice and if necessary promote it to allow for posting in your desired channel(s).
 
-To start tracking a guild type `!track <guild_id>` where `guild_id` is the id of your guild obtained from legacyplayers. (https://legacyplayers.com/Armory/Guild/?guildid=<guild_id>)
+To start tracking a guild in a channel simply type `!track <guild_id>` where `guild_id` is the id of your guild obtained from legacyplayers. (https://legacyplayers.com/Armory/Guild/?guildid=<guild_id>).
 
 New raids from the first page of legacyplayers will then be posted to the designated channel. Multible channels and guilds can be tracked. 
