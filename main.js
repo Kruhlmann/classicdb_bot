@@ -34,8 +34,7 @@ const raid_colors = {
  // Init discord virtual client.
  const discord_client = new discord.Client();
 
-// Add client events.
-discord_client.once("ready", () => console.log("Discord virtual client initialized."));
+
 discord_client.on("message", message => {
     var args = message.content.slice(1).split(" ");
     var command = args.shift().toLowerCase();
@@ -43,20 +42,18 @@ discord_client.on("message", message => {
         var guild_names = JSON.parse(fs.readFileSync("./guilds.json"));
         var tracked_guild = args[0]
         var channel_id = message.channel.id;
-        var server_id = message.guild.id;
         
         request({uri: `https://legacyplayers.com/API.aspx`, qs: {type: 3, Arg1: tracked_guild}, json: true}).then(response => {
             if(!guild_names.hasOwnProperty(response.Name)) guild_names[response.Name] = [];
-            if(!guild_names[response.Name].includes({"server_id": server_id, "channel_id": channel_id})) {
-                guild_names[response.Name].push({"server_id": server_id, "channel_id": channel_id});
+            if(!guild_names[response.Name].includes(channel_id)) {
+                guild_names[response.Name].push(channel_id);
                 message.channel.send(`Started tracking legacy logs for **<${response.Name}>**`);
             } else message.channel.send(`Already tracking legacy logs for **<${response.Name}>**`);
-        }).catch(error => console.error(error)).finally(() => fs.writeFileSync("./guilds.json", JSON.stringify(guild_names)));
+        }).catch(error => console.error(error)).finally(() => fs.writeFileSync("./guilds.json", JSON.stringify(guild_names, null, 2)));
     }else if(command === "stoptrack" && args.length > 0){
         var guild_names = JSON.parse(fs.readFileSync("./guilds.json"));
         var tracked_guild = args[0]
         var channel_id = message.channel.id;
-        var server_id = message.guild.id;
 
         request({uri: `https://legacyplayers.com/API.aspx`, qs: {type: 3, Arg1: tracked_guild}, json: true}).then(response => {
             console.log(`${message.author.username} requested to stop tracking ${response.Name} in channel #${channel_id}`);
@@ -64,7 +61,7 @@ discord_client.on("message", message => {
             else {
                 for(var i in guild_names[response.Name]){
                     var tracked_channel = guild_names[response.Name][i];
-                    if(tracked_channel.channel_id === channel_id && tracked_channel.server_id === server_id) {
+                    if(tracked_channel.channel_id === channel_id) {
                         delete guild_names[response.Name][i];
                         message.channel.send(`Stopped tracking legacy logs for **<${response.Name}>**`);
                         return;
@@ -72,7 +69,7 @@ discord_client.on("message", message => {
                 }            
                 message.channel.send(`Currently not tracking legacy logs for **<${response.Name}>** type \`!track ${tracked_guild}\` to start tracking.`);
             }
-        }).catch(error => console.error(error)).finally(() => fs.writeFileSync("./guilds.json", JSON.stringify(guild_names)));
+        }).catch(error => console.error(error)).finally(() => fs.writeFileSync("./guilds.json", JSON.stringify(guild_names, null, 2)));
     }
 });
 // Authenticate.
@@ -128,15 +125,12 @@ var update_raids = () => {
             // All registered raids in page #0.
             for(var raid in raids){
                 raid = raids[raid];
-                // Server/channel pair in guilds file.
-                for (var server_channel_pair in guild_configuration[raid.guild_name]){
-                    server_channel_pair = guild_configuration[raid.guild_name][server_channel_pair];
-                    // Skip deleted channels.
-                    if(server_channel_pair === null) continue;
-                    if(!raid_cache.raids.hasOwnProperty(server_channel_pair.channel_id)) raid_cache.raids[server_channel_pair.channel_id] = [];
+                for (var channel_id in guild_configuration[raid.guild_name]){
+                    channel_id = guild_configuration[raid.guild_name][channel_id];
+                    if(!raid_cache.raids.hasOwnProperty(channel_id)) raid_cache.raids[channel_id] = [];
                     // Cache check.
-                    if (!raid_cache.raids[server_channel_pair.channel_id].includes(raid.id)) {
-                        raid_cache.raids[server_channel_pair.channel_id].push(raid.id);
+                    if (!raid_cache.raids[channel_id].includes(raid.id)) {
+                        console.log(raid.id)
                         var rich_message = new discord.RichEmbed()
                             .setColor(raid_colors[raid.instance_name])
                             .setTitle(raid.instance_name)
@@ -150,13 +144,21 @@ var update_raids = () => {
                             .addField("Duration", raid.duration, true)
                             .addField("Started", raid.time_start, true)
                             .addField("Ended", raid.time_end, true);
-                        discord_client.channels.get(server_channel_pair.channel_id).send({embed: rich_message});
+                        if(discord_client.channels.get(channel_id)) {
+                            discord_client.channels.get(channel_id).send({embed: rich_message});
+                            raid_cache.raids[channel_id].push(raid.id)
+                        }
                     }
                 }
             }
         }
-    }).finally(() => fs.writeFileSync("./raid_cache.json", JSON.stringify(raid_cache)));
+    }).then(() => fs.writeFileSync("./raid_cache.json", JSON.stringify(raid_cache, null, 2)));
 }
 
-update_raids();
-setInterval(update_raids, 60 * 1000); // 1 minute.
+// Add client events.
+discord_client.once("ready", () => {
+    console.log("Discord virtual client initialized.");
+    
+    update_raids();
+    setInterval(update_raids, 60 * 1000); // 1 minute.
+});
