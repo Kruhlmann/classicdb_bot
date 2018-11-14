@@ -1,0 +1,10 @@
+/**
+ * @author Andreas Kruhlmann
+ * @fileoverview Configuration file for main.js
+ * @see main.js
+ * @since 1.0.0
+ */
+
+module.exports = {
+    discord_bot_token: "",
+}
