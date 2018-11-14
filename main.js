@@ -120,7 +120,7 @@ var update_raids = () => {
                             .setDescription(`${raid.instance_name} logs for guild <${raid.guild_name}>\n\n${raid.href}`)
                             .setAuthor("Legacyplayers", "https://i.imgur.com/mqMccO7.png", raid.href)
                             .setImage(raid_splash[raid.instance_name])
-                            .setFooter("https://github.com/Kruhlmann", "https://cdn1.iconfinder.com/data/icons/smallicons-logotypes/32/github-512.png")
+                            .setFooter("https://github.com/Kruhlmann/legacyplayers_bot", "https://cdn1.iconfinder.com/data/icons/smallicons-logotypes/32/github-512.png")
                             .setTimestamp()
                             .setURL(raid.href)
                             .addField("Date", raid.date_start, true)
