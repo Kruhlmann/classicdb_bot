@@ -52,7 +52,28 @@ discord_client.on("message", message => {
                 message.channel.send(`Started tracking legacy logs for **<${response.Name}>**`);
             } else message.channel.send(`Already tracking legacy logs for **<${response.Name}>**`);
         }).catch(error => console.error(error)).finally(() => fs.writeFileSync("./guilds.json", JSON.stringify(guild_names)));
-}
+    }else if(command === "stoptrack" && args.length > 0){
+        var guild_names = JSON.parse(fs.readFileSync("./guilds.json"));
+        var tracked_guild = args[0]
+        var channel_id = message.channel.id;
+        var server_id = message.guild.id;
+
+        request({uri: `https://legacyplayers.com/API.aspx`, qs: {type: 3, Arg1: tracked_guild}, json: true}).then(response => {
+            console.log(`${message.author.username} requested to stop tracking ${response.Name} in channel #${channel_id}`);
+            if(!guild_names.hasOwnProperty(response.Name)) throw "Guild not tracked";
+            else {
+                for(var i in guild_names[response.Name]){
+                    var tracked_channel = guild_names[response.Name][i];
+                    if(tracked_channel.channel_id === channel_id && tracked_channel.server_id === server_id) {
+                        delete guild_names[response.Name][i];
+                        message.channel.send(`Stopped tracking legacy logs for **<${response.Name}>**`);
+                        return;
+                    }
+                }            
+                message.channel.send(`Currently not tracking legacy logs for **<${response.Name}>** type \`!track ${tracked_guild}\` to start tracking.`);
+            }
+        }).catch(error => console.error(error)).finally(() => fs.writeFileSync("./guilds.json", JSON.stringify(guild_names)));
+    }
 });
 // Authenticate.
 discord_client.login(config.discord_bot_token).catch(error => console.error(`Error during discord authentication: ${error}`));
@@ -110,6 +131,8 @@ var update_raids = () => {
                 // Server/channel pair in guilds file.
                 for (var server_channel_pair in guild_configuration[raid.guild_name]){
                     server_channel_pair = guild_configuration[raid.guild_name][server_channel_pair];
+                    // Skip deleted channels.
+                    if(server_channel_pair === null) continue;
                     if(!raid_cache.raids.hasOwnProperty(server_channel_pair.channel_id)) raid_cache.raids[server_channel_pair.channel_id] = [];
                     // Cache check.
                     if (!raid_cache.raids[server_channel_pair.channel_id].includes(raid.id)) {
