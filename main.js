@@ -14,13 +14,21 @@ const config = require("./config.js");          // Local configuration.
 const raid_splash = {
     "Onyxia's Lair": "https://vignette3.wikia.nocookie.net/wowwiki/images/4/46/Onyxia's_Lair_loading_screen.jpg",
     "Molten Core": "https://mmogamerchick.files.wordpress.com/2012/12/molten-core.jpg",
-    "Blackwing Lair": "http://www.halona-zat.com/archive/halona/fbk/blackwing-lair/zone-maps/loading_screen.jpg"
+    "Blackwing Lair": "http://www.halona-zat.com/archive/halona/fbk/blackwing-lair/zone-maps/loading_screen.jpg",
+    "Zul'Gurub": "https://vignette.wikia.nocookie.net/wowwiki/images/1/12/Zul'Gurub_loading_screen.jpg",
+    "Ruins of Ahn'Qiraj": "http://www.halona-zat.com/archive/halona/fbk/ruins-of-ahn-qiraj/zone-maps/loading_screen.jpg",
+    "Ahn'Qiraj": "https://img3.wikia.nocookie.net/__cb20110218023037/wowwiki/images/6/6a/Temple_of_Ahn'Qiraj_loading_screen.jpg",
+    "Naxxramas": "https://i.imgur.com/UwSR0Hd.jpg"
 }
 
 const raid_colors = {
     "Onyxia's Lair": 0xcc0000,
     "Molten Core": 0xe63900,
     "Blackwing Lair": 0x330000,
+    "Zul'Gurub": 0x29bf00,
+    "Ruins of Ahn'Qiraj": 0x7500bf,
+    "Ahn'Qiraj": 0x641887,
+    "Naxxramas": 0x3027aa
 }
 
  // Init discord virtual client.
@@ -49,7 +57,13 @@ discord_client.on("message", message => {
 // Authenticate.
 discord_client.login(config.discord_bot_token).catch(error => console.error(`Error during discord authentication: ${error}`));
 
+// Run this on an interval to update discord channels with new data from legacyplayers.
 var update_raids = () => {
+    /**
+     * Returns a list of raid events from the 1st page of legacyplayers in JSOn format.
+     * @param {String} guild_name - Name of target guild. Case insensitive.
+     * @return {Promise.<Array[Object]>} - Resultng promise with list of JSON objects containing raid event data.
+     */
     var get_raids_page = guild_name => {
         return request({uri: `https://legacyplayers.com/Raids/Default.aspx`, qs: {name: guild_name, page: 0, exp: 0}, headers: {"accept": "*/*", "user-agent": "*"}}).then(response => {
             var raid_events = [];    
@@ -75,7 +89,7 @@ var update_raids = () => {
                     raid_events.push(raid_event);
                 }
             });
-            return(raid_events);
+            return raid_events;
         }).catch(error => console.error(error));
     }
 

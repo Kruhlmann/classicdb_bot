@@ -6,4 +6,4 @@ To invite the bot press [this link](https://discordapp.com/oauth2/authorize?clie
 
 To start tracking a guild in a channel simply type `!track <guild_id>` where `guild_id` is the id of your guild obtained from legacyplayers. (https://legacyplayers.com/Armory/Guild/?guildid=<guild_id>).
 
-New raids from the first page of legacyplayers will then be posted to the designated channel. Multible channels and guilds can be tracked. 
+New raids from the first page of legacyplayers will then be posted to the designated channel. Multible channels and guilds can be tracked.
