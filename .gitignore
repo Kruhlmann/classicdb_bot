@@ -2,5 +2,5 @@ config.js
 .vscode
 .eslintrc.json
 node_modules/
-package-lock.json
 config.json
+img/*.png
