@@ -3,3 +3,4 @@ config.js
 .eslintrc.json
 node_modules/
 package-lock.json
+config.json

@@ -1,20 +1,30 @@
 {
-  "name": "legacyplayers_api",
+  "name": "classicdb_bot",
   "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
+  "description": "A discord bot, which makes it easy to link items from the WoW Classic database on classicdb.ch",
+  "main": "dist/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "./node_modules/.bin/tsc"
   },
-  "author": "andreas kruehlmann",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kruhlmann/classicdb_bot.git"
+  },
+  "author": "Andreas Kruhlmann",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kruhlmann/classicdb_bot/issues"
+  },
+  "homepage": "https://github.com/Kruhlmann/classicdb_bot#readme",
   "dependencies": {
-    "bufferutil": "^4.0.0",
+    "@discordjs/uws": "^11.149.1",
     "cheerio": "^1.0.0-rc.2",
     "discord.js": "^11.4.2",
-    "moment": "^2.22.2",
+    "nightmare": "^3.0.1",
+    "nightmare-screenshot": "^1.0.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
-    "soupselect": "^0.2.0"
+    "sodium": "^3.0.2"
   }
 }
