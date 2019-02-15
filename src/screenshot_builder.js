@@ -10,6 +10,15 @@ const plugin = require("nightmare-screenshot");
 const config = require("../config");
 const lib = require("./lib");
 
+screenshot_dom_element(url, selector, path, on_error) {
+    lib.on_debug(`Building ${path}`);
+    new Nightmare()
+        .viewport(2000, 2000)
+        .goto(url)
+        .use(plugin.screenshotSelector(path, selector, on_error))
+        .run(lib.on_debug(`Wrote ${path} to disk`));
+}
+
 /**
  * Takes a screenshot of an item tooltip on the classicdb website, and saves
  * it to the disk. The image is saved as `img/${item_id}.png`. Function is sync
@@ -20,25 +29,24 @@ const lib = require("./lib");
 function build_item_images(item_id) {
     let tooltip_path = `${config.output_dir}/${config.tooltip_cache_dir}/${item_id}.png`;
     let thumbnail_path = `${config.output_dir}/${config.thumbnail_cache_dir}/${item_id}.png`;
+    let url = `https://classicdb.ch/?item=${item_id}`;
     lib.on_debug(`Buidling images for item ${item_id}`);
-    // Check if tooltip file already exists.
+
     if (!fs.existsSync(tooltip_path)) {
-        lib.on_debug(`Building ${tooltip_path}`);
-        let html_selector = `div[id=tooltip${item_id}-generic]`;
-        new Nightmare()
-            .viewport(2000, 2000)
-            .goto(`https://classicdb.ch/?item=${item_id}`)
-            .use(plugin.screenshotSelector(tooltip_path, html_selector, lib.on_error))
-            .run(() => lib.on_debug(`Wrote thumbnail for ${item_id}`));
-    }    // Check if thumbnail file already exists.
+        screenshot_dom_element(
+            url,
+            `div[id=tooltip${item_id}-generic]`,
+            tooltip_path,
+            lib.on_error
+        );
+    }
     if (!fs.existsSync(thumbnail_path)) {
-        lib.on_debug(`Building ${thumbnail_path}`);
-        let html_selector = `div[id=icon${item_id}-generic]`;
-        new Nightmare()
-            .viewport(2000, 2000)
-            .goto(`https://classicdb.ch/?item=${item_id}`)
-            .use(plugin.screenshotSelector(thumbnail_path, html_selector, lib.on_error))
-            .run(() => lib.on_debug(`Wrote thumbnail for ${item_id}`));
+        screenshot_dom_element(
+            url,
+            `div[id=icon${item_id}-generic]`,
+            thumbnail_path,
+            lib.on_error
+        );
     }
 }
 
