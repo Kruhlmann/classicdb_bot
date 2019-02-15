@@ -10,7 +10,15 @@ const plugin = require("nightmare-screenshot");
 const config = require("../config");
 const lib = require("./lib");
 
-screenshot_dom_element(url, selector, path, on_error) {
+/**
+ * Screenshots a DOM element on a website and saves it to the disk.
+ *
+ * @param {string} url - URL to access.
+ * @param {string} selector - HTML selector for the desired element.
+ * @param {string} path - Local output path with filename and extension.
+ * @param {Function} on_error - Behavior to run on error.
+ */
+function screenshot_dom_element(url, selector, path, on_error) {
     lib.on_debug(`Building ${path}`);
     new Nightmare()
         .viewport(2000, 2000)
