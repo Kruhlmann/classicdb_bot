@@ -70,9 +70,11 @@ function find_first_item_index(item_details) {
  * 
  * @param {{id: number, name: string, img: string, quality: number}} item - 
  * Item to build message around.
+ * @param {string} description - Optional description for the message object.
  * @returns {discord.RichEmbed} - Rich message object.
  */
-function build_rich_message(item) {
+function build_rich_message(item, description) {
+    if (!description) description = "";
     let favicon_path = "http://kruhlmann-code.com:8080/classicdb_bot/icon.png";
     let item_href = `https://classicdb.ch/?item=${item.id}`;
     let github_icon = "http://kruhlmann-code.com:8080/classicdb_bot/github.png";
@@ -87,7 +89,7 @@ function build_rich_message(item) {
     let rich_message = new discord.RichEmbed()
         .setColor(item_quality_colors[item.quality])
         .setTitle(item.name)
-        .setDescription(``)
+        .setDescription(description)
         .setAuthor("Classic DB", favicon_path, item_href)
         .setThumbnail(item.img)
         .setImage(`${tooltip_stub}/${item.id}.png`)
@@ -125,7 +127,7 @@ function build_message_from_query(query) {
             img: `${large_icon_stub}/${item_details[first_item_index][2]}.jpg`,
             quality: item_details[first_item_index][3]
         }
-        return build_rich_message(found_item);
+        return build_rich_message(found_item, `Result for "${query}"`);
     }).catch(error => {
         console.log(`Error: ${error}`);
     });
