@@ -35,18 +35,17 @@ const item_quality_colors = {
 function build_item_images(item_id) {
     let tooltip_path = `${config.output_dir}/${config.tooltip_cache_dir}/${item_id}.png`;
     let thumbnail_path = `${config.output_dir}/${config.thumbnail_cache_dir}/${item_id}.png`;
-
+    console.log(`Buidling images for item ${item_id}`)
     // Check if tooltip file already exists.
     if (!fs.existsSync(tooltip_path)) {
-        console.log(`Building ${thumbnail_path}`);
+        console.log(`Building ${tooltip_path}`);
         let html_selector = `div[id=tooltip${item_id}-generic]`;
         new Nightmare()
             .viewport(2000, 2000)
             .goto(`https://classicdb.ch/?item=${item_id}`)
             .use(plugin.screenshotSelector(tooltip_path, html_selector, lib.on_error))
             .run();
-    }
-    // Check if thumbnail file already exists.
+    }    // Check if thumbnail file already exists.
     if (!fs.existsSync(thumbnail_path)) {
         console.log(`Building ${thumbnail_path}`);
         let html_selector = `div[id=icon${item_id}-generic]`;
@@ -88,6 +87,7 @@ function build_rich_message(item, description) {
         build_item_images(item.id);
     } catch (e) {
         // An error will occur if the id is invalid.
+        lib.on_error(`An error occurred while building item images ${e}`);
         return;
     }
 
