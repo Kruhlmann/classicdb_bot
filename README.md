@@ -1,5 +1,5 @@
-[!Maintainability](https://api.codeclimate.com/v1/badges/31ac58008a241939aee1/maintainability)](https://codeclimate.com/github/Kruhlmann/classicdb_bot/maintainability)
-[!Open issues](https://img.shields.io/github/issues-raw/Kruhlmann/classicdb_bot.svg?style=flat)
+[![Maintainability](https://api.codeclimate.com/v1/badges/31ac58008a241939aee1/maintainability)](https://codeclimate.com/github/Kruhlmann/classicdb_bot/maintainability)
+[![Open issues](https://github.com/Kruhlmann/classicdb_bot/issues)](https://img.shields.io/github/issues-raw/Kruhlmann/classicdb_bot.svg?style=flat)
 # Classic DB discord bot
 *A discord bot for linking vanilla wow 1.12.1 items*
 
