@@ -38,6 +38,7 @@ function build_item_images(item_id) {
 
     // Check if tooltip file already exists.
     if (!fs.existsSync(tooltip_path)) {
+        console.log(`Building ${thumbnail_path}`);
         let html_selector = `div[id=tooltip${item_id}-generic]`;
         new Nightmare()
             .viewport(2000, 2000)
@@ -47,6 +48,7 @@ function build_item_images(item_id) {
     }
     // Check if thumbnail file already exists.
     if (!fs.existsSync(thumbnail_path)) {
+        console.log(`Building ${thumbnail_path}`);
         let html_selector = `div[id=icon${item_id}-generic]`;
         new Nightmare()
             .viewport(2000, 2000)
