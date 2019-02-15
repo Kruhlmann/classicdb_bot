@@ -5,13 +5,9 @@
  */
 
 const discord = require("discord.js");
-const sentry = require("@sentry/node");
 const config = require("../config");
 const parser = require("./parser");
 const lib = require("./lib");
-
-// Init error reporting.
-sentry.init({dsn: config.sentry_dsn});
 
 // Init discord virtual client.
 const discord_client = new discord.Client();

@@ -3,6 +3,11 @@
  * @author Andreas Kruhlmann
  * @since 1.0.0
  */
+const sentry = require("@sentry/node");
+const config = require("../config");
+
+// Init error reporting.
+sentry.init({dsn: config.sentry_dsn});
 
 /**
  * Simple generic error handling.
@@ -12,6 +17,7 @@
 function on_error (error) {
     // eslint-disable-next-line no-console
     console.error(error);
+    sentry.captureException(error);
 }
 
 /**
