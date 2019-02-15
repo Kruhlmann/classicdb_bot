@@ -1,4 +1,4 @@
 {
     "discord_bot_token": "",
-    sentry_dsn: ""
+    "sentry_dsn": ""
 }
