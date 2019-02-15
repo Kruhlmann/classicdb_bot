@@ -54,7 +54,7 @@ function build_rich_message(item, description) {
     } catch (e) {
         // An error will occur if the id is invalid.
         //lib.on_error(`An error occurred while building item images ${e}`);
-        lib.on_error(error);
+        lib.on_error(e);
         return;
     }
 
