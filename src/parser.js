@@ -32,7 +32,7 @@ const tooltip_stub = "http://kruhlmann-code.com:8080/classicdb_bot/item_cache";
  * @param {number} item_id - ID of the item to build an image from.
  */
 function build_item_image(item_id) {
-    let output_path = path.join(process.cwd(), `img/${item_id}.png`);
+    let output_path = `/var/www/static/classicdb_bot/tooltip_cache/${item_id}.png`);
     if (fs.existsSync(output_path)) return;
     let html_selector = `div[id=tooltip${item_id}-generic]`;
     new Nightmare()
