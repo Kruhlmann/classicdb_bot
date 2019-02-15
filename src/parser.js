@@ -92,7 +92,6 @@ function build_rich_message(item) {
         .setThumbnail(item.img)
         .setImage(`${tooltip_stub}/${item.id}.png`)
         .setFooter(github_href, github_icon)
-        .setTimestamp()
         .setURL(item_href);
     return rich_message;
 }
