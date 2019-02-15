@@ -18,19 +18,10 @@ const item_quality_colors = {
     3: 0x0070dd, // Rare.
     2: 0x1EFF00, // Uncommon.
     1: 0x9d9d9d, // Poor.
-}
+};
 
 const large_icon_stub = "https://classicdb.ch/images/icons/large";
 const tooltip_stub = "http://kruhlmann-code.com:8080/classicdb_bot/item_cache";
-
-/**
- * Simple generic error handling.
- * 
- * @param {Error|string} error - Error occurred.
- */
-function on_error (error) {
-    console.log(error);
-}
 
 /**
  * Takes a screenshot of an item tooltip on the classicdb website, and saves 
@@ -80,7 +71,7 @@ function build_rich_message(item, description) {
     let github_icon = "http://kruhlmann-code.com:8080/classicdb_bot/github.png";
     let github_href = "https://github.com/Kruhlmann/classicdb_bot";
     try {
-        build_item_image(item.id)
+        build_item_image(item.id);
     } catch (e) {
         // An error will occur if the id is invalid.
         return;
@@ -106,7 +97,7 @@ function build_rich_message(item, description) {
  */
 function is_string_numerical_int(str) {
     let type_string = typeof str === "string";
-    let regex_match = /^[\-+]?[1-9]{1}\d+$|^[\-+]?0$/.test(str);
+    let regex_match = /^[-+]?[1-9]{1}\d+$|^[-+]?0$/.test(str);
     return type_string && regex_match;
 }
 
@@ -126,10 +117,8 @@ function build_message_from_query(query) {
             name: item_names[first_item_index].replace(" (Item)", ""),
             img: `${large_icon_stub}/${item_details[first_item_index][2]}.jpg`,
             quality: item_details[first_item_index][3]
-        }
+        };
         return build_rich_message(found_item, `Result for "${query}"`);
-    }).catch(error => {
-        console.log(`Error: ${error}`);
     });
 }
 
@@ -167,4 +156,4 @@ function get_item_request(msg_content) {
 
 module.exports = {
     get_message_response: get_message_response
-}
+};
