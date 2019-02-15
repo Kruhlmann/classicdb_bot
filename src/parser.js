@@ -12,6 +12,10 @@ const plugin = require("nightmare-screenshot");
 const config = require("../config");
 const lib = require("./lib");
 
+const favicon_path = `${config.http_assets_stub}/icon.png`;
+const github_icon = `${config.http_assets_stub}/github.png`;
+const github_href = "https://github.com/Kruhlmann/classicdb_bot";
+
 const item_quality_colors = {
     6: 0xe5cc80, // Artifact
     5: 0xff8000, // Legendary
@@ -36,7 +40,6 @@ function build_item_images(item_id) {
     if (!fs.existsSync(tooltip_path)) {
         let html_selector = `div[id=tooltip${item_id}-generic]`;
         new Nightmare()
-            // Setting a large viewport size ensures the entire tooltip can be seen.
             .viewport(2000, 2000)
             .goto(`https://classicdb.ch/?item=${item_id}`)
             .use(plugin.screenshotSelector(tooltip_path, html_selector, lib.on_error))
@@ -46,7 +49,6 @@ function build_item_images(item_id) {
     if (!fs.existsSync(thumbnail_path)) {
         let html_selector = `div[id=icon${item_id}-generic]`;
         new Nightmare()
-            // Setting a large viewport size ensures the entire tooltip can be seen.
             .viewport(2000, 2000)
             .goto(`https://classicdb.ch/?item=${item_id}`)
             .use(plugin.screenshotSelector(thumbnail_path, html_selector, lib.on_error))
@@ -78,10 +80,7 @@ function find_first_item_index(item_details) {
  */
 function build_rich_message(item, description) {
     if (!description) description = "";
-    let favicon_path = "http://kruhlmann-code.com:8080/classicdb_bot/icon.png";
     let item_href = `https://classicdb.ch/?item=${item.id}`;
-    let github_icon = "http://kruhlmann-code.com:8080/classicdb_bot/github.png";
-    let github_href = "https://github.com/Kruhlmann/classicdb_bot";
 
     try {
         build_item_images(item.id);

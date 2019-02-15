@@ -3,4 +3,3 @@ config.js
 .eslintrc.json
 node_modules/
 config.json
-img/*.png
