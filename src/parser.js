@@ -7,6 +7,7 @@
 const request = require("request-promise");
 const discord = require("discord.js");
 const path = require("path");
+const fs = require("fs");
 const Nightmare = require("nightmare");
 const plugin = require("nightmare-screenshot");
 
@@ -18,6 +19,9 @@ const item_quality_colors = {
     2: 0x1EFF00, // Uncommon.
     1: 0x9d9d9d, // Poor.
 }
+
+const large_icon_stub = "https://classicdb.ch/images/icons/large";
+const tooltip_stub = "http://kruhlmann-code.com:8080/classicdb_bot/item_cache";
 
 /**
  * Simple generic error handling.
@@ -37,8 +41,11 @@ function on_error (error) {
  */
 function build_item_image(item_id) {
     let output_path = path.join(process.cwd(), `img/${item_id}.png`);
+    if (fs.existsSync(output_path)) return;
     let html_selector = `div[id=tooltip${item_id}-generic]`;
     new Nightmare()
+        // Setting a large viewport size ensures the entire tooltip can be seen.
+        .viewport(2000, 2000)
         .goto(`https://classicdb.ch/?item=${item_id}`)
         .use(plugin.screenshotSelector(output_path, html_selector, on_error))
         .run(() => console.log(`Exported ${output_path}`));
@@ -66,23 +73,67 @@ function find_first_item_index(item_details) {
  * @returns {discord.RichEmbed} - Rich message object.
  */
 function build_rich_message(item) {
-    let favicon_path = "https://i.imgur.com/CpYEwzM.png";
+    let favicon_path = "http://kruhlmann-code.com:8080/classicdb_bot/icon.png";
     let item_href = `https://classicdb.ch/?item=${item.id}`;
-    let github_icon = "https://cdn1.iconfinder.com/data/icons/smallicons-logotypes/32/github-512.png";
+    let github_icon = "http://kruhlmann-code.com:8080/classicdb_bot/github.png";
     let github_href = "https://github.com/Kruhlmann/classicdb_bot";
-    build_item_image(item.id)
-    
+    try {
+        build_item_image(item.id)
+    } catch (e) {
+        // An error will occur if the id is invalid.
+        return;
+    }
+
     let rich_message = new discord.RichEmbed()
         .setColor(item_quality_colors[item.quality])
         .setTitle(item.name)
         .setDescription(``)
         .setAuthor("Classic DB", favicon_path, item_href)
         .setThumbnail(item.img)
-        .setImage("https://i.imgur.com/XfVcNB6.png")
+        .setImage(`${tooltip_stub}/${item.id}.png`)
         .setFooter(github_href, github_icon)
         .setTimestamp()
         .setURL(item_href);
     return rich_message;
+}
+
+/**
+ * Test whether a string is a representation of a numerical integet.
+ * 
+ * @param {string} str - String to test.
+ * @returns {boolean} - True if string represents a numerical integer.
+ */
+function is_string_numerical_int(str) {
+    let type_string = typeof str === "string";
+    let regex_match = /^[\-+]?[1-9]{1}\d+$|^[\-+]?0$/.test(str);
+    return type_string && regex_match;
+}
+
+function build_message_from_query(query) {
+    return request({
+        uri: `https://classicdb.ch/opensearch.php?search=${query}`,
+        json: true
+    }).then(result => {
+        if (result === []) return;
+        let item_names = result[1];
+        let item_details = result[7];
+        let first_item_index = find_first_item_index(item_details);
+        if (first_item_index === -1) return;
+
+        let found_item = {
+            id: item_details[first_item_index][1],
+            name: item_names[first_item_index].replace(" (Item)", ""),
+            img: `${large_icon_stub}/${item_details[first_item_index][2]}.jpg`,
+            quality: item_details[first_item_index][3]
+        }
+        return build_rich_message(found_item);
+    }).catch(error => {
+        console.log(`Error: ${error}`);
+    });
+}
+
+function build_message_from_id(id) {
+    
 }
 
 /**
@@ -94,37 +145,22 @@ function build_rich_message(item) {
  */
 function get_message_response(message_content) {
     let match = get_item_request(message_content);
-    if (match === "") return;
-    return request({
-        uri: `https://classicdb.ch/opensearch.php?search=${match}`,
-        json: true
-    }).then(result => {
-        if (result === []) return;
-        let item_names = result[1];
-        let item_details = result[7];
-        let first_item_index = find_first_item_index(item_details);
-        if (first_item_index === -1) return;
-        let found_item = {
-            id: item_details[first_item_index][1],
-            name: item_names[first_item_index].replace(" (Item)", ""),
-            img: `https://classicdb.ch/images/icons/large/${item_details[first_item_index][2]}.jpg`,
-            quality: item_details[3]
-        }
-        return build_rich_message(found_item);
-    }).catch(error => {
-        console.log(`Error: ${error}`);
-    });
+    if (!match) return;
+    // If the match is an id build the message with that in mind.
+    return is_string_numerical_int(match) 
+        ? build_message_from_id(match)
+        : build_message_from_query(match);
 }
 
 /**
  * Finds potential search matches for [item_name].
  * 
  * @param {string} msg_content 
- * @returns {string} - First match if any were found else an empty string.
+ * @returns {string|undefined} - First match if any were found else undefined.
  */
 function get_item_request(msg_content) {
     let matches = msg_content.match(/\[(.*?)\]/);
-    if (!matches || matches.length < 2) return "";
+    if (!matches || matches.length < 2) return;
     return matches[1];
 }
 

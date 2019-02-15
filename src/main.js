@@ -13,7 +13,7 @@ const discord_client = new discord.Client();
 
 discord_client.on("message", async message => {
     let response = await parser.get_message_response(message.content);
-    if (response === "") return;
+    if (!response) return;
     message.channel.send({embed: response}).catch(error => {
         console.error(`Error while sending message: ${error}`)
     });
