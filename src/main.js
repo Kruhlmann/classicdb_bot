@@ -5,10 +5,10 @@
  */
 
 const discord = require("discord.js");
+const sentry = require("@sentry/node");
 const config = require("../config");
 const parser = require("./parser");
 const lib = require("./lib");
-const sentry = require("@sentry/node");
 
 // Init error reporting.
 sentry.init({dsn: config.sentry_dsn});

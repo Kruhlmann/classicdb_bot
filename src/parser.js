@@ -6,11 +6,11 @@
 
 const request = require("request-promise");
 const discord = require("discord.js");
-const path = require("path");
 const fs = require("fs");
-const lib = require("./lib");
 const Nightmare = require("nightmare");
 const plugin = require("nightmare-screenshot");
+const config = require("../config");
+const lib = require("./lib");
 
 const item_quality_colors = {
     6: 0xe5cc80, // Artifact
@@ -21,9 +21,6 @@ const item_quality_colors = {
     1: 0x9d9d9d, // Poor.
 };
 
-const large_icon_stub = "https://classicdb.ch/images/icons/large";
-const tooltip_stub = "http://kruhlmann-code.com:8080/classicdb_bot/item_cache";
-
 /**
  * Takes a screenshot of an item tooltip on the classicdb website, and saves
  * it to the disk. The image is saved as `img/${item_id}.png`. Function is sync
@@ -31,16 +28,30 @@ const tooltip_stub = "http://kruhlmann-code.com:8080/classicdb_bot/item_cache";
  *
  * @param {number} item_id - ID of the item to build an image from.
  */
-function build_item_image(item_id) {
-    let output_path = `/var/www/static_http/classicdb_bot/tooltip_cache/${item_id}.png`);
-    if (fs.existsSync(output_path)) return;
-    let html_selector = `div[id=tooltip${item_id}-generic]`;
-    new Nightmare()
-        // Setting a large viewport size ensures the entire tooltip can be seen.
-        .viewport(2000, 2000)
-        .goto(`https://classicdb.ch/?item=${item_id}`)
-        .use(plugin.screenshotSelector(output_path, html_selector, lib.on_error))
-        .run();
+function build_item_images(item_id) {
+    let tooltip_path = `${config.output_dir}/${config.tooltip_cache_dir}/${item_id}.png`;
+    let thumbnail_path = `${config.output_dir}/${config.thumbnail_cache_dir}/${item_id}.png`;
+
+    // Check if tooltip file already exists.
+    if (!fs.existsSync(tooltip_path)) {
+        let html_selector = `div[id=tooltip${item_id}-generic]`;
+        new Nightmare()
+            // Setting a large viewport size ensures the entire tooltip can be seen.
+            .viewport(2000, 2000)
+            .goto(`https://classicdb.ch/?item=${item_id}`)
+            .use(plugin.screenshotSelector(tooltip_path, html_selector, lib.on_error))
+            .run();
+    }
+    // Check if thumbnail file already exists.
+    if (!fs.existsSync(thumbnail_path)) {
+        let html_selector = `div[id=icon${item_id}-generic]`;
+        new Nightmare()
+            // Setting a large viewport size ensures the entire tooltip can be seen.
+            .viewport(2000, 2000)
+            .goto(`https://classicdb.ch/?item=${item_id}`)
+            .use(plugin.screenshotSelector(thumbnail_path, html_selector, lib.on_error))
+            .run();
+    }
 }
 
 /**
@@ -71,8 +82,9 @@ function build_rich_message(item, description) {
     let item_href = `https://classicdb.ch/?item=${item.id}`;
     let github_icon = "http://kruhlmann-code.com:8080/classicdb_bot/github.png";
     let github_href = "https://github.com/Kruhlmann/classicdb_bot";
+
     try {
-        build_item_image(item.id);
+        build_item_images(item.id);
     } catch (e) {
         // An error will occur if the id is invalid.
         return;
@@ -83,8 +95,8 @@ function build_rich_message(item, description) {
         .setTitle(item.name)
         .setDescription(description)
         .setAuthor("Classic DB", favicon_path, item_href)
-        .setThumbnail(item.img)
-        .setImage(`${tooltip_stub}/${item.id}.png`)
+        .setThumbnail(`${config.http_assets_stub}/thumbnail_cache/${item.id}.png`)
+        .setImage(`${config.http_assets_stub}/tooltip_cache/${item.id}.png`)
         .setFooter(github_href, github_icon)
         .setURL(item_href);
     return rich_message;
@@ -116,15 +128,13 @@ function build_message_from_query(query) {
         let found_item = {
             id: item_details[first_item_index][1],
             name: item_names[first_item_index].replace(" (Item)", ""),
-            img: `${large_icon_stub}/${item_details[first_item_index][2]}.jpg`,
             quality: item_details[first_item_index][3]
         };
         return build_rich_message(found_item, `Result for "${query}"`);
     });
 }
 
-function build_message_from_id(id) {
-    
+function build_message_from_id() {
 }
 
 /**
