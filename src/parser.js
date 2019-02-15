@@ -6,11 +6,9 @@
 
 const request = require("request-promise");
 const discord = require("discord.js");
-const fs = require("fs");
-const Nightmare = require("nightmare");
-const plugin = require("nightmare-screenshot");
 const config = require("../config");
 const lib = require("./lib");
+const screenshots = require("./screenshot_builder");
 
 const favicon_path = `${config.http_assets_stub}/icon.png`;
 const github_icon = `${config.http_assets_stub}/github.png`;
@@ -24,38 +22,6 @@ const item_quality_colors = {
     2: 0x1EFF00, // Uncommon.
     1: 0x9d9d9d, // Poor.
 };
-
-/**
- * Takes a screenshot of an item tooltip on the classicdb website, and saves
- * it to the disk. The image is saved as `img/${item_id}.png`. Function is sync
- * so the image can be accessed immediately after running.
- *
- * @param {number} item_id - ID of the item to build an image from.
- */
-function build_item_images(item_id) {
-    let tooltip_path = `${config.output_dir}/${config.tooltip_cache_dir}/${item_id}.png`;
-    let thumbnail_path = `${config.output_dir}/${config.thumbnail_cache_dir}/${item_id}.png`;
-    console.log(`Buidling images for item ${item_id}`)
-    // Check if tooltip file already exists.
-    if (!fs.existsSync(tooltip_path)) {
-        console.log(`Building ${tooltip_path}`);
-        let html_selector = `div[id=tooltip${item_id}-generic]`;
-        new Nightmare()
-            .viewport(2000, 2000)
-            .goto(`https://classicdb.ch/?item=${item_id}`)
-            .use(plugin.screenshotSelector(tooltip_path, html_selector, lib.on_error))
-            .run();
-    }    // Check if thumbnail file already exists.
-    if (!fs.existsSync(thumbnail_path)) {
-        console.log(`Building ${thumbnail_path}`);
-        let html_selector = `div[id=icon${item_id}-generic]`;
-        new Nightmare()
-            .viewport(2000, 2000)
-            .goto(`https://classicdb.ch/?item=${item_id}`)
-            .use(plugin.screenshotSelector(thumbnail_path, html_selector, lib.on_error))
-            .run();
-    }
-}
 
 /**
  * Finds the first item in the list with item type 3 (Item)
@@ -84,7 +50,7 @@ function build_rich_message(item, description) {
     let item_href = `https://classicdb.ch/?item=${item.id}`;
 
     try {
-        build_item_images(item.id);
+        screenshots.build_item_images(item.id);
     } catch (e) {
         // An error will occur if the id is invalid.
         lib.on_error(`An error occurred while building item images ${e}`);
