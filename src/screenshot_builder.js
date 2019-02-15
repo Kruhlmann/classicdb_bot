@@ -23,7 +23,7 @@ function screenshot_dom_element(url, selector, path, on_error) {
     new Nightmare()
         .viewport(2000, 2000)
         .goto(url)
-        .screenshot(url)
+        .screenshot(path)
         .run(lib.on_debug(`Wrote ${path} to disk`));
 }
 
