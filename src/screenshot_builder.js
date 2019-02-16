@@ -16,15 +16,19 @@ const lib = require("./lib");
  * @param {string} url - URL to access.
  * @param {string} selector - HTML selector for the desired element.
  * @param {string} path - Local output path with filename and extension.
- * @param {Function} on_error - Behavior to run on error.
  */
-function screenshot_dom_element(url, selector, path, on_error) {
+function screenshot_dom_element(url, selector, path) {
     lib.on_debug(`Building ${path}`);
-    new Nightmare()
-        .viewport(2000, 2000)
-        .goto(url)
-        .screenshot(path)
-        .run(lib.on_debug(`Wrote ${path} to disk`));
+    try {
+        new Nightmare({show: true})
+            .viewport(2000, 2000)
+            .goto(url)
+            .use(plugin.screenshotSelector(path, selector))
+            .run();
+    }catch (error) {
+        //TODO:ask:FEB-16-2019: This fails even if the image is generated.
+
+    }
 }
 
 /**
@@ -44,16 +48,15 @@ function build_item_images(item_id) {
         screenshot_dom_element(
             url,
             `div[id=tooltip${item_id}-generic]`,
-            tooltip_path,
-            lib.on_error
+            tooltip_path
         );
     }
+
     if (!fs.existsSync(thumbnail_path)) {
         screenshot_dom_element(
             url,
             `div[id=icon${item_id}-generic]`,
-            thumbnail_path,
-            lib.on_error
+            thumbnail_path
         );
     }
 }
