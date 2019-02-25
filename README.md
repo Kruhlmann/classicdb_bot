@@ -13,6 +13,6 @@ To invite the bot press [this link](https://discordapp.com/oauth2/authorize?clie
 To have an item linked simply type the name of the item in square brackets. 
 Typing a partial name will result in the first item avaliable being fetched.
 
-As such typing \[thunder\] will result in the following output:
+As such typing `\[thunder\]` will result in the following output:
 
 ![Output showcase](showcase.png)
