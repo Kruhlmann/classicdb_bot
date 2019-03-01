@@ -1,3 +1,4 @@
+github.com/thygesteffensen has taken over!
 # Classic DB discord bot
 *A discord bot for linking vanilla wow 1.12.1 items*
 
