@@ -3,7 +3,6 @@
  * @author Andreas Kruhlmann
  * @since 1.0.0
  */
-
 const fs = require("fs");
 const Nightmare = require("nightmare");
 const plugin = require("nightmare-screenshot");
@@ -20,14 +19,13 @@ const lib = require("./lib");
 function screenshot_dom_element(url, selector, path) {
     lib.on_debug(`Building ${path}`);
     try {
-        new Nightmare({show: true})
+        new Nightmare({show: false})
             .viewport(2000, 2000)
             .goto(url)
             .use(plugin.screenshotSelector(path, selector))
             .run();
-    }catch (error) {
+    } catch (error) {
         //TODO:ask:FEB-16-2019: This fails even if the image is generated.
-
     }
 }
 

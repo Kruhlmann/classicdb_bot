@@ -9,9 +9,10 @@ const discord = require("discord.js");
 const config = require("../config");
 const lib = require("./lib");
 const screenshots = require("./screenshot_builder");
+const remote = require("./remote");
 
-const favicon_path = `${config.http_assets_stub}/icon.png`;
-const github_icon = `${config.http_assets_stub}/github.png`;
+const favicon_path = `https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Forig08.deviantart.net%2F65e3%2Ff%2F2014%2F207%2Fe%2F2%2Fofficial_wow_icon_by_benashvili-d7sd1ab.png&f=1`;
+const github_icon = `https://proxy.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Ficonsimple-logotypes%2F512%2Fgithub-512.png&f=1`;
 const github_href = "https://github.com/Kruhlmann/classicdb_bot";
 
 const item_quality_colors = {
@@ -37,6 +38,12 @@ function find_first_item_index(item_details) {
     return -1;
 }
 
+function sleep(ms){
+    return new Promise(resolve=>{
+        setTimeout(resolve, ms);
+    });
+}
+
 /**
  * Builds a discord RichEmbed message object from an item.
  *
@@ -45,12 +52,14 @@ function find_first_item_index(item_details) {
  * @param {string} description - Optional description for the message object.
  * @returns {discord.RichEmbed} - Rich message object.
  */
-function build_rich_message(item, description) {
+async function build_rich_message(item, description) {
     if (!description) description = "";
     let item_href = `https://classicdb.ch/?item=${item.id}`;
 
     try {
         screenshots.build_item_images(item.id);
+        await sleep(3000);
+        await remote.upload_item_images(item.id);
     } catch (e) {
         // An error will occur if the id is invalid.
         //lib.on_error(`An error occurred while building item images ${e}`);
@@ -86,7 +95,7 @@ function build_message_from_query(query) {
     return request({
         uri: `https://classicdb.ch/opensearch.php?search=${query}`,
         json: true
-    }).then(result => {
+    }).then(async result => {
         if (result === []) return;
         let item_names = result[1];
         let item_details = result[7];
@@ -98,7 +107,7 @@ function build_message_from_query(query) {
             name: item_names[first_item_index].replace(" (Item)", ""),
             quality: item_details[first_item_index][3]
         };
-        return build_rich_message(found_item, `Result for "${query}"`);
+        return await build_rich_message(found_item, `Result for "${query}"`);
     });
 }
 

@@ -17,7 +17,10 @@ sentry.init({dsn: config.sentry_dsn});
 function on_error (error) {
     // eslint-disable-next-line no-console
     console.error(error);
-    sentry.captureException(error);
+    // Don't spam sentry during development.
+    if (config.deployment_mode === "production") {
+        sentry.captureException(error);
+    }
 }
 
 /**
