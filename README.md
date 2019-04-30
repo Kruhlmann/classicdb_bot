@@ -6,8 +6,6 @@
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2579/badge)](https://bestpractices.coreinfrastructure.org/projects/2579)
 
 ## Setup
-The bot's NPM requirements depends on `autoconf` and `libtool` accessible through your package manager.
-
 To invite the bot press [this link](https://discordapp.com/oauth2/authorize?client_id=545640068056875048&scope=bot&permissions=0) as the server owner. Invite the bot to the server of your choice and, if necessary, promote it to allow for posting in your desired channel(s).
 
 ## Usage
