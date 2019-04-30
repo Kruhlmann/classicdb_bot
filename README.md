@@ -1,7 +1,7 @@
 # Classic DB discord bot
 *A discord bot for linking vanilla wow 1.12.1 items*
 
-![Build](https://travis-ci.org/Kruhlmann/classicdb_bot.svg?branch=master)]
+![Build](https://travis-ci.org/Kruhlmann/classicdb_bot.svg?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/31ac58008a241939aee1/maintainability)](https://codeclimate.com/github/Kruhlmann/classicdb_bot/maintainability)
 [![Open issues](https://img.shields.io/github/issues-raw/Kruhlmann/classicdb_bot.svg?style=flat)](https://github.com/Kruhlmann/classicdb_bot/issues)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2579/badge)](https://bestpractices.coreinfrastructure.org/projects/2579)
