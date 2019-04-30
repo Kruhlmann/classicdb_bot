@@ -1,10 +1,10 @@
 {
   "name": "classicdb_bot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A discord bot, which makes it easy to link items from the WoW Classic database on classicdb.ch",
   "main": "src/main.js",
   "scripts": {
-    "start": "node src/main/js",
+    "start": "node src/main.js",
     "test": "echo \"Error: no test specified\" && exit 0",
     "lint": "eslint src/**",
     "fix": "eslint src/** --fix"
@@ -20,13 +20,21 @@
   },
   "homepage": "https://github.com/Kruhlmann/classicdb_bot#readme",
   "dependencies": {
+    "bufferutil": "^3.0.3",
     "cheerio": "^1.0.0-rc.2",
     "discord.js": "^11.4.2",
+    "erlpack": "github:discordapp/erlpack",
+    "libsodium-wrappers": "^0.7.4",
+    "node-opus": "^0.2.7",
+    "opusscript": "^0.0.6",
     "request": "^2.88.0",
-    "request-promise": "^4.2.2"
+    "request-promise": "^4.2.2",
+    "sodium": "^2.0.3",
+    "uws": "^9.14.0"
   },
   "devDependencies": {
     "@sentry/node": "^4.6.1",
-    "eslint": "^5.13.0"
+    "eslint": "^5.13.0",
+    "jasmine": "^3.4.0"
   }
 }

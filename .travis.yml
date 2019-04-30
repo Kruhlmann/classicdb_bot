@@ -6,3 +6,10 @@ node_js:
 cache:
   directories:
     - "node_modules"
+
+install:
+  - npm install -g codecov
+
+script:
+  - codecov
+  - istanbul cover ./node_modules/jasmine/bin/jasmine.js
