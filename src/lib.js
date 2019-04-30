@@ -190,11 +190,11 @@ async function parse_tooltip(html) {
     const spells = [];
     const stats = parse_stats_table(stats_table, $);
     for (const spell of tmp_spells) {
-        if (spell.thumbnail === misc_icon) {
+        if (spell.thumbnail !== misc_icon) {
             stats.push(`[${spell.text.split(":")[0]}: ${spell.name}](${spell.href})`);
+            spells.push(spell);
         } else {
             stats.push(`[${spell.text}](${spell.href})`);
-            spells.push(spell);
         }
     }
 
