@@ -8,7 +8,7 @@ cache:
     - "node_modules"
 
 install:
-  - npm install -g codecov
+  - npm install -g codecov istanbul
 
 script:
   - codecov
