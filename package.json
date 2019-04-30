@@ -4,9 +4,10 @@
   "description": "A discord bot, which makes it easy to link items from the WoW Classic database on classicdb.ch",
   "main": "src/main.js",
   "scripts": {
+    "start": "node src/main/js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "node_modules/.bin/eslint src/**",
-    "fix": "node_modules/.bin/eslint src/** --fix"
+    "lint": "eslint src/**",
+    "fix": "eslint src/** --fix"
   },
   "repository": {
     "type": "git",
