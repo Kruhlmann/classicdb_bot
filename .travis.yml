@@ -12,4 +12,4 @@ install:
 
 script:
   - codecov
-  - istanbul cover ./node_modules/jasmine/bin/jasmine.js
+  - npm run test
