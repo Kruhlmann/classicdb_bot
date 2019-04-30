@@ -8,21 +8,6 @@ const request = require("request-promise");
 const discord = require("discord.js");
 const config = require("../config");
 const lib = require("./lib");
-const screenshots = require("./screenshot_builder");
-const remote = require("./remote");
-
-const favicon_path = `https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Forig08.deviantart.net%2F65e3%2Ff%2F2014%2F207%2Fe%2F2%2Fofficial_wow_icon_by_benashvili-d7sd1ab.png&f=1`;
-const github_icon = `https://proxy.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Ficonsimple-logotypes%2F512%2Fgithub-512.png&f=1`;
-const github_href = "https://github.com/Kruhlmann/classicdb_bot";
-
-const item_quality_colors = {
-    6: 0xe5cc80, // Artifact
-    5: 0xff8000, // Legendary
-    4: 0xa335ee, // Epic.
-    3: 0x0070dd, // Rare.
-    2: 0x1EFF00, // Uncommon.
-    1: 0x9d9d9d, // Poor.
-};
 
 /**
  * Finds the first item in the list with item type 3 (Item)
@@ -36,47 +21,6 @@ function find_first_item_index(item_details) {
         if (item_details[i][0] === 3) return i;
     }
     return -1;
-}
-
-function sleep(ms){
-    return new Promise(resolve=>{
-        setTimeout(resolve, ms);
-    });
-}
-
-/**
- * Builds a discord RichEmbed message object from an item.
- *
- * @param {{id: number, name: string, img: string, quality: number}} item -
- * Item to build message around.
- * @param {string} description - Optional description for the message object.
- * @returns {discord.RichEmbed} - Rich message object.
- */
-async function build_rich_message(item, description) {
-    if (!description) description = "";
-    let item_href = `https://classicdb.ch/?item=${item.id}`;
-
-    try {
-        screenshots.build_item_images(item.id);
-        await sleep(3000);
-        await remote.upload_item_images(item.id);
-    } catch (e) {
-        // An error will occur if the id is invalid.
-        //lib.on_error(`An error occurred while building item images ${e}`);
-        lib.on_error(e);
-        return;
-    }
-
-    let rich_message = new discord.RichEmbed()
-        .setColor(item_quality_colors[item.quality])
-        .setTitle(item.name)
-        .setDescription(description)
-        .setAuthor("Classic DB", favicon_path, item_href)
-        .setThumbnail(`${config.http_assets_stub}/thumbnail_cache/${item.id}.png`)
-        .setImage(`${config.http_assets_stub}/tooltip_cache/${item.id}.png`)
-        .setFooter(github_href, github_icon)
-        .setURL(item_href);
-    return rich_message;
 }
 
 /**
@@ -93,21 +37,19 @@ function is_string_numerical_int(str) {
 
 function build_message_from_query(query) {
     return request({
-        uri: `https://classicdb.ch/opensearch.php?search=${query}`,
+        uri: `${config.classicdb_stub}/opensearch.php?search=${query}`,
         json: true
     }).then(async result => {
         if (result === []) return;
-        let item_names = result[1];
-        let item_details = result[7];
-        let first_item_index = find_first_item_index(item_details);
+        const item_names = result[1];
+        const item_details = result[7];
+        const first_item_index = find_first_item_index(item_details);
         if (first_item_index === -1) return;
 
-        let found_item = {
-            id: item_details[first_item_index][1],
-            name: item_names[first_item_index].replace(" (Item)", ""),
-            quality: item_details[first_item_index][3]
-        };
-        return await build_rich_message(found_item, `Result for "${query}"`);
+        const item_id = item_details[first_item_index][1];
+        const item_name = item_names[first_item_index].replace(" (Item)", "");
+        const item_quality = item_details[first_item_index][3];
+        return await lib.parse_item(item_id, item_name, item_quality);
     });
 }
 
