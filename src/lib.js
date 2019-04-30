@@ -13,6 +13,7 @@ const discord = require("discord.js");
 const favicon_path = "https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Forig08.deviantart.net%2F65e3%2Ff%2F2014%2F207%2Fe%2F2%2Fofficial_wow_icon_by_benashvili-d7sd1ab.png&f=1";
 const github_icon = "https://proxy.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Ficonsimple-logotypes%2F512%2Fgithub-512.png&f=1";
 const github_href = "https://github.com/Kruhlmann/classicdb_bot";
+const misc_icon = `${config.classicdb_stub}/images/icons/large/trade_engineering.jpg`;
 const item_quality_colors = {
     6: 0xe5cc80, // Artifact
     5: 0xff8000, // Legendary
@@ -82,7 +83,7 @@ function fetch_thumbnail(id, spell = false) {
         const icon = split_js[split_js.length - 1].split("'")[1];
         const stub = `${config.classicdb_stub}/images/icons/large`;
         return `${stub}/${icon.toLowerCase()}.jpg`;
-    }).catch(error => console.error("err"));
+    }).catch(error => console.error(error));
 }
 
 function parse_spell_details(html) {
@@ -185,10 +186,16 @@ async function parse_tooltip(html) {
     const stats_table = tables.get(0);
     const spells_table = tables.get(1);
 
-    const spells = await parse_spells_table(spells_table, $);
+    const tmp_spells = await parse_spells_table(spells_table, $);
+    const spells = [];
     const stats = parse_stats_table(stats_table, $);
-    for (const spell of spells) {
-        stats.push(`[${spell.text.split(":")[0]}: ${spell.name}](${spell.href})`);
+    for (const spell of tmp_spells) {
+        if (spell.thumbnail === misc_icon) {
+            stats.push(`[${spell.text.split(":")[0]}: ${spell.name}](${spell.href})`);
+        } else {
+            stats.push(`[${spell.text}](${spell.href})`);
+            spells.push(spell);
+        }
     }
 
     return {
