@@ -4,16 +4,22 @@
  * @since 1.2.0
  */
 
-import * as discord from "discord.js";
+import { RichEmbed } from "discord.js";
 import { favicon_path, github_href,
          github_icon,
          item_quality_colors } from "./consts";
 import { Item } from "./typings/types";
 
-export function create_spell_messages(item: Item): discord.RichEmbed[] {
+/**
+ * Builds a discord message for a list of spell.
+ *
+ * @param {Item} item - Item with spells.
+ * @returns {RichEmbed[]} - Generated messages.
+ */
+export function create_spell_messages(item: Item): RichEmbed[] {
     const messages = [];
     for (const spell of item.spells) {
-        messages.push(new discord.RichEmbed()
+        messages.push(new RichEmbed()
             .setColor(item_quality_colors[item.quality])
             .setTitle(spell.name)
             .setDescription(`*${spell.desc}*`)
@@ -23,8 +29,14 @@ export function create_spell_messages(item: Item): discord.RichEmbed[] {
     return messages;
 }
 
-export function create_stats_message(item: Item): discord.RichEmbed {
-    return new discord.RichEmbed()
+/**
+ * Builds a discord message for a list of stats.
+ *
+ * @param {Item} item - Item with stats.
+ * @returns {RichEmbed} - Generated message.
+ */
+export function create_stats_message(item: Item): RichEmbed {
+    return new RichEmbed()
         .setColor(item_quality_colors[item.quality])
         .setTitle(item.name)
         .setDescription(item.stats.join("\n"))
