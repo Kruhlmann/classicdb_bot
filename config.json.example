@@ -1,4 +1,6 @@
 {
     "discord_bot_token": "",
-    "sentry_dsn": ""
+    "sentry_dsn": "",
+    "deployment_mode": "production",
+    "host": "https://classicdb.ch"
 }

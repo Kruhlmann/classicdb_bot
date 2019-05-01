@@ -4,10 +4,12 @@
   "description": "A discord bot, which makes it easy to link items from the WoW Classic database on classicdb.ch",
   "main": "src/main.js",
   "scripts": {
-    "start": "node src/main.js",
+    "start": "npm run build && node dist/src/main.js",
     "test": "istanbul cover node_modules/jasmine/bin/jasmine.js",
-    "lint": "eslint src/**",
-    "fix": "eslint src/** --fix"
+    "lint": "tslint src/**/*.ts",
+    "fix": "tslint src/**/*.ts",
+    "build": "tsc",
+    "watch": "tsc -w"
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,11 @@
   },
   "homepage": "https://github.com/Kruhlmann/classicdb_bot#readme",
   "dependencies": {
+    "@sentry/node": "^4.6.1",
+    "@types/request-promise": "^4.1.43",
+    "@types/cheerio": "^0.22.11",
+    "jasmine": "^3.4.0",
+    "typescript": "^3.4.5",
     "bufferutil": "^3.0.3",
     "cheerio": "^1.0.0-rc.2",
     "discord.js": "^11.4.2",
@@ -31,10 +38,5 @@
     "request-promise": "^4.2.2",
     "sodium": "^2.0.3",
     "uws": "^9.14.0"
-  },
-  "devDependencies": {
-    "@sentry/node": "^4.6.1",
-    "eslint": "^5.13.0",
-    "jasmine": "^3.4.0"
   }
 }

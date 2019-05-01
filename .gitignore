@@ -4,3 +4,4 @@ config.js
 node_modules/
 config.json
 npm-debug.log
+dist
