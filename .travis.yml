@@ -13,3 +13,8 @@ install:
 script:
   - codecov
   - npm run test
+
+after_success:
+  - ./send_build_results.sh.sh success $WEBHOOK_URL
+after_failure:
+  - ./send_build_results.sh.sh failure $WEBHOOK_URL
