@@ -1,7 +1,8 @@
 config.js
 .vscode
 .eslintrc.json
-node_modules/
+node_modules
 config.json
 npm-debug.log
 dist
+.secret

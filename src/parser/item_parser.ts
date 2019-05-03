@@ -4,16 +4,15 @@
  * @since 1.2.0
  */
 
-import { weapon_types, weapon_slots_suffixes, armor_types } from "../consts";
-import { handle_exception } from "../io";
-import * as request from "request-promise";
-import { create_spell_messages,
-         create_stats_message } from "../message_factory";
-import * as config from "../../config.json";
-import { fetch_thumbnail } from "../lib";
 import { RichEmbed } from "discord.js";
-import { parse_tooltip } from "./parser";
-import { Item } from "../typings/types";
+import * as request from "request-promise";
+import * as config from "../../config.json";
+import { armor_types, weapon_slots_suffixes, weapon_types } from "../consts";
+import { handle_exception } from "../io";
+import { fetch_thumbnail } from "../lib";
+// import { create_spell_messages,
+//          create_stats_message } from "../message_factory";
+// import { parse_tooltip } from "./parser";
 
 
 /**
@@ -102,40 +101,42 @@ export function equipment_str(slot: string, equipment_type: string): string[] {
     return [];
 }
 
-/**
- * Parses an item and returns an array of messages to send.
- *
- * @async
- * @param {string} item_id - Item ID.
- * @param {string} item_name - Item name.
- * @param {number} item_q - Quality index of the item.
- * @returns {Promise<RichEmbed[]>} - List of messages.
- */
-export async function parse_item(item_id: string,
-                                 item_name: string,
-                                 item_q: number): Promise<void | RichEmbed[]> {
-    return request({
-        uri: `${config.host}/?item=${item_id}`,
-    }).then(async (html: string) => {
-        const tooltip = await parse_tooltip(html);
-        const item_thumbnail = await fetch_thumbnail(item_id);
+// /**
+//  * Parses an item and returns an array of messages to send.
+//  *
+//  * @async
+//  * @param {string} item_id - Item ID.
+//  * @param {string} item_name - Item name.
+//  * @param {number} item_q - Quality index of the item.
+//  * @returns {Promise<RichEmbed[]>} - List of messages.
+//  */
+// export async function parse_item(item_id: string,
+//                                  item_name: string,
+//                                  item_q: number): Promise<void | RichEmbed[]> {
+//     // return request({
+//     //     uri: `${config.host}/?item=${item_id}`,
+//     // }).then(async (html: string) => {
+//     //     const tooltip = await parse_tooltip(html);
+//     //     const item_thumbnail = await fetch_thumbnail(item_id);
 
-        if (!tooltip || !item_thumbnail) {
-            return [];
-        }
+//     //     if (!tooltip || !item_thumbnail) {
+//     //         return [];
+//     //     }
 
-        const item: Item = {
-            href: `${config.host}/?item=${item_id}`,
-            id: item_id,
-            name: item_name,
-            quality: item_q,
-            spells: tooltip.spells,
-            stats: tooltip.stats,
-            thumbnail: item_thumbnail,
-        };
-        const stats_message = create_stats_message(item);
-        const spell_messages = create_spell_messages(item);
+//     //     const item = Item.
+//     //     const item: Item = {
+//     //         href: `${config.host}/?item=${item_id}`,
+//     //         id: item_id,
+//     //         name: item_name,
+//     //         quality: item_q,
+//     //         spells: tooltip.spells,
+//     //         stats: tooltip.stats,
+//     //         thumbnail: item_thumbnail,
+//     //     };
+//     //     const stats_message = create_stats_message(item);
+//     //     const spell_messages = create_spell_messages(item);
 
-        return [stats_message, ...spell_messages];
-    }).catch((error: Error) => handle_exception(error));
-}
+//     //     return [stats_message, ...spell_messages];
+//     // }).catch((error: Error) => handle_exception(error));
+//     return null;
+// }

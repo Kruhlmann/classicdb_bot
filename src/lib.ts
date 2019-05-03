@@ -8,7 +8,7 @@ import { DMChannel, GroupDMChannel, TextChannel } from "discord.js";
 import * as request from "request-promise";
 import * as config from "../config.json";
 import { handle_exception } from "./io.js";
-import { ChannelIdentity } from "./typings/types.js";
+import { ChannelIdentity, CharacterClass, ItemQuality } from "./typings/types.js";
 
 /**
  * Returns the URL of an icon based on it's name in the JavaScript.
@@ -20,6 +20,35 @@ import { ChannelIdentity } from "./typings/types.js";
 export function get_large_icon_url(icon_name: string) {
     icon_name  = icon_name.toLowerCase();
     return `${config.host}/images/icons/large/${icon_name}.jpg`;
+}
+
+export function css_class_to_item_quality(class_name: string): ItemQuality {
+    switch (class_name) {
+        case "q1": return ItemQuality.POOR;
+        case "q2": return ItemQuality.COMMON;
+        case "q3": return ItemQuality.UNCOMMON;
+        case "q4": return ItemQuality.RARE;
+        case "q5": return ItemQuality.EPIC;
+        case "q6": return ItemQuality.LEGENDARY;
+        case "q7": return ItemQuality.ARTIFACT;
+        case "q8": return ItemQuality.BLIZZARD;
+        default: return ItemQuality.NOQUALITY;
+    }
+}
+
+export function css_class_to_player_class(class_name: string): CharacterClass {
+    switch (class_name) {
+        case "c1": return CharacterClass.WARRIOR;
+        case "c2": return CharacterClass.PALADIN;
+        case "c3": return CharacterClass.HUNTER;
+        case "c4": return CharacterClass.ROGUE;
+        case "c5": return CharacterClass.PRIEST;
+        case "c7": return CharacterClass.SHAMAN;
+        case "c8": return CharacterClass.MAGE;
+        case "c9": return CharacterClass.WARLOCK;
+        case "c11": return CharacterClass.DRUID;
+        default: return CharacterClass.NOCLASS;
+    }
 }
 
 /**
@@ -65,18 +94,17 @@ export function get_channel_identity(channel: TextChannel | GroupDMChannel | DMC
  * @param {boolean} [spell=false] - If true will look for a spell, else looks
  * for an item.
  */
-export function fetch_thumbnail(id: string, spell = false) {
+export async function fetch_thumbnail(id: string, spell = false): Promise <string> {
     const url = `${config.host}/?${spell ? "spell" : "item"}=${id}`;
-    return request(url).then((html: string) => {
-        // Find the JavaScript line with "Icon.create" in from which the item
-        // identifier can be extracted.
-        const split_dom = html.split("\n").filter((html_stub) => {
-            return html_stub.includes("Icon.create");
-        });
-        const split_js = split_dom[0].trim().split("Icon.create");
-        const icon = split_js[split_js.length - 1].split("'")[1];
-        return get_large_icon_url(icon);
-    }).catch((error) => handle_exception(error));
+    const html = await request(url);
+    // Find the JavaScript line with "Icon.create" in from which the item
+    // identifier can be extracted.
+    const split_dom = html.split("\n").filter((html_stub: string) => {
+        return html_stub.includes("Icon.create");
+    });
+    const split_js = split_dom[0].trim().split("Icon.create");
+    const icon = split_js[split_js.length - 1].split("'")[1];
+    return get_large_icon_url(icon);
 }
 
 /**

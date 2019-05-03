@@ -20,7 +20,7 @@ export function handle_exception(error: Error | string) {
     if (config.deployment_mode === "production") {
         sentry.captureException(error);
     } else {
-        log(`${error}`);
+        log(`${error.stack}`);
     }
 }
 

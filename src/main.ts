@@ -6,8 +6,9 @@
 
 import * as sentry from "@sentry/node";
 import * as discord from "discord.js";
-import { log, handle_exception } from "./io";
+import { RichEmbed } from "discord.js";
 import * as config from "../config.json";
+import { handle_exception, log } from "./io";
 import { get_channel_identity } from "./lib.js";
 import { get_message_responses } from "./parser/parser.js";
 
@@ -37,14 +38,12 @@ discord_client.on("message", async (message) => {
         log(`\tRequested by: ${message.author.username}`);
         return;
     }
-    const response_promise = get_message_responses(message.content);
 
     // Handle message recieved.
-    response_promise.then((responses) => {
+    get_message_responses(message.content).then((responses: RichEmbed[]) => {
         if (!responses) {
             return;
         }
-        responses = responses as discord.RichEmbed[];
         for (const response of responses) {
             message.channel.send({embed: response})
                 .catch((error: Error) => handle_exception(error));
