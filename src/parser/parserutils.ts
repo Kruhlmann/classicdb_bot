@@ -1,17 +1,5 @@
-import { ItemBinding } from "../typings/types";
+
 import { weapon_types, weapon_slots_suffixes } from "../consts";
-
-
-export function item_binding_to_str(binding: ItemBinding): string {
-    switch (binding) {
-        case ItemBinding.ON_PICKUP:
-            return "Binds when picked up";
-        case ItemBinding.ON_EQUIP:
-            return "Binds when equipped";
-        default:
-            return null;
-    }
-}
 
 /**
  * Returns a single-element array with a formatted equipment string based on the

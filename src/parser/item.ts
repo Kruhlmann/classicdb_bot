@@ -15,7 +15,7 @@ import { css_class_to_item_quality,
          fetch_thumbnail } from "../lib";
 import { CharacterClass, ItemBinding } from "../typings/types";
 import { Effect } from "./effect";
-import { equipment_str, item_binding_to_str } from "./parserutils";
+import { equipment_str } from "./parserutils";
 
 export class Item {
     public static async from_table(id: string,
@@ -40,12 +40,15 @@ export class Item {
             classes.push(required_class);
         });
         const flavor_text = table.find(".q").first().text();
-        const unique = html.includes("<br>Unique<br>");
         const binds_on = html.includes("<br>Binds when picked up<br>")
             ? ItemBinding.ON_PICKUP
             : html.includes("<br>Binds when equipped up<br>")
                 ? ItemBinding.ON_EQUIP
                 : ItemBinding.NOBIND;
+        const unique = (html_lines.find((line) => {
+            const regex = /Unique/g;
+            return ((line || "").match(regex) || []).length > 0;
+        }) || []).length > 0;
         const armor_line = (html_lines.find((line) => {
             const regex = /[0-9]+ Armor/g;
             return ((line || "").match(regex) || []).length > 0;
@@ -74,33 +77,17 @@ export class Item {
         // Tables
         const table_count = table_contents.find("table").length;
         const equipment_slot = table_count > 0
-            ? $(table_contents
-                .children("table")
-                .get(0))
-                .children("td")
-                .text()
+            ? $(table_contents.find("table")[0]).find("td").text()
             : null;
         const equipment_type = table_count > 0
-            ? $(table_contents
-                .children("table")
-                .get(0))
-                .children("th")
-                .text()
+            ? $(table_contents.find("table")[0]).find("th").text()
             : null;
         const does_damage = table_count > 1;
         const damage_range_line = does_damage
-            ? $(table_contents
-                .children("table")
-                .get(1))
-                .children("td")
-                .text()
+            ? $(table_contents.find("table")[1]).find("td").text()
             : null;
         const swing_speed_line = does_damage
-            ? $(table_contents
-                .children("table")
-                .get(1))
-                .children("th")
-                .text()
+            ? $(table_contents.find("table")[1]).find("th").text()
             : null;
         const damage_range = damage_range_line
             ? {
@@ -109,6 +96,14 @@ export class Item {
             } : null;
         const swing_speed = does_damage
             ? parseFloat(swing_speed_line.split("Speed ")[1])
+            : null;
+        const dps_line = html_lines.find((line) => {
+            return line.startsWith("(") && line.includes("damage per second)");
+        }) || "";
+        const dps = dps_line !== ""
+            ? parseFloat(dps_line.replace("(", "")
+                .replace(" damage per second)", "")
+                .trim())
             : null;
         return new Item(id,
                         name,
@@ -127,6 +122,7 @@ export class Item {
                         equipment_type,
                         damage_range,
                         swing_speed,
+                        dps,
                         flavor_text);
     }
 
@@ -171,7 +167,7 @@ export class Item {
     public equipment_type?: string;
     public damage_range?: {low: number, high: number};
     public swing_speed?: number;
-    public dps?: string;
+    public dps?: number;
     public flavor_text?: string;
 
     /**
@@ -214,6 +210,7 @@ export class Item {
                        equipment_type?: string,
                        damage_range?: {low: number, high: number},
                        swing_speed?: number,
+                       dps?: number,
                        flavor_text?: string) {
         this.id = id;
         this.name = name;
@@ -232,51 +229,49 @@ export class Item {
         this.equipment_type = equipment_type;
         this.damage_range = damage_range;
         this.swing_speed = swing_speed;
-        this.dps = swing_speed && damage_range
-            // tslint:disable-next-line: max-line-length
-            ? ((damage_range.low + damage_range.high) / (2 * swing_speed)).toFixed(2)
-            : null;
+        this.dps = dps;
         this.flavor_text = flavor_text;
     }
 
     public build_message_description(): string {
-        const formatted_binds_on = item_binding_to_str(this.binds_on);
         const equipment_formatted = this.equipment_slot && this.equipment_type
             ? `${equipment_str(this.equipment_slot, this.equipment_type)}\n`
             : "";
         const dmg_formatted = this.damage_range && this.swing_speed && this.dps
-            ? `${this.damage_range} damage every
-               ${this.swing_speed} seconds (
-               ${this.dps} damage per second)`
+            ? `**${this.damage_range.low} - ${this.damage_range.high}**`
+              + ` damage every `
+              + `**${this.swing_speed}** seconds (`
+              + `**${this.dps}** damage per second)\n`
             : "";
         const stats_formatted = this.primary_stats && this.primary_stats !== []
-            ? `${this.primary_stats.join("\n")}\n`
+            ? `${this.primary_stats.map((s) => {
+                return s = s.includes("Damage") ? `**${s}**` : s;
+            }).join("\n")}\n`
             : "";
         const durability_formatted = this.durability
             ? `Durability: ${this.durability} / ${this.durability}\n`
             : "";
-        const class_ = this.class_restrictions && this.class_restrictions !== []
-            ? `Classes: ${this.class_restrictions.join(" ")}\n`
-            : "";
+        const class_restrictions = this.class_restrictions
+            && this.class_restrictions.length > 0
+                ? `Classes: ${this.class_restrictions.map((c) => `__${c}__`).join(" ")}\n`
+                : "";
         const level_requirement_formatted = this.level_requirement
             ? `Requires level ${this.level_requirement}\n`
             : "";
         const effects_short_formatted = this.effects && this.effects !== []
-            ? `\n${this.effects.map((e) => e.as_short_tooltip()).join("\n")}\n`
+            ? `\n${this.effects.map((e) => e.as_short_tooltip()).join("\n")}`
             : "";
 
-        return `
-            ${formatted_binds_on ? `${formatted_binds_on}\n` :  ""}
-            ${this.unique ? "Unique\n" :  ""}
-            ${equipment_formatted}
-            ${dmg_formatted}
-            ${this.armor ? `${this.armor} armor\n` : ""}
-            ${stats_formatted}
-            ${durability_formatted}
-            ${class_}
-            ${level_requirement_formatted}
-            ${effects_short_formatted}
-        `.trim();
+        return `${this.binds_on ? `${this.binds_on}\n` : ""}`
+            + `${this.unique ? "Unique\n" :  ""}`
+            + `${equipment_formatted}`
+            + `${dmg_formatted}`
+            + `${this.armor ? `${this.armor} Armor` : ""}`
+            + `${stats_formatted}`
+            + `${durability_formatted}`
+            + `${class_restrictions}`
+            + `${level_requirement_formatted}`
+            + `${effects_short_formatted}`.trim();
     }
 
     public build_messages(): RichEmbed[] {

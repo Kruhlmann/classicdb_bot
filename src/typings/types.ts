@@ -27,15 +27,15 @@ export interface SetBonus {
 }
 
 export enum CharacterClass {
-    WARRIOR = "#C69B6D",
-    PALADIN = "#F48CBA",
-    HUNTER = "#AAD372",
-    ROGUE = "#FFF468",
-    PRIEST = "#FFFFFF",
-    SHAMAN = "#2359FF",
-    MAGE = "#68CCEF",
-    WARLOCK = "#9382C9",
-    DRUID = "#FF7C0A",
+    WARRIOR = "[Warrior](https://classic.wowhead.com/warrior)",
+    PALADIN = "[Paladin](https://classic.wowhead.com/paladin)",
+    HUNTER = "[Hunter](https://classic.wowhead.com/hunter)",
+    ROGUE = "[Rogue](https://classic.wowhead.com/rogue)",
+    PRIEST = "[Priest](https://classic.wowhead.com/priest)",
+    SHAMAN = "[Shaman](https://classic.wowhead.com/shaman)",
+    MAGE = "[Mage](https://classic.wowhead.com/mage)",
+    WARLOCK = "[Warlock](https://classic.wowhead.com/warlock)",
+    DRUID = "[Druid](https://classic.wowhead.com/druid)",
     NOCLASS = "",
 }
 
