@@ -13,6 +13,12 @@ import { fetch_thumbnail } from "../lib.js";
 
 export class Effect {
 
+    /**
+     * Generates all effects from a database item tooltip element.
+     *
+     * @param table - Tooltip HTML as a Cheerio element.
+     * @returns - Generated effects.
+     */
     public static from_item_table(table: Cheerio): Promise<Effect[]> {
         const $ = cheerio.load(table.html());
         const effects: Array<Promise<Effect>> = [];
@@ -25,6 +31,14 @@ export class Effect {
         return Promise.all(effects);
     }
 
+    /**
+     * Generates an Effect from the HTML content of an effect database webpage.
+     *
+     * @async
+     * @param id - Database effect id.
+     * @param html - Database webpage HTML content.
+     * @param trigger - Effect trigger.
+     */
     public static async from_effect_html(id: string,
                                          html: string,
                                          trigger: string): Promise<Effect> {
@@ -66,6 +80,14 @@ export class Effect {
         return new Effect(id, name, `${config.host}/?item=${id}`, description, thumbnail, trigger, is_misc, cast_time, range);
     }
 
+    /**
+     * Generates an item based on an effect id and a trigger.
+     *
+     * @async
+     * @param id - Database effect id.
+     * @param trigger - Effect trigger.
+     * @returns - Generated effect.
+     */
     public static async from_id(id: string, trigger: string): Promise<Effect> {
         const url = `${config.host}/?spell=${id}`;
         const html = await request(url);
@@ -82,6 +104,25 @@ export class Effect {
     public cast_time: string;
     public range: string;
 
+    /**
+     * Constructor
+     *
+     * @constructor
+     * @param id - Database effect id.
+     * @param name - Effect name.
+     * @param href - Database website link.
+     * @param description - Full effect description.
+     * @param thumbnail_href - Link to effect thumbnail.
+     * @param trigger_name - Type of trigger associated with the effect. This
+     * can be different for the same effect as it is specified on a pre-item
+     * basis.
+     * @param is_misc - Whether the effect is a miscellaneous effect.
+     * Miscellaneous effects are represented by the cog thumbnail and are
+     * typically smaller effects that do not need their own RichEmbed message to
+     * be displayed with an item.
+     * @param cast_time - Cast time of effect.
+     * @param range - The maximum range of the effect.
+     */
     public constructor(id: string,
                        name: string,
                        href: string,
@@ -102,13 +143,26 @@ export class Effect {
         this.range = range;
     }
 
+    /**
+     * Generates a summary of the effect based on whether it's a miscellaneous
+     * effect. Used inside the item tooltip stats region.
+     *
+     * @returns Short effect summary.
+     */
     public as_short_tooltip(): string {
         return this.is_misc
             ? `${this.trigger_name}: ${this.description}`
             : `${this.trigger_name}: ${this.name}`;
     }
 
-    public build_message_description() {
+    /**
+     * Generates the description part of a RichEmbed message for the effect.
+     * This includes the name, cast time, maximum range and full effect
+     * description.
+     *
+     * @returns Generated RichEmbed description.
+     */
+    public build_message_description(): string {
         const cast_time = this.cast_time
             ? this.cast_time === "Instant"
                 ? `**${this.cast_time}**\n`

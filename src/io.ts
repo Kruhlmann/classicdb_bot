@@ -11,7 +11,7 @@ import * as config from "../config.json";
  * Handles errors. During production will alert sentry about the occurrence of
  * the error. Otherwise it will be appended to the log file.
  *
- * @param {Error | string} error - Error to report.
+ * @param error - Error to report.
  */
 export function handle_exception(error: Error | string) {
     if (typeof error === "string") {
@@ -25,6 +25,11 @@ export function handle_exception(error: Error | string) {
     }
 }
 
+/**
+ * Logs a message.
+ *
+ * @param message - Message to log.
+ */
 export function log(message: string) {
     /* tslint:disable-next-line:no-console */
     console.log(message);

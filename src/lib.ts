@@ -7,7 +7,9 @@
 import { DMChannel, GroupDMChannel, TextChannel } from "discord.js";
 import * as request from "request-promise";
 import * as config from "../config.json";
-import { ChannelIdentity, CharacterClass, ItemQuality } from "./typings/types.js";
+import { ChannelIdentity,
+         CharacterClass,
+         ItemQuality } from "./typings/types.js";
 
 /**
  * Returns the URL of an icon based on it's name in the JavaScript.
@@ -21,6 +23,12 @@ export function get_large_icon_url(icon_name: string) {
     return `${config.host}/images/icons/large/${icon_name}.jpg`;
 }
 
+/**
+ * Converts a datbase CSS element class into a ItemQuality.
+ *
+ * @param class_name - CSS class.
+ * @returns - Corresponding ItemQuality.
+ */
 export function css_class_to_item_quality(class_name: string): ItemQuality {
     switch (class_name) {
         case "q1": return ItemQuality.POOR;
@@ -35,6 +43,12 @@ export function css_class_to_item_quality(class_name: string): ItemQuality {
     }
 }
 
+/**
+ * Converts a datbase CSS element class into a CharacterClass.
+ *
+ * @param class_name - CSS class.
+ * @returns - Corresponding CharacterClass.
+ */
 export function css_class_to_player_class(class_name: string): CharacterClass {
     switch (class_name) {
         case "c1": return CharacterClass.WARRIOR;
@@ -66,6 +80,13 @@ export function find_first_item_index(item_details: number[][]): number {
     return -1;
 }
 
+/**
+ * Finds the string representation of the type of a discord message channel.
+ *
+ * @param channel - Discord channel object.
+ * @param author - Author of message in the channel.
+ * @returns - ChannelIdentity object withhannel and guild name as strings.
+ */
 export function get_channel_identity(channel: TextChannel
                                             | GroupDMChannel
                                             | DMChannel,
@@ -91,13 +112,13 @@ export function get_channel_identity(channel: TextChannel
  * Finds the thumbnail of either an item or a spell.
  *
  * @async
- * @param {string} id - Spell/item id.
- * @param {boolean} [spell=false] - If true will look for a spell, else looks
+ * @param id - Spell/item id.
+ * @param spell - If true will look for a spell, else looks
  * for an item.
  */
-export async function fetch_thumbnail(id: string, spell = false): Promise <string> {
+export async function fetch_thumbnail(id: string,
+                                      spell = false): Promise <string> {
     const url = `${config.host}/?${spell ? "spell" : "item"}=${id}`;
-    console.log(url)
     const html = await request(url);
     // Find the JavaScript line with "Icon.create" in from which the item
     // identifier can be extracted.
@@ -113,7 +134,7 @@ export async function fetch_thumbnail(id: string, spell = false): Promise <strin
 }
 
 /**
- * Test whether a string is a representation of a numerical integet.
+ * Tests whether a string is a representation of a numerical integet.
  *
  * @param {string} str - String to test.
  * @returns {boolean} - True if string represents a numerical integer.
