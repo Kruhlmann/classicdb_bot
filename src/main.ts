@@ -49,12 +49,6 @@ discord_client.on("message", async (message) => {
             if (!query || query === "") {
                 return;
             }
-            const query_send = query.replace("[", "").replace("]", "");
-            const response = new RichEmbed()
-                .setTitle(`Sorry, I wasn't able to find that item.`)
-                .setDescription(`You searched for item \`${query_send}\``);
-            message.channel.send({embed: response}).catch(handle_exception);
-            return;
         }
         for (const response of responses) {
             message.channel.send({embed: response}).catch(handle_exception);
