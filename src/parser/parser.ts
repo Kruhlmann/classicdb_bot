@@ -66,17 +66,16 @@ export function equipment_str(slot: string, equipment_type: string): string {
 /**
  * Builds a list of messages based on an item id.
  *
+ * @async
  * @param item_id - Item id.
  * @returns  - List generated messages.
  */
 export async function build_messages_i(item_id: string): Promise<RichEmbed[]> {
     const item = await Item.from_id(item_id) as Item;
     const messages = item.build_messages();
-    if (!messages) {
-        return [];
-    } else {
-        return await messages;
-    }
+    return !messages
+        ? []
+        : await messages;
 }
 
 /**
@@ -96,6 +95,7 @@ export function get_item_request(message_content: string) {
 /**
  * Builds a rich message response if the user requested an item.
  *
+ * @async
  * @param msg - Content of the message recieved.
  * @returns - List of generated messages.
  */

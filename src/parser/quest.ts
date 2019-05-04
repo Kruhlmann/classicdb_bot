@@ -1,6 +1,9 @@
 /**
- *
+ * @fileoverview Class definition for Quest.
+ * @author Andreas Kruehlmann
+ * @since 1.2.0
  */
+
 import * as cheerio from "cheerio";
 import * as request from "request-promise";
 import * as config from "../../config.json";
@@ -9,6 +12,7 @@ export class Quest {
     /**
      * Generates a Quest object from a quest ID.
      *
+     * @async
      * @param id - Database quest id.
      * @returns - Generated Quest object.
      */

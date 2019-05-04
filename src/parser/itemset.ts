@@ -1,22 +1,23 @@
 import * as cheerio from "cheerio";
 import * as request from "request-promise";
 import * as config from "../../config.json";
-import { handle_exception } from "../io.js";
-import { SetBonus } from "../typings/types.js";
-import { Effect } from "./effect";
-import { Item } from "./item";
-
 /**
  * @fileoverview Class definition for ItemSet.
  * @author Andreask Kruhlmann
  * @since 1.2.0
  */
 
+import { handle_exception } from "../io.js";
+import { SetBonus } from "../typings/types.js";
+import { Effect } from "./effect";
+import { Item } from "./item";
+
 export class ItemSet {
 
     /**
      * Generates an item set based on a database website url.
      *
+     * @async
      * @param id - Database itemset id.
      * @returns - Generated item set.
      */
@@ -27,6 +28,7 @@ export class ItemSet {
     /**
      * Generates an item set based on a database website url.
      *
+     * @async
      * @param url - URL of itemset.
      * @returns - Generated item set.
      */
