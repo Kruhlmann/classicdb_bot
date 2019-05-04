@@ -1,12 +1,15 @@
 # Classic DB discord bot
+
 *A discord bot for linking vanilla wow 1.12.1 items*
 
+[![Discord Server](https://img.shields.io/discord/572880907682447380%20.svg?logo=discord)](https://discord.gg/38wH62F)
 [![Build Status](https://travis-ci.org/Kruhlmann/classicdb_bot.svg?branch=master)](https://travis-ci.org/Kruhlmann/classicdb_bot)
 [![Maintainability](https://api.codeclimate.com/v1/badges/31ac58008a241939aee1/maintainability)](https://codeclimate.com/github/Kruhlmann/classicdb_bot/maintainability)
 [![Open issues](https://img.shields.io/github/issues-raw/Kruhlmann/classicdb_bot.svg?style=flat)](https://github.com/Kruhlmann/classicdb_bot/issues)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2579/badge)](https://bestpractices.coreinfrastructure.org/projects/2579)
 
 ## Setup
+
 To invite the bot press [this link](https://discordapp.com/oauth2/authorize?client_id=545640068056875048&scope=bot&permissions=0) as the server owner. Invite the bot to the server of your choice and, if necessary, promote it to allow for posting in your desired channel(s).
 
 ## Usage

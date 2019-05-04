@@ -1,0 +1,33 @@
+{
+    "extends": "tslint:recommended",
+    "rules": {
+        "max-line-length": {
+            "options": [80]
+        },
+        "new-parens": true,
+        "no-arg": true,
+        "no-bitwise": true,
+        "no-conditional-assignment": true,
+        "no-consecutive-blank-lines": false,
+        "no-unused-variable": true,
+        "no-var-requires": true,
+        "semicolon": true,
+        "no-duplicate-variable": true,
+        "no-eval": true,
+        "interface-name": [true, "never-prefix"],
+        "eofline": true,
+        "quotemark": [true, "quotemark"],
+        "variable-name": [
+            true,
+            "require-const-for-all-caps",
+            "ban-keywords",
+            "allow-trailing-underscore"
+        ],
+        "no-inferrable-types": true,
+        "curly": true,
+        "no-console": {
+            "severity": "warning",
+            "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
+        }
+    }
+}
