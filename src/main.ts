@@ -10,7 +10,7 @@ import { RichEmbed } from "discord.js";
 import * as config from "../config.json";
 import { handle_exception, log } from "./io";
 import { get_channel_identity } from "./lib.js";
-import { get_message_responses } from "./parser/parser.js";
+import { get_item_request, get_message_responses } from "./parser/parser.js";
 
 // Init discord virtual client.
 const discord_client = new discord.Client();
@@ -21,7 +21,10 @@ const dicord_token = config.deployment_mode === "production"
 // Initialize error reporting.
 sentry.init({dsn: config.sentry_dsn});
 
-log(`Running classicdb_bot in ${config.deployment_mode} mode`);
+log("Awaiting response from discord...");
+discord_client.on("ready", () => {
+    log(`Started classicdb_bot in ${config.deployment_mode} mode`);
+});
 
 // On message recieved behavior.
 discord_client.on("message", async (message) => {
@@ -42,11 +45,19 @@ discord_client.on("message", async (message) => {
     // Handle message recieved.
     get_message_responses(message.content).then((responses: RichEmbed[]) => {
         if (!responses) {
+            const query = get_item_request(message.content) || message.content;
+            if (!query || query === "") {
+                return;
+            }
+            const query_send = query.replace("[", "").replace("]", "");
+            const response = new RichEmbed()
+                .setTitle(`Sorry, I wasn't able to find that item.`)
+                .setDescription(`You searched for item \`${query_send}\``);
+            message.channel.send({embed: response}).catch(handle_exception);
             return;
         }
         for (const response of responses) {
-            message.channel.send({embed: response})
-                .catch((error: Error) => handle_exception(error));
+            message.channel.send({embed: response}).catch(handle_exception);
         }
         log("Sent item tooltip:");
         log(`\tServer:  ${guild_name}`);
@@ -56,6 +67,4 @@ discord_client.on("message", async (message) => {
 });
 
 // Authenticate.
-discord_client.login(dicord_token).catch((error: Error) => {
-    handle_exception(error);
-});
+discord_client.login(dicord_token).catch((e: Error) => handle_exception(e));

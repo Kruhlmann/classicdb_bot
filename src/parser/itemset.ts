@@ -13,10 +13,23 @@ import { Item } from "./item";
  */
 
 export class ItemSet {
+
+    /**
+     * Generates an item set based on a database website url.
+     *
+     * @param id - Database itemset id.
+     * @returns - Generated item set.
+     */
     public static async from_id(itemset_id: string): Promise<void | ItemSet> {
         return ItemSet.from_url(`${config.host}/?itemset=${itemset_id}`);
     }
 
+    /**
+     * Generates an item set based on a database website url.
+     *
+     * @param url - URL of itemset.
+     * @returns - Generated item set.
+     */
     public static async from_url(url: string): Promise<void | ItemSet> {
         return request(url).then((html: string) => {
             const $ = cheerio.load(html);
@@ -34,13 +47,13 @@ export class ItemSet {
                 items.push(await Item.from_id(id) as Item);
             });
 
-            main_content.find("ul").first().find("li").each((list_item) => {
-                const id = $(list_item)
+            main_content.find("ul").first().find("li").each(async (li) => {
+                const id = $(li)
                     .find("a").first()
                     .attr("href")
                     .replace("?spell=", "");
-                const pieces_required = $(list_item).text().charAt(0);
-                const effect = Effect.from_id(id) as Effect;
+                const pieces_required = $(li).text().charAt(0);
+                const effect = await Effect.from_id(id, "Equip");
                 set_bonuses.push({pieces_required, effect});
             });
 
@@ -56,10 +69,9 @@ export class ItemSet {
      * Constructor.
      *
      * @constructor
-     * @param {string} name - Name of item set.
-     * @param {Item[]} items - Items included in this set.
-     * @param {SetBonus[]} set_bonuses - Set bonuses, which apply for this item
-     * set.
+     * @param name - Name of item set.
+     * @param items - Items included in this set.
+     * @param set_bonuses - Set bonuses, which apply for this item set.
      */
     public constructor(name: string, items: Item[], set_bonuses: SetBonus[]) {
         this.name = name;

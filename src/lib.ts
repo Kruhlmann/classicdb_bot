@@ -7,7 +7,6 @@
 import { DMChannel, GroupDMChannel, TextChannel } from "discord.js";
 import * as request from "request-promise";
 import * as config from "../config.json";
-import { handle_exception } from "./io.js";
 import { ChannelIdentity, CharacterClass, ItemQuality } from "./typings/types.js";
 
 /**
@@ -54,9 +53,9 @@ export function css_class_to_player_class(class_name: string): CharacterClass {
 /**
  * Finds the first item in the list with item type 3 (Item)
  *
- * @param {number[][]} item_details - List of item details; id,
+ * @param item_details - List of item details; id,
  * quality, item type and thumbnail.
- * @returns {number} - Index of the item if found, else -1.
+ * @returns - Index of the item if found, else -1.
  */
 export function find_first_item_index(item_details: number[][]): number {
     for (let i = 0; i < item_details.length; i++) {
@@ -67,8 +66,9 @@ export function find_first_item_index(item_details: number[][]): number {
     return -1;
 }
 
-/* tslint:disable-next-line:max-line-length */
-export function get_channel_identity(channel: TextChannel | GroupDMChannel | DMChannel,
+export function get_channel_identity(channel: TextChannel
+                                            | GroupDMChannel
+                                            | DMChannel,
                                      author: string,
                                      ): ChannelIdentity {
     const channel_name = channel.type === "dm"
@@ -90,19 +90,24 @@ export function get_channel_identity(channel: TextChannel | GroupDMChannel | DMC
 /**
  * Finds the thumbnail of either an item or a spell.
  *
+ * @async
  * @param {string} id - Spell/item id.
  * @param {boolean} [spell=false] - If true will look for a spell, else looks
  * for an item.
  */
 export async function fetch_thumbnail(id: string, spell = false): Promise <string> {
     const url = `${config.host}/?${spell ? "spell" : "item"}=${id}`;
+    console.log(url)
     const html = await request(url);
     // Find the JavaScript line with "Icon.create" in from which the item
     // identifier can be extracted.
     const split_dom = html.split("\n").filter((html_stub: string) => {
         return html_stub.includes("Icon.create");
-    });
-    const split_js = split_dom[0].trim().split("Icon.create");
+    }) || [];
+    if (split_dom.length < 1) {
+        return "";
+    }
+    const split_js =  split_dom[0].trim().split("Icon.create");
     const icon = split_js[split_js.length - 1].split("'")[1];
     return get_large_icon_url(icon);
 }

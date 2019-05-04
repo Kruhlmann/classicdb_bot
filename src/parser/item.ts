@@ -8,21 +8,30 @@ import * as cheerio from "cheerio";
 import { RichEmbed } from "discord.js";
 import * as request from "request-promise";
 import * as config from "../../config.json";
-import { favicon_path, github_icon } from "../consts.js";
-import { handle_exception } from "../io";
+import { discord_href, discord_icon, favicon_path, github_icon, html_tag_regex, misc_icon } from "../consts.js";
 import { css_class_to_item_quality,
          css_class_to_player_class,
          fetch_thumbnail } from "../lib";
 import { CharacterClass, ItemBinding } from "../typings/types";
 import { Effect } from "./effect";
-import { equipment_str } from "./parserutils";
+import { equipment_str } from "./parser.js";
+import { Quest } from "./quest.js";
 
 export class Item {
+
+    /**
+     * Generates an item based on a tooltip table from the database website.
+     *
+     * @param id - Database item id.
+     * @param href - Link to item.
+     * @param effects - List of item effects.
+     * @param table - Item tooltip table to parse.
+     * @returns - Generated item.
+     */
     public static async from_table(id: string,
                                    href: string,
                                    effects: Effect[],
                                    table: Cheerio): Promise<Item> {
-        const html_tag_regex = /\s*(<[^>]*>)/g;
         const $ = cheerio.load(table.html());
         const thumbnail = await fetch_thumbnail(id);
         const table_contents = table.find("tr td").first();
@@ -40,9 +49,9 @@ export class Item {
             classes.push(required_class);
         });
         const flavor_text = table.find(".q").first().text();
-        const binds_on = html.includes("<br>Binds when picked up<br>")
+        const binds_on = html.includes("Binds when picked up")
             ? ItemBinding.ON_PICKUP
-            : html.includes("<br>Binds when equipped up<br>")
+            : html.includes("Binds when equipped")
                 ? ItemBinding.ON_EQUIP
                 : ItemBinding.NOBIND;
         const unique = (html_lines.find((line) => {
@@ -73,6 +82,16 @@ export class Item {
         const primary_stats = html_lines.filter((line) => {
             return line.startsWith("+") || line.startsWith("-");
         });
+
+        const quest_a = table_contents.find("a").filter((_, a) => {
+            const t = $(a).text();
+            const h = $(a).attr("href");
+            return $(a).attr("href").includes("?quest=")
+                && $(a).text() === "This Item Begins a Quest";
+        });
+        const begins_quest = quest_a.length > 0
+            ? await Quest.from_id($(quest_a[0]).attr("href").replace("?quest=", ""))
+            : null;
 
         // Tables
         const table_count = table_contents.find("table").length;
@@ -112,6 +131,7 @@ export class Item {
                         quality,
                         unique,
                         binds_on,
+                        begins_quest,
                         classes,
                         level_requirement,
                         durability,
@@ -126,6 +146,14 @@ export class Item {
                         flavor_text);
     }
 
+    /**
+     * Generates an item based on the database website tooltip html.
+     *
+     * @param id - Database item id.
+     * @param href - Item link.
+     * @param html - Tooltip HTML.
+     * @returns - Generated item.
+     */
     public static async from_tooltip(id: string,
                                      href: string,
                                      html: string): Promise<Item> {
@@ -136,11 +164,17 @@ export class Item {
         // spells, set bonuses and flavor text.
         const stat_table = tables.get(0);
         const misc_table = tables.get(1);
-        const effects = Effect.from_table(misc_table);
+        const effects = Effect.from_item_table($(misc_table));
 
-        return Item.from_table(id, href, effects, $(stat_table));
+        return Item.from_table(id, href, await effects, $(stat_table));
     }
 
+    /**
+     * Builds an item from a database item id.
+     *
+     * @param id - Database item id.
+     * @returns - Generated item.
+     */
     public static async from_id(id: string | number): Promise<Item> {
         const url = `${config.host}/?item=${id}`;
         const html = await request({uri: url});
@@ -157,6 +191,7 @@ export class Item {
     public binds_on: ItemBinding;
 
     // Optional properties
+    public begins_quest?: Quest;
     public class_restrictions?: CharacterClass[];
     public level_requirement?: number;
     public durability?: number;
@@ -175,23 +210,25 @@ export class Item {
      *
      * @constructor
      * @param id- Item id in database.
-     * @param name
-     * @param href
-     * @param quality_color
-     * @param thumbnail_href
-     * @param unique
-     * @param binds_on
-     * @param class_restrictions
-     * @param level_requirement
-     * @param durability
-     * @param primary_stats
-     * @param effects
-     * @param armor
-     * @param equipment_slot
-     * @param equipment_type
-     * @param damage_range
-     * @param swing_speed
-     * @param dps
+     * @param name - In-game name.
+     * @param href - Database link.
+     * @param quality_color - Color of quality (purple for epic, blue for rare);
+     * @param thumbnail_href - Thumbnail link.
+     * @param unique - Whether the item is unique.
+     * @param binds_on - Type of binding (pickup, equip, no binding).
+     * @param begins_quest - Quest this item begins if applicable.
+     * @param class_restrictions - List of classes, which can equip the item.
+     * @param level_requirement - Required level to equip item.
+     * @param durability - Maximum durability.
+     * @param primary_stats - List of primary stats such as stamina and added
+     * elemental damage.
+     * @param effects - List of associated effects.
+     * @param armor - Armor value.
+     * @param equipment_slot - Slot where item is equipped.
+     * @param equipment_type - Type of item.
+     * @param damage_range - The range of damage values the item can do.
+     * @param swing_speed - Time in seconds between each attack.
+     * @param dps - Average damage done per second.
      */
     public constructor(id: string,
                        name: string,
@@ -200,6 +237,7 @@ export class Item {
                        quality_color: string,
                        unique: boolean,
                        binds_on: ItemBinding,
+                       begins_quest?: Quest,
                        class_restrictions?: CharacterClass[],
                        level_requirement?: number,
                        durability?: number,
@@ -219,6 +257,7 @@ export class Item {
         this.quality_color = quality_color;
         this.unique = unique;
         this.binds_on = binds_on;
+        this.begins_quest = begins_quest;
         this.class_restrictions = class_restrictions;
         this.level_requirement = level_requirement;
         this.durability = durability;
@@ -233,6 +272,13 @@ export class Item {
         this.flavor_text = flavor_text;
     }
 
+    /**
+     * Builds a discord markdown compatible string with correctly formatted
+     * attributes in accordance with the standard tooltip layout. Should be used
+     * for adding a description field to a discord RichEmbed message.
+     *
+     * @returns {string} - Item tooltip.
+     */
     public build_message_description(): string {
         // Equipment type and slot.
         // A more humanly readble tooltip is added here since the tooltip does
@@ -240,7 +286,7 @@ export class Item {
         // a "Sword" of equipment_type "Two-hand" becomes "Two-handed Sword".
         const equipment_formatted = this.equipment_slot && this.equipment_type
             ? `${equipment_str(this.equipment_slot, this.equipment_type)}\n`
-            : "";
+            : this.equipment_slot ? `${this.equipment_slot}\n` : ""; 
 
         // Damage.
         const dmg_formatted = this.damage_range && this.swing_speed && this.dps
@@ -256,7 +302,9 @@ export class Item {
             : "";
 
         // Various stats such as added damage, stamina and agility.
-        const stats_formatted = this.primary_stats && this.primary_stats !== []
+        const has_stats = !!this.primary_stats
+            && this.primary_stats.length > 0;
+        const stats_formatted = has_stats
             ? `${this.primary_stats.map((s) => {
                 // Some items have added damage as a stat and since other damage
                 // is already bold, damage stats should also be made bold here.
@@ -294,14 +342,17 @@ export class Item {
             // function `as_short_tooltip`.
             // Non-complex effects such as added hit % or spellpower will not
             // need their own message and are kept in full.
-            ? `\n${this.effects.map((e) => e.as_short_tooltip()).join("\n")}`
+            ? `\n${this.effects.map((e) => {
+                    return `[${e.as_short_tooltip()}](${e.href})`;
+                }).join("\n")}`
             : "";
 
         return `${this.binds_on ? `${this.binds_on}\n` : ""}`
             + `${this.unique ? "Unique\n" :  ""}`
+            + `${this.begins_quest ? `${this.begins_quest.to_md()}\n` : ""}`
             + `${equipment_formatted}`
             + `${dmg_formatted}`
-            + `${this.armor ? `${this.armor} Armor` : ""}`
+            + `${this.armor ? `${this.armor} Armor\n` : ""}`
             + `${stats_formatted}`
             + `${durability_formatted}`
             + `${class_restrictions}`
@@ -309,15 +360,30 @@ export class Item {
             + `${effects_short_formatted}`.trim();
     }
 
-    public build_messages(): RichEmbed[] {
+    /**
+     * Constrcuts a list of discord RichEmbed messages, which can be sent to a
+     * channel to represent the item.
+     *
+     * @returns {RichEmbed[]} - List of messages.
+     */
+    public async build_messages(): Promise<RichEmbed[]> {
+        const effects = Promise.all(this.effects.filter((e) => {
+            // Filter out all the miscellaneous effects, which should not be
+            // shown as a seperate message.
+            return e.thumbnail_href !== misc_icon;
+        }).map((e) => {
+            // Build the RichEmbed message for each non-miscellaneous effect
+            // of this item.
+            return e.build_message(this.quality_color);
+        }));
         return [new RichEmbed()
             .setColor(this.quality_color)
             .setTitle(this.name)
             .setDescription(this.build_message_description())
-            .setAuthor("Classic DB", favicon_path, this.href)
+            .setAuthor("Classic DB Bot", favicon_path, discord_href)
             .setThumbnail(this.thumbnail_href)
-            .setFooter("https://discord.gg/mRUEPnp", github_icon)
-            .setURL(this.href)];
+            .setFooter("https://discord.gg/mRUEPnp", discord_icon)
+            .setURL(this.href), ...await effects];
     }
 
 }

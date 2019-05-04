@@ -6,6 +6,8 @@
 
 import * as cnf from "../config.json";
 
+export const html_tag_regex = /\s*(<[^>]*>)/g;
+
 export const weapon_types = [
     "dagger",
     "mace",
@@ -51,8 +53,9 @@ export const item_quality_colors: {[index: number]: number} = {
     1: 0x9d9d9d, // Poor.
 };
 
-
-export const favicon_path = "https://proxy.duckduckgo.com/iu/?u=http%3A%2F%2Forig08.deviantart.net%2F65e3%2Ff%2F2014%2F207%2Fe%2F2%2Fofficial_wow_icon_by_benashvili-d7sd1ab.png&f=1";
+export const discord_href = "https://discord.gg/mRUEPnp";
+export const discord_icon = "https://discordapp.com/assets/28174a34e77bb5e5310ced9f95cb480b.png";
+export const favicon_path = "https://orig08.deviantart.net/65e3/f/2014/207/e/2/official_wow_icon_by_benashvili-d7sd1ab.png";
 export const github_icon = "https://proxy.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn4.iconfinder.com%2Fdata%2Ficons%2Ficonsimple-logotypes%2F512%2Fgithub-512.png&f=1";
 export const github_href = "https://github.com/Kruhlmann/classicdb_bot";
 export const misc_icon = `${cnf.host}/images/icons/large/trade_engineering.jpg`;
