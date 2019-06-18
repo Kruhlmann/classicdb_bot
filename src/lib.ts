@@ -31,14 +31,14 @@ export function get_large_icon_url(icon_name: string) {
  */
 export function css_class_to_item_quality(class_name: string): ItemQuality {
     switch (class_name) {
-        case "q1": return ItemQuality.POOR;
-        case "q2": return ItemQuality.COMMON;
-        case "q3": return ItemQuality.UNCOMMON;
-        case "q4": return ItemQuality.RARE;
-        case "q5": return ItemQuality.EPIC;
-        case "q6": return ItemQuality.LEGENDARY;
-        case "q7": return ItemQuality.ARTIFACT;
-        case "q8": return ItemQuality.BLIZZARD;
+        case "q0": return ItemQuality.POOR;
+        case "q1": return ItemQuality.COMMON;
+        case "q2": return ItemQuality.UNCOMMON;
+        case "q3": return ItemQuality.RARE;
+        case "q4": return ItemQuality.EPIC;
+        case "q5": return ItemQuality.LEGENDARY;
+        case "q6": return ItemQuality.ARTIFACT;
+        case "q7": return ItemQuality.BLIZZARD;
         default: return ItemQuality.NOQUALITY;
     }
 }

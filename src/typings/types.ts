@@ -1,10 +1,11 @@
-import { Effect } from "../parser/effect";
-
 /**
  * @fileoverview Type definitions.
  * @author Andreas Kruhlmann
  * @since 1.2.0
  */
+
+import { RichEmbed } from "discord.js";
+import { Effect } from "../parsers/effect";
 
 export interface ParsedTooltip {
     effects: Effect[];
@@ -55,4 +56,58 @@ export enum ItemQuality {
     ARTIFACT = "#E6CC80",
     BLIZZARD = "#00CCFF",
     NOQUALITY = "",
+}
+
+export interface ParserQuery {
+    item_identifier: string;
+    item_version: string;
+}
+
+export interface Parser {
+    readonly host: string;
+    respond_to: (query: ParserQuery) => Promise<RichEmbed[]>;
+}
+
+export interface QuestImplementable {
+    id: string;
+    name: string;
+    href: string;
+}
+
+export interface ItemImplementable {
+    // Required properties.
+    id: string;
+    name: string;
+    href: string;
+    thumbnail_href: string;
+    quality_color: string;
+    unique: boolean;
+    binds_on: ItemBinding;
+
+    // Optional properties
+    begins_quest?: QuestImplementable;
+    class_restrictions?: CharacterClass[];
+    level_requirement?: number;
+    durability?: number;
+    primary_stats?: string[];
+    effects?: Effect[];
+    armor?: number;
+    equipment_slot?: string;
+    equipment_type?: string;
+    damage_range?: {low: number, high: number};
+    swing_speed?: number;
+    dps?: number;
+    flavor_text?: string;
+}
+
+export enum Operator {
+    OR,
+    AND,
+}
+
+export enum LoggingLevel {
+    DEV = 0,
+    INF = 1,
+    WAR = 2,
+    ERR = 3,
 }
