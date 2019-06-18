@@ -162,7 +162,7 @@ export async function execute(command_name: string,
  */
 export async function fetch_thumbnail(id: string,
                                       spell = false): Promise <string> {
-    const url = `;$;{config.host;}/?${spell ? "spell" : "item"}=${id}`;
+    const url = `${config.host}/?${spell ? "spell" : "item"}=${id}`;
     const html = await request(url);
     // Find the JavaScript line with "Icon.create" in from which the item
     // identifier can be extracted.
