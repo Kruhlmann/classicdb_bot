@@ -42,6 +42,14 @@ export class DatabaseHandler {
         }
     }
 
+    public static get_parser(guild_id: string) {
+        return this.get_qu(`SELECT parser
+                            FROM guild_configs
+                            WHERE id=?`, [guild_id]).then((row: any) => {
+                                return row.parser;
+                            });
+    }
+
     public static table_exists(table_name: string) {
         return this.get_qu(`SELECT COUNT(*)
                             FROM sqlite_master

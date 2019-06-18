@@ -66,7 +66,7 @@ export interface ParserQuery {
 }
 
 export interface Parser {
-    respond_to: (query: string) => Promise<RichEmbed>;
+    respond_to: (query: string) => Promise<RichEmbed[]>;
 }
 
 export interface QuestImplementable {

@@ -80,23 +80,29 @@ function make_source_tooltip(item: ItemizationItem): string {
     }
     if (item.Source.Type === "Drop" && item.Source.Entity) {
         const zone = item.Source.Zone ? `in "${item.Source.Zone}"` : "";
-        return `Source: Drops from _${item.Source.Entity}_ ${zone}\n`;
+        return `Source: Dropped by _${item.Source.Entity}_ ${zone}\n`;
     }
     return "";
 }
 
-function make_patch_tooltip(item: ItemizationItem): string {
+function make_patch_tooltip(item: ItemizationItem,
+                            item_meta: ItemizationItemMeta): string {
     const patch_url = `https://wowwiki.fandom.com/wiki/Patch_${item.Patch}`;
     const iinfo_url = `https://itemization.info/?search=patch:${item.Patch}`;
-    return `Changed in patch [${item.Patch}](${iinfo_url}) [View ${item.Patch}
-        patch notes](${patch_url})\n`;
+    const is_new_item = item_meta.Previous.sort((a, b) => {
+        return parseFloat(a.Patch) - parseFloat(b.Patch);
+    })[0].Patch === item.Patch;
+    console.log(is_new_item);
+    const prefix = item_meta.Previous && is_new_item ? "Changed" : "Added";
+    return `${prefix} in patch ${item.Patch}. [View items](${iinfo_url})`
+           + ` • [View patch notes](${patch_url})\n`;
 }
 
 
 function item_to_message_desc(im: ItemizationItemMeta, patch?: string): string {
-    const item = patch
-        ? im.Current
-        : im.Previous.find((i) => i.Patch === patch) || im.Current;
+    const item_liststing = [im.Current, ...im.Previous];
+    const item = item_liststing.find((i) => i.Patch === patch) || im.Current;
+
     return `${item.Bonding ? `${item.Bonding}\n` : ""}`
             + `${item.Unique ? "Unique\n" :  ""}`
             + `${make_slot_tooltip(item)}\n`
@@ -114,7 +120,7 @@ function item_to_message_desc(im: ItemizationItemMeta, patch?: string): string {
                 : ""}`
             + `${item.Effects ? make_effects_tooltip(item) : ""}`
             + `${item.Source ? make_source_tooltip(item) : ""}`
-            + `${item.Patch ? make_patch_tooltip(item) : ""}`;
+            + `${item.Patch ? make_patch_tooltip(item, im) : ""}`;
 }
 
 /**
@@ -138,7 +144,7 @@ export function get_item_request(message_content: string): ItemizationQuery {
 }
 
 export class ItemizationParser implements Parser {
-    public async respond_to(message: string): Promise<RichEmbed> {
+    public async respond_to(message: string) {
         const query = get_item_request(message);
         if (!query.item || query.item === "") {
             return;
@@ -155,33 +161,35 @@ export class ItemizationParser implements Parser {
 
         const item: ItemizationItemMeta = items[0] || null;
         if (!item) {
-            return new RichEmbed()
-                .setDescription(`Unable to find item "${query.item}"`);
+            return [new RichEmbed()
+                .setDescription(`Unable to find item "${query.item}"`)];
         }
 
         const item_had_patch_data = !item.Previous.find((i) => {
             return i.Patch === query.patch;
-        });
+        }) && item.Current.Patch !== query.patch;
         if (query.patch && item_had_patch_data) {
             let suffix = `**[${item.Current.Name}]**\n`;
-            item.Previous.forEach((i) => {
+            [item.Current, ...item.Previous].forEach((i) => {
                 suffix += `**[${i.Name}][${i.Patch}]**\n`;
             });
-            return new RichEmbed().setDescription("Unable to find item changes "
-                + `for **\`${item.Current.Name}\`** in patch `
+            return [new RichEmbed().setDescription("Unable to find item changes"
+                + ` for **\`${item.Current.Name}\`** in patch `
                 + `**\`${query.patch}\`**. The item has data for the following `
-                + `patch entries:\n\n${suffix}`);
+                + `patch entries:\n\n${suffix}`)];
         }
 
-        return new RichEmbed()
+        return [new RichEmbed()
             .setColor("#FFFFFF")
-            .setTitle(item.Current.Name)
+            .setTitle(`${item.Current.Name} ${query.patch
+                ? `(patch ${query.patch})`
+                : "(latest patch)"}`)
             .setDescription(item_to_message_desc(item, query.patch))
             .setAuthor("Classic DB Bot (itemization.info)",
                        favicon_path,
                        discord_href)
             .setThumbnail(`https://itemization.info/icons/${item.Icon}.png`)
             .setFooter("https://discord.gg/mRUEPnp", discord_icon)
-            .setURL(`https://itemization.info/item/${item.ID}`);
+            .setURL(`https://itemization.info/item/${item.ID}`)];
     }
 }

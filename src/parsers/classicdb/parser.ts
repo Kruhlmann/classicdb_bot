@@ -49,11 +49,13 @@ export class ClassicDBParser implements Parser {
         }) || "");
     }
 
-    public host = "https://classicdb.ch";
-
-    public async respond_to(query: string) {
-        console.log(query);
-        return new RichEmbed();
+    public async respond_to(msg: string) {
+        const match = get_item_request(msg);
+        if (!match) { return; }
+        // If the match is an id build the message with that in mind.
+        return is_string_numerical_int(match)
+            ? await build_messages_i(match)
+            : await build_messages_q(match);
     }
 }
 

@@ -11,6 +11,7 @@ import * as config from "../config.json";
 import { DatabaseHandler } from "./db.js";
 import { handle_exception, log } from "./io";
 import { execute, get_channel_identity } from "./lib.js";
+import { ClassicDBParser } from "./parsers/classicdb/parser.js";
 import { ItemizationParser } from "./parsers/itemization/parser.js";
 import { LoggingLevel, Parser } from "./typings/types.js";
 
@@ -25,7 +26,9 @@ process.on("unhandledRejection", (e: Error) => handle_exception(e));
         : config.discord_bot_token.development;
 
     // Init parser.
-    const parser: Parser = new ItemizationParser();
+    const classicdb_parser: Parser = new ClassicDBParser();
+    const itemization_parser: Parser = new ItemizationParser();
+    let current_parser: Parser;
 
     // Init database connection.
     await DatabaseHandler.connect(config.database);
@@ -67,20 +70,23 @@ process.on("unhandledRejection", (e: Error) => handle_exception(e));
             return;
         }
 
-        try {
-            // Handle message recieved.
-            const response = await parser.respond_to(message.content);
-            if (!response) {
-                return;
-            }
-            message.channel.send({embed: response}).catch(handle_exception);
-            log("Sent item tooltip:", LoggingLevel.DEV);
-            log(`\tServer:  ${channel_identitiy.guild_name}`, LoggingLevel.DEV);
-            log(`\tChannel: ${channel_identitiy.name}`, LoggingLevel.DEV);
-            log(`\tRequested by: ${message.author.username}`, LoggingLevel.DEV);
-        } catch (e) {
-            handle_exception(e);
+        const gp = await DatabaseHandler.get_parser(channel_identitiy.guild_id);
+        current_parser = gp === "classicdb"
+            ? classicdb_parser
+            : itemization_parser;
+
+        // Handle message recieved.
+        const response = await current_parser.respond_to(message.content);
+        if (!response) {
+            return;
         }
+        for (const embed_msg of response) {
+            message.channel.send({embed: embed_msg}).catch(handle_exception);
+        }
+        log("Sent item tooltip:", LoggingLevel.DEV);
+        log(`\tServer:  ${channel_identitiy.guild_name}`, LoggingLevel.DEV);
+        log(`\tChannel: ${channel_identitiy.name}`, LoggingLevel.DEV);
+        log(`\tRequested by: ${message.author.username}`, LoggingLevel.DEV);
     });
 
     // Authenticate.
