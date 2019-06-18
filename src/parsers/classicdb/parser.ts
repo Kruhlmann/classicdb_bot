@@ -14,7 +14,7 @@ import { LoggingLevel,
          Operator,
          Parser,
          ParserQuery } from "../../typings/types.js";
-import { Item } from "../item.js";
+import { Item } from "./item.js";
 
 export class ClassicDBParser implements Parser {
     // DOM parsing regex.
@@ -52,7 +52,7 @@ export class ClassicDBParser implements Parser {
     public host = "https://classicdb.ch";
 
     public async respond_to(query: string) {
-        console.log(query)
+        console.log(query);
         return new RichEmbed();
     }
 }

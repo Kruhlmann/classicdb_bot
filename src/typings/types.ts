@@ -5,7 +5,7 @@
  */
 
 import { RichEmbed } from "discord.js";
-import { Effect } from "../parsers/effect";
+import { Effect } from "../parsers/classicdb/effect";
 
 export interface ParsedTooltip {
     effects: Effect[];

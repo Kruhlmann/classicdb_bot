@@ -10,12 +10,8 @@ import * as request from "request-promise";
 import * as config from "../../../config.json";
 import { html_tag_regex, misc_icon } from "../../consts.js";
 import { fetch_thumbnail } from "../../lib.js";
-import { Operator } from "../../typings/types.js";
-import { Effect } from "../effect.js";
-import { EffectExtendable } from "../extendables/effect_extendable.js";
-import { ClassicDBParser } from "./parser.js";
 
-export class ClassicDBEffect extends EffectExtendable {
+export class Effect {
 
     /**
      * Generates all effects from a database item tooltip element.
@@ -57,25 +53,28 @@ export class ClassicDBEffect extends EffectExtendable {
         // Stats.
         const stats_td = $(stat_table).find("td").first();
         const stat_html_lines = stats_td.html().split(html_tag_regex);
-        // Make a shortcut for parsing dom with a list of RegExp.
-        const regex_parse_or = (regex_list: RegExp[]) => {
-            return ClassicDBParser.find_in_dom(stat_html_lines,
-                                               regex_list,
-                                               Operator.OR);
-        };
 
-        const range_line = regex_parse_or(ClassicDBParser.range_rg).split(" ");
-        const cast_line = regex_parse_or(ClassicDBParser.cast_rg).split(" ");
-
-        const range = range_line.length > 1
-            ? range_line === ["Melee", "Range"] ? "Melee Range" : range_line[0]
-            : null;
-        const cast_time = cast_line.length > 1
-            ? cast_line === ["Instant"] ? "Instant" : cast_line[0]
-            : null;
+        const range_line = (stat_html_lines.find((line) => {
+            const r1 = /[0-9]+ yd range/g;
+            const r2 = /Melee Range/g;
+            const match = (line || "").match(r1) || (line || "").match(r2);
+            return (match || []).length > 0;
+        }) || "").split(" ");
+        const cast_time_line = (stat_html_lines.find((line) => {
+            const r1 = /[0-9]+ sec cast/g;
+            const r2 = /Instant/g;
+            const match = (line || "").match(r1) || (line || "").match(r2);
+            return (match || []).length > 0;
+        }) || "").split(" ");
 
         const name = stats_td.find("a").first().text();
         const thumbnail = await fetch_thumbnail(id, true);
+        const range = range_line.length > 1
+            ? range_line === ["Melee", "Range"] ? "Melee Range" : range_line[0]
+            : null;
+        const cast_time = cast_time_line.length > 1
+            ? range_line === ["Instant"] ? "Instant" : cast_time_line[0]
+            : null;
         const description = $(misc_table).find("span.q").first().text() || "";
         const is_misc = thumbnail === misc_icon;
         return new Effect(id, name, `${config.host}/?item=${id}`, description, thumbnail, trigger, is_misc, cast_time, range);
@@ -85,7 +84,6 @@ export class ClassicDBEffect extends EffectExtendable {
      * Generates an item based on an effect id and a trigger.
      *
      * @async
-     * @override
      * @param id - Database effect id.
      * @param trigger - Effect trigger.
      * @returns - Generated effect.
@@ -134,7 +132,6 @@ export class ClassicDBEffect extends EffectExtendable {
                        is_misc: boolean,
                        cast_time: string,
                        range: string) {
-        super();
         this.id = id;
         this.name = name;
         this.href = href;

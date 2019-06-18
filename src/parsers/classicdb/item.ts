@@ -7,19 +7,19 @@
 import * as cheerio from "cheerio";
 import { RichEmbed } from "discord.js";
 import * as request from "request-promise";
-import * as config from "../../config.json";
+import * as config from "../../../config.json";
 import { discord_href,
          discord_icon,
          favicon_path,
          html_tag_regex,
-         misc_icon } from "../consts.js";
+         misc_icon } from "../../consts.js";
 import { css_class_to_item_quality,
          css_class_to_player_class,
-         fetch_thumbnail } from "../lib";
-import { CharacterClass, ItemBinding } from "../typings/types";
+         fetch_thumbnail } from "../../lib";
+import { CharacterClass, ItemBinding } from "../../typings/types";
 import { Effect } from "./effect";
-import { equipment_str } from "./classicdb/parser.js";
 import { Quest } from "./quest.js";
+import { equipment_str } from "./parser.js";
 
 export class Item {
 

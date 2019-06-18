@@ -1,14 +1,14 @@
 import * as cheerio from "cheerio";
 import * as request from "request-promise";
-import * as config from "../../config.json";
+import * as config from "../../../config.json";
 /**
  * @fileoverview Class definition for ItemSet.
  * @author Andreask Kruhlmann
  * @since 1.2.0
  */
 
-import { handle_exception } from "../io.js";
-import { SetBonus } from "../typings/types.js";
+import { handle_exception } from "../../io.js";
+import { SetBonus } from "../../typings/types.js";
 import { Effect } from "./effect";
 import { Item } from "./item";
 
