@@ -7,6 +7,8 @@
 import { DMChannel, GroupDMChannel, Message, TextChannel } from "discord.js";
 import * as request from "request-promise";
 import * as config from "../config.json";
+import { avaliable_parsers } from "./consts.js";
+import { DatabaseHandler } from "./db.js";
 import { ChannelIdentity,
          CharacterClass,
          ItemQuality } from "./typings/types.js";
@@ -124,16 +126,25 @@ export async function execute(command_name: string,
                               message: Message,
                               channel_identity: ChannelIdentity,
                               ): Promise<string> {
-    console.log(message, channel_identity);
+    const guild_id = channel_identity.guild_id;
     const help_text =  `**Avaliable commands:**\`\`\`css\n`
                        + `help:                               `
-                       + `- Displays this text\n`
+                       + `- Displays this text.\n`
                        + `set_parser: <classicdb|itemization>`
                        + ` - Changes the parser of the bot.`
                        + `\`\`\``;
     switch (command_name) {
         case "set_parser":
-            break;
+            if (channel_identity.owner_id !== message.author.id) {
+                return "Only the owner is allowed to change this.";
+            }
+            const parser = message.content.split(" ")[2];
+            if (!parser || !avaliable_parsers.includes(parser)) {
+                return "Avaliable parsers are `classicdb` and `itemization`.";
+            }
+            return DatabaseHandler.set_guild_parser(guild_id, parser)
+                .then(() => `Updated parser to \`${parser}\`.`)
+                .catch(() => `An error occurred while updating parser.`);
         case "help":
             return help_text;
         default:

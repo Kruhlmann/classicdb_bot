@@ -51,6 +51,13 @@ export class DatabaseHandler {
                             });
     }
 
+    public static set_guild_parser(guild_id: string, parser: string) {
+        log(`Changing parser to ${parser} in guild ${guild_id}`);
+        return this.exe_qu(`UPDATE guild_configs
+                            SET parser=?
+                            WHERE id=?`, [parser, guild_id]);
+    }
+
     public static exe_qu(sql: string, params: any[] = []) {
         return new Promise((resolve, reject) => {
             this.db.run(sql, params, (err: Error, row: sqlite.RunResult) => {
