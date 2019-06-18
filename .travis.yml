@@ -15,6 +15,10 @@ script:
   - npm run test
 
 after_success:
-  - ./send_build_results.sh success $WEBHOOK_URL
+  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+  - chmod +x send.sh
+  - ./send.sh success $WEBHOOK_URL
 after_failure:
-  - ./send_build_results.sh failure $WEBHOOK_URL
+  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+  - chmod +x send.sh
+  - ./send.sh failure $WEBHOOK_URL
