@@ -4,9 +4,11 @@
  * @since 1.2.0
  */
 
-import { DMChannel, GroupDMChannel, TextChannel } from "discord.js";
+import { DMChannel, GroupDMChannel, Message, TextChannel } from "discord.js";
 import * as request from "request-promise";
 import * as config from "../config.json";
+import { avaliable_parsers } from "./consts.js";
+import { DatabaseHandler } from "./db.js";
 import { ChannelIdentity,
          CharacterClass,
          ItemQuality } from "./typings/types.js";
@@ -31,14 +33,14 @@ export function get_large_icon_url(icon_name: string) {
  */
 export function css_class_to_item_quality(class_name: string): ItemQuality {
     switch (class_name) {
-        case "q1": return ItemQuality.POOR;
-        case "q2": return ItemQuality.COMMON;
-        case "q3": return ItemQuality.UNCOMMON;
-        case "q4": return ItemQuality.RARE;
-        case "q5": return ItemQuality.EPIC;
-        case "q6": return ItemQuality.LEGENDARY;
-        case "q7": return ItemQuality.ARTIFACT;
-        case "q8": return ItemQuality.BLIZZARD;
+        case "q0": return ItemQuality.POOR;
+        case "q1": return ItemQuality.COMMON;
+        case "q2": return ItemQuality.UNCOMMON;
+        case "q3": return ItemQuality.RARE;
+        case "q4": return ItemQuality.EPIC;
+        case "q5": return ItemQuality.LEGENDARY;
+        case "q6": return ItemQuality.ARTIFACT;
+        case "q7": return ItemQuality.BLIZZARD;
         default: return ItemQuality.NOQUALITY;
     }
 }
@@ -102,10 +104,52 @@ export function get_channel_identity(channel: TextChannel
         : channel.type === "group"
             ? "Group DM"
             : (channel as TextChannel).guild.name;
+    const guild_id = channel.type === "dm"
+        ? `Private DM for user ${author}`
+        : channel.type === "group"
+            ? null
+            : (channel as TextChannel).guild.id;
+    const owner_id = channel.type === "dm"
+        ? `Private DM for user ${author}`
+        : channel.type === "group"
+            ? null
+            : (channel as TextChannel).guild.ownerID;
     return {
-        channel_name,
+        guild_id,
         guild_name,
+        name: channel_name,
+        owner_id,
     };
+}
+
+export async function execute(command_name: string,
+                              message: Message,
+                              channel_identity: ChannelIdentity,
+                              ): Promise<string> {
+    const guild_id = channel_identity.guild_id;
+    const help_text =  `**Avaliable commands:**\`\`\`css\n`
+                       + `help:                               `
+                       + `- Displays this text.\n`
+                       + `set_parser: <classicdb|itemization>`
+                       + ` - Changes the parser of the bot.`
+                       + `\`\`\``;
+    switch (command_name) {
+        case "set_parser":
+            if (channel_identity.owner_id !== message.author.id) {
+                return "Only the owner is allowed to change this.";
+            }
+            const parser = message.content.split(" ")[2];
+            if (!parser || !avaliable_parsers.includes(parser)) {
+                return "Avaliable parsers are `classicdb` and `itemization`.";
+            }
+            return DatabaseHandler.set_guild_parser(guild_id, parser)
+                .then(() => `Updated parser to \`${parser}\`.`)
+                .catch(() => `An error occurred while updating parser.`);
+        case "help":
+            return help_text;
+        default:
+            return `*Unrecognized command* \`${command_name}\`\n\n${help_text}`;
+    }
 }
 
 /**

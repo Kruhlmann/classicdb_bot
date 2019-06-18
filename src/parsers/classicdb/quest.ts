@@ -6,7 +6,7 @@
 
 import * as cheerio from "cheerio";
 import * as request from "request-promise";
-import * as config from "../../config.json";
+import * as config from "../../../config.json";
 
 export class Quest {
     /**

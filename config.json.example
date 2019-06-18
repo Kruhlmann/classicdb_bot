@@ -3,7 +3,15 @@
         "development": "",
         "production": ""
     },
+    "unit_test_channels": {
+        "category": "",
+        "reports": ""
+    },
     "sentry_dsn": "",
     "deployment_mode": "production",
-    "host": "https://classicdb.ch"
+    "host": "https://classicdb.ch",
+    "locale": "en-GB",
+    "time_zone": "UTC",
+    "itemization_token": "",
+    "database": "db/example_bot.db"
 }

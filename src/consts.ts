@@ -53,6 +53,8 @@ export const item_quality_colors: {[index: number]: number} = {
     1: 0x9d9d9d, // Poor.
 };
 
+export const avaliable_parsers = ["classicdb", "itemization"];
+
 export const discord_href = "https://discord.gg/mRUEPnp";
 export const discord_icon = "https://discordapp.com/assets/28174a34e77bb5e5310ced9f95cb480b.png";
 export const favicon_path = "https://orig08.deviantart.net/65e3/f/2014/207/e/2/official_wow_icon_by_benashvili-d7sd1ab.png";
