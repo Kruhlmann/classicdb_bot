@@ -7,4 +7,5 @@ npm-debug.log
 dist
 .secret
 db/*
-!db/example_db
+!db/example_db.db
+.nyc_output

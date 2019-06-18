@@ -86,8 +86,10 @@ function make_source_tooltip(item: ItemizationItem): string {
 }
 
 function make_patch_tooltip(item: ItemizationItem): string {
-    const url = `https://wowwiki.fandom.com/wiki/Patch_${item.Patch}`;
-    return `Changed in patch [${item.Patch}](${url})\n`;
+    const patch_url = `https://wowwiki.fandom.com/wiki/Patch_${item.Patch}`;
+    const iinfo_url = `https://itemization.info/?search=patch:${item.Patch}`;
+    return `Changed in patch [${item.Patch}](${iinfo_url}) [View ${item.Patch}
+        patch notes](${patch_url})\n`;
 }
 
 

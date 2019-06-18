@@ -18,8 +18,10 @@ export interface SpellDetails {
 }
 
 export interface ChannelIdentity {
-    channel_name: string;
     guild_name: string;
+    guild_id: string;
+    name: string;
+    owner_id: string;
 }
 
 export interface SetBonus {

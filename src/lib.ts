@@ -4,7 +4,7 @@
  * @since 1.2.0
  */
 
-import { DMChannel, GroupDMChannel, TextChannel } from "discord.js";
+import { DMChannel, GroupDMChannel, Message, TextChannel } from "discord.js";
 import * as request from "request-promise";
 import * as config from "../config.json";
 import { ChannelIdentity,
@@ -102,10 +102,43 @@ export function get_channel_identity(channel: TextChannel
         : channel.type === "group"
             ? "Group DM"
             : (channel as TextChannel).guild.name;
+    const guild_id = channel.type === "dm"
+        ? `Private DM for user ${author}`
+        : channel.type === "group"
+            ? null
+            : (channel as TextChannel).guild.id;
+    const owner_id = channel.type === "dm"
+        ? `Private DM for user ${author}`
+        : channel.type === "group"
+            ? null
+            : (channel as TextChannel).guild.ownerID;
     return {
-        channel_name,
+        guild_id,
         guild_name,
+        name: channel_name,
+        owner_id,
     };
+}
+
+export async function execute(command_name: string,
+                              message: Message,
+                              channel_identity: ChannelIdentity,
+                              ): Promise<string> {
+    console.log(message, channel_identity);
+    const help_text =  `**Avaliable commands:**\`\`\`css\n`
+                       + `help:                               `
+                       + `- Displays this text\n`
+                       + `set_parser: <classicdb|itemization>`
+                       + ` - Changes the parser of the bot.`
+                       + `\`\`\``;
+    switch (command_name) {
+        case "set_parser":
+            break;
+        case "help":
+            return help_text;
+        default:
+            return `*Unrecognized command* \`${command_name}\`\n\n${help_text}`;
+    }
 }
 
 /**
@@ -118,7 +151,7 @@ export function get_channel_identity(channel: TextChannel
  */
 export async function fetch_thumbnail(id: string,
                                       spell = false): Promise <string> {
-    const url = `${config.host}/?${spell ? "spell" : "item"}=${id}`;
+    const url = `;$;{config.host;}/?${spell ? "spell" : "item"}=${id}`;
     const html = await request(url);
     // Find the JavaScript line with "Icon.create" in from which the item
     // identifier can be extracted.
