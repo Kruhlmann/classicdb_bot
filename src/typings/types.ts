@@ -64,8 +64,7 @@ export interface ParserQuery {
 }
 
 export interface Parser {
-    readonly host: string;
-    respond_to: (query: ParserQuery) => Promise<RichEmbed[]>;
+    respond_to: (query: string) => Promise<RichEmbed>;
 }
 
 export interface QuestImplementable {
@@ -98,6 +97,62 @@ export interface ItemImplementable {
     swing_speed?: number;
     dps?: number;
     flavor_text?: string;
+}
+
+export interface ItemizationQuery {
+    item: string;
+    patch: string;
+}
+
+export interface ItemizationEffect {
+    Trigger: string;
+    Effect: string;
+}
+
+export interface ItemizationDamageType {
+    Min: number;
+    Max: number;
+}
+
+export interface ItemizationItemMeta {
+    ID: number;
+    Icon: string;
+    NumVersions: number;
+    Current: ItemizationItem;
+    Previous: ItemizationItem[];
+}
+
+export interface ItemizationItem {
+    Name: string;
+    Patch?: string;
+    Quality: string;
+    Slot: string;
+    Type: string;
+    Subtype: string;
+    Unique: boolean;
+    Bonding?: string;
+    Armor?: number;
+    Speed?: number;
+    Stats?: {
+        [key: string]: number;
+    };
+    Damage?: {
+        [key: string]: ItemizationDamageType;
+    };
+    Resists?: {
+        [key: string]: number;
+    };
+    DPS?: number;
+    Durability?: number;
+    RequiredLevel?: number;
+    ItemLevel: number;
+    Effects?: ItemizationEffect[];
+    Source?: {
+        Type?: string;
+        Entity?: string;
+        Zone?: string;
+        RequiredLevel?: number;
+    };
 }
 
 export enum Operator {

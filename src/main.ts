@@ -10,9 +10,8 @@ import { RichEmbed } from "discord.js";
 import * as config from "../config.json";
 import { handle_exception, log } from "./io";
 import { get_channel_identity } from "./lib.js";
-import { get_item_request,
-         get_message_responses } from "./parsers/classicdb/classicdb_parser.js";
-import { LoggingLevel } from "./typings/types.js";
+import { ItemizationParser } from "./parsers/itemization/parser.js";
+import { LoggingLevel, Parser } from "./typings/types.js";
 
 // Init discord virtual client.
 const discord_client = new discord.Client();
@@ -20,8 +19,12 @@ const dicord_token = config.deployment_mode === "production"
     ? config.discord_bot_token.production
     : config.discord_bot_token.development;
 
+// Init parser.
+const parser: Parser = new ItemizationParser();
+
 // Initialize error reporting.
 sentry.init({dsn: config.sentry_dsn});
+process.on("uncaughtException", (e: Error) => handle_exception(e));
 
 log("Awaiting response from discord...", LoggingLevel.DEV);
 discord_client.on("ready", () => {
@@ -46,23 +49,20 @@ discord_client.on("message", async (message) => {
         log(`\tRequested by: ${message.author.username}`, LoggingLevel.DEV);
         return;
     }
-
-    // Handle message recieved.
-    const responses: RichEmbed[] = await get_message_responses(message.content);
-    if (!responses) {
-        const query = get_item_request(message.content) || message.content;
-        if (!query || query === "") {
+    try {
+        // Handle message recieved.
+        const response = await parser.respond_to(message.content);
+        if (!response) {
             return;
         }
-    }
-    for (const response of responses) {
         message.channel.send({embed: response}).catch(handle_exception);
+        log("Sent item tooltip:", LoggingLevel.DEV);
+        log(`\tServer:  ${guild_name}`, LoggingLevel.DEV);
+        log(`\tChannel: ${channel_name}`, LoggingLevel.DEV);
+        log(`\tRequested by: ${message.author.username}`, LoggingLevel.DEV);
+    } catch (e) {
+        handle_exception(e);
     }
-
-    log("Sent item tooltip:", LoggingLevel.DEV);
-    log(`\tServer:  ${guild_name}`, LoggingLevel.DEV);
-    log(`\tChannel: ${channel_name}`, LoggingLevel.DEV);
-    log(`\tRequested by: ${message.author.username}`, LoggingLevel.DEV);
 });
 
 // Authenticate.

@@ -20,7 +20,7 @@ const logging_formats = {
         return `\x1b[33m[WAR] [${time}] ${msg}\x1b[0m`;
     },
     [LoggingLevel.ERR]: (msg: string, time: string) => {
-        return `\x1b[31m[ERR] [${time}] ${msg}\x1b[0m`;
+        return `\x1b[1m\x1b[31m[ERR] [${time}] ${msg}\x1b[0m`;
     },
 };
 

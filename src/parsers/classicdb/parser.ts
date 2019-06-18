@@ -51,9 +51,9 @@ export class ClassicDBParser implements Parser {
 
     public host = "https://classicdb.ch";
 
-    public async respond_to(query: ParserQuery) {
-        log(query.item_identifier);
-        return [new RichEmbed()];
+    public async respond_to(query: string) {
+        console.log(query)
+        return new RichEmbed();
     }
 }
 

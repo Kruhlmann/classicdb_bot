@@ -13,7 +13,7 @@ import { fetch_thumbnail } from "../../lib.js";
 import { Operator } from "../../typings/types.js";
 import { Effect } from "../effect.js";
 import { EffectExtendable } from "../extendables/effect_extendable.js";
-import { ClassicDBParser } from "./classicdb_parser.js";
+import { ClassicDBParser } from "./parser.js";
 
 export class ClassicDBEffect extends EffectExtendable {
 
