@@ -15,6 +15,17 @@ import { ItemizationItem,
          LoggingLevel,
          Parser} from "../../typings/types.js";
 
+
+
+export const item_quality_colors: {[index: string]: number} = {
+    ["Artifact"]: 0xe5cc80, // Artifact
+    ["Legendary"]: 0xff8000, // Legendary
+    ["Epic"]: 0xa335ee, // Epic.
+    ["Rare"]: 0x0070dd, // Rare.
+    ["Uncommon"]: 0x1EFF00, // Uncommon.
+    ["Poor"]: 0x9d9d9d, // Poor.
+};
+
 function make_damage_tooltip(item: ItemizationItem): string {
     let result = "";
     for (const damage_type of Object.keys(item.Damage)) {

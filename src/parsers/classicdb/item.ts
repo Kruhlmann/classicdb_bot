@@ -388,7 +388,9 @@ export class Item {
             .setColor(this.quality_color)
             .setTitle(this.name)
             .setDescription(this.build_message_description())
-            .setAuthor("Classic DB Bot", favicon_path, discord_href)
+            .setAuthor("Classic DB Bot (classicdb.ch)",
+                        favicon_path,
+                        discord_href)
             .setThumbnail(this.thumbnail_href)
             .setFooter("https://discord.gg/mRUEPnp", discord_icon)
             .setURL(this.href), ...await effects];
