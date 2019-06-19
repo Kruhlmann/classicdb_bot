@@ -20,7 +20,7 @@ export class DatabaseHandler {
             throw new Error(`${resolved_path} is not a file`);
         }
 
-        this.db = new sqlite.Database(resolved_path, (error) => {
+        this.db = new sqlite.Database(resolved_path, (error: Error) => {
             if (error) {
                 throw error;
             }
