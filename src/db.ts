@@ -28,7 +28,7 @@ export class DatabaseHandler {
 
         await this.create_tables();
 
-        log(`Connected to ${database_path}`, LoggingLevel.DEV);
+        log(`Connected to ${database_path}`);
     }
 
     public static async create_tables() {
