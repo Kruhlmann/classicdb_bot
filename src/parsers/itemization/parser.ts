@@ -92,7 +92,6 @@ function make_patch_tooltip(item: ItemizationItem,
     const is_new_item = item_meta.Previous.sort((a, b) => {
         return parseFloat(a.Patch) - parseFloat(b.Patch);
     })[0].Patch === item.Patch;
-    console.log(is_new_item);
     const prefix = item_meta.Previous && is_new_item ? "Changed" : "Added";
     return `${prefix} in patch ${item.Patch}. [View items](${iinfo_url})`
            + ` • [View patch notes](${patch_url})\n`;
@@ -163,6 +162,19 @@ export class ItemizationParser implements Parser {
         if (!item) {
             return [new RichEmbed()
                 .setDescription(`Unable to find item "${query.item}"`)];
+        }
+
+        if (!item.Previous) {
+            item.Previous = [{
+                Unique: false,
+                ItemLevel: 0,
+                Patch: "999999999999",
+                Name: "Unknown",
+                Quality: "",
+                Slot: "",
+                Type: "",
+                Subtype: "",
+            }];
         }
 
         const item_had_patch_data = !item.Previous.find((i) => {
