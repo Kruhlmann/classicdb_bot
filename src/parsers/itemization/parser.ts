@@ -16,14 +16,7 @@ import { ItemizationItem,
          ItemizationQuery,
          Parser} from "../../typings/types.js";
 
-export const item_quality_colors: {[index: string]: number} = {
-    ["Artifact"]: 0xe5cc80, // Artifact
-    ["Legendary"]: 0xff8000, // Legendary
-    ["Epic"]: 0xa335ee, // Epic.
-    ["Rare"]: 0x0070dd, // Rare.
-    ["Uncommon"]: 0x1EFF00, // Uncommon.
-    ["Poor"]: 0x9d9d9d, // Poor.
-};
+const search_url_stub = "https://itemization.info/?search=";
 
 function make_damage_tooltip(item: ItemizationItem): string {
     let result = "";
@@ -85,11 +78,13 @@ function make_effects_tooltip(item: ItemizationItem): string {
 
 function make_source_tooltip(item: ItemizationItem): string {
     if (item.Source.Type === "Quest" && item.Source.Entity) {
-        const zone = item.Source.Zone ? `in "${item.Source.Zone}"` : "";
+        const url = `${search_url_stub}source:${item.Source.Zone || ""}`;
+        const zone = item.Source.Zone ? `in [${item.Source.Zone}](${url})` : "";
         return `Source: Awarded from _${item.Source.Entity}_ ${zone}\n`;
     }
     if (item.Source.Type === "Drop" && item.Source.Entity) {
-        const zone = item.Source.Zone ? `in "${item.Source.Zone}"` : "";
+        const url = `${search_url_stub}source:${item.Source.Zone || ""}`;
+        const zone = item.Source.Zone ? `in [${item.Source.Zone}](${url})` : "";
         return `Source: Dropped by _${item.Source.Entity}_ ${zone}\n`;
     }
     return "";
