@@ -86,7 +86,7 @@ function make_effects_tooltip(item: ItemizationItem): string {
 function make_source_tooltip(item: ItemizationItem): string {
     if (item.Source.Type === "Quest" && item.Source.Entity) {
         const zone = item.Source.Zone ? `in "${item.Source.Zone}"` : "";
-        return `Source: Award from _${item.Source.Entity}_ ${zone}\n`;
+        return `Source: Awarded from _${item.Source.Entity}_ ${zone}\n`;
     }
     if (item.Source.Type === "Drop" && item.Source.Entity) {
         const zone = item.Source.Zone ? `in "${item.Source.Zone}"` : "";
