@@ -102,10 +102,14 @@ function make_patch_tooltip(item: ItemizationItem,
     const patch_url = `https://wowwiki.fandom.com/wiki/Patch_${item.Patch}`;
     const iinfo_url = `${search_url_stub}patch:${item.Patch}`;
     const is_new_item = item_meta.Previous.sort((a, b) => {
-        return parseFloat(a.Patch) - parseFloat(b.Patch);
+        const parsed_patch_a = parseFloat(a.Patch.replace("1.", ""));
+        const parsed_patch_b = parseFloat(b.Patch.replace("1.", ""));
+        return parsed_patch_a - parsed_patch_b;
     })[0].Patch === item.Patch;
+
     const item_is_new = !!item_meta.Previous && is_new_item;
-    const item_is_first = item_meta.Previous;
+    const item_is_first = !item_meta.Previous;
+
     const prefix = item_is_new || item_is_first ? "Added" : "Changed";
     return `${prefix} in patch ${item.Patch}. [View items](${iinfo_url})`
            + ` • [View patch notes](${patch_url})\n`;
