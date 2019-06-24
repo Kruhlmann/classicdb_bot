@@ -78,12 +78,14 @@ function make_effects_tooltip(item: ItemizationItem): string {
 
 function make_source_tooltip(item: ItemizationItem): string {
     if (item.Source.Type === "Quest" && item.Source.Entity) {
-        const url = `${search_url_stub}source:${item.Source.Zone || ""}`;
+        const uri_zone = encodeURIComponent(item.Source.Zone);
+        const url = `${search_url_stub}source:${uri_zone || ""}`;
         const zone = item.Source.Zone ? `in [${item.Source.Zone}](${url})` : "";
         return `Source: Awarded from _${item.Source.Entity}_ ${zone}\n`;
     }
     if (item.Source.Type === "Drop" && item.Source.Entity) {
-        const url = `${search_url_stub}source:${item.Source.Zone || ""}`;
+        const uri_zone = encodeURIComponent(item.Source.Zone);
+        const url = `${search_url_stub}source:${uri_zone || ""}`;
         const zone = item.Source.Zone ? `in [${item.Source.Zone}](${url})` : "";
         return `Source: Dropped by _${item.Source.Entity}_ ${zone}\n`;
     }
@@ -97,7 +99,13 @@ function make_patch_tooltip(item: ItemizationItem,
     const is_new_item = item_meta.Previous.sort((a, b) => {
         return parseFloat(a.Patch) - parseFloat(b.Patch);
     })[0].Patch === item.Patch;
-    const prefix = !!item_meta.Previous && is_new_item ? "Added" : "Changed";
+    const item_is_new = !!item_meta.Previous && is_new_item;
+    const item_is_first = item_meta.Previous;
+    console.log(item_is_new);
+    console.log(item_is_first);
+    console.log(item_meta.Previous.length);
+    console.log(item_meta.Previous);
+    const prefix = item_is_new || item_is_first ? "Added" : "Changed";
     return `${prefix} in patch ${item.Patch}. [View items](${iinfo_url})`
            + ` • [View patch notes](${patch_url})\n`;
 }
