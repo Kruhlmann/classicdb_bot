@@ -101,10 +101,6 @@ function make_patch_tooltip(item: ItemizationItem,
     })[0].Patch === item.Patch;
     const item_is_new = !!item_meta.Previous && is_new_item;
     const item_is_first = item_meta.Previous;
-    console.log(item_is_new);
-    console.log(item_is_first);
-    console.log(item_meta.Previous.length);
-    console.log(item_meta.Previous);
     const prefix = item_is_new || item_is_first ? "Added" : "Changed";
     return `${prefix} in patch ${item.Patch}. [View items](${iinfo_url})`
            + ` • [View patch notes](${patch_url})\n`;
