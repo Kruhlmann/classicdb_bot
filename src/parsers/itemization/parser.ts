@@ -78,16 +78,22 @@ function make_effects_tooltip(item: ItemizationItem): string {
 
 function make_source_tooltip(item: ItemizationItem): string {
     const uri_zone = `"${encodeURIComponent(item.Source.Zone)}"`;
-    const url = `${search_url_stub}source:${uri_zone || ""}`;
-    const zone = item.Source.Zone ? `in [${item.Source.Zone}](${url})` : "";
+    const uri_entity = `"${encodeURIComponent(item.Source.Entity)}"`;
+
+    const zurl = `${search_url_stub}source:${uri_zone || ""}`;
+    const eurl = `${search_url_stub}source:${uri_entity || ""}`;
+
+    const zone = item.Source.Zone ? `in [${item.Source.Zone}](${zurl})` : "";
+    const entity = item.Source.Entity ? `[${item.Source.Entity}](${eurl})` : "";
 
     if (item.Source.Type === "Quest" && item.Source.Entity) {
+        // Entity in this case represents the name of a quest.
         return `Source: Awarded from _${item.Source.Entity}_ ${zone}\n`;
     }
     if (item.Source.Type === "Drop" && item.Source.Entity) {
-        return `Source: Dropped by _${item.Source.Entity}_ ${zone}\n`;
+        return `Source: Dropped by ${entity} ${zone}\n`;
     }
-    
+
     return "";
 }
 
