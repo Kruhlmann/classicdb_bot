@@ -201,7 +201,6 @@ export class ItemizationParser implements Parser {
                 + `patch entries:\n\n${suffix}`)];
         }
 
-        console.log(item.Current.Quality)
         const computed_color = quality_colors_itemization[item.Current.Quality];
         return [new RichEmbed()
             .setColor(computed_color || "#fff")
