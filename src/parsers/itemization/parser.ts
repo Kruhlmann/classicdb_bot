@@ -95,7 +95,7 @@ function make_source_tooltip(item: ItemizationItem): string {
 function make_patch_tooltip(item: ItemizationItem,
                             item_meta: ItemizationItemMeta): string {
     const patch_url = `https://wowwiki.fandom.com/wiki/Patch_${item.Patch}`;
-    const iinfo_url = `https://itemization.info/?search=patch:${item.Patch}`;
+    const iinfo_url = `${search_url_stub}patch:${item.Patch}`;
     const is_new_item = item_meta.Previous.sort((a, b) => {
         return parseFloat(a.Patch) - parseFloat(b.Patch);
     })[0].Patch === item.Patch;
