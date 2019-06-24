@@ -77,18 +77,17 @@ function make_effects_tooltip(item: ItemizationItem): string {
 }
 
 function make_source_tooltip(item: ItemizationItem): string {
+    const uri_zone = `"${encodeURIComponent(item.Source.Zone)}"`;
+    const url = `${search_url_stub}source:${uri_zone || ""}`;
+    const zone = item.Source.Zone ? `in [${item.Source.Zone}](${url})` : "";
+
     if (item.Source.Type === "Quest" && item.Source.Entity) {
-        const uri_zone = encodeURIComponent(item.Source.Zone);
-        const url = `${search_url_stub}source:${uri_zone || ""}`;
-        const zone = item.Source.Zone ? `in [${item.Source.Zone}](${url})` : "";
         return `Source: Awarded from _${item.Source.Entity}_ ${zone}\n`;
     }
     if (item.Source.Type === "Drop" && item.Source.Entity) {
-        const uri_zone = encodeURIComponent(item.Source.Zone);
-        const url = `${search_url_stub}source:${uri_zone || ""}`;
-        const zone = item.Source.Zone ? `in [${item.Source.Zone}](${url})` : "";
         return `Source: Dropped by _${item.Source.Entity}_ ${zone}\n`;
     }
+    
     return "";
 }
 
