@@ -103,7 +103,7 @@ function make_patch_tooltip(item: ItemizationItem,
     const is_new_item = item_meta.Previous.sort((a, b) => {
         return parseFloat(a.Patch) - parseFloat(b.Patch);
     })[0].Patch === item.Patch;
-    const prefix = item_meta.Previous && is_new_item ? "Added" : "Changed";
+    const prefix = !!item_meta.Previous && is_new_item ? "Added" : "Changed";
     return `${prefix} in patch ${item.Patch}. [View items](${iinfo_url})`
            + ` • [View patch notes](${patch_url})\n`;
 }
