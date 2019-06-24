@@ -53,6 +53,16 @@ export const item_quality_colors: {[index: number]: number} = {
     1: 0x9d9d9d, // Poor.
 };
 
+export const quality_colors_itemization: {[index: string]: number} = {
+    ["Artifact"]: 0xe5cc80,
+    ["Legendary"]: 0xff8000,
+    ["Epic"]: 0xA335EE,
+    ["Rare"]: 0x0070dd,
+    ["Uncommon"]: 0x1EFF00,
+    ["Common"]: 0xFFFFFF,
+    ["Poor"]: 0x9D9D9D,
+};
+
 export const avaliable_parsers = ["classicdb", "itemization"];
 
 export const discord_href = "https://discord.gg/mRUEPnp";

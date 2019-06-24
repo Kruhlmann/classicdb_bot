@@ -7,15 +7,14 @@
 import { RichEmbed } from "discord.js";
 import * as request from "request-promise";
 import * as config from "../../../config.json";
-import { discord_href, discord_icon, favicon_path } from "../../consts.js";
-import { log } from "../../io.js";
+import { discord_href,
+         discord_icon,
+         favicon_path,
+         quality_colors_itemization } from "../../consts.js";
 import { ItemizationItem,
          ItemizationItemMeta,
          ItemizationQuery,
-         LoggingLevel,
          Parser} from "../../typings/types.js";
-
-
 
 export const item_quality_colors: {[index: string]: number} = {
     ["Artifact"]: 0xe5cc80, // Artifact
@@ -202,8 +201,10 @@ export class ItemizationParser implements Parser {
                 + `patch entries:\n\n${suffix}`)];
         }
 
+        console.log(item.Current.Quality)
+        const computed_color = quality_colors_itemization[item.Current.Quality];
         return [new RichEmbed()
-            .setColor("#FFFFFF")
+            .setColor(computed_color || "#fff")
             .setTitle(`${item.Current.Name} ${query.patch
                 ? `(patch ${query.patch})`
                 : "(latest patch)"}`)
