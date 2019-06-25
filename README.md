@@ -7,6 +7,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/31ac58008a241939aee1/maintainability)](https://codeclimate.com/github/Kruhlmann/classicdb_bot/maintainability)
 [![Open issues](https://img.shields.io/github/issues-raw/Kruhlmann/classicdb_bot.svg?style=flat)](https://github.com/Kruhlmann/classicdb_bot/issues)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/2579/badge)](https://bestpractices.coreinfrastructure.org/projects/2579)
+[![Version](https://img.shields.io/github/package-json/v/Kruhlmann/classicdb_bot.svg)](package.json)
 
 ## Setup
 
