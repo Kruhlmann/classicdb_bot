@@ -107,10 +107,9 @@ function make_patch_tooltip(item: ItemizationItem,
         return parsed_patch_a - parsed_patch_b;
     })[0].Patch === item.Patch;
 
-    const item_is_new = !!item_meta.Previous && is_new_item;
-    const item_is_first = !item_meta.Previous;
-
-    const prefix = item_is_new || item_is_first ? "Added" : "Changed";
+    const prefix = is_new_item || item_meta.Previous[0].Patch === "999999999999"
+        ? "Added"
+        : "Changed";
     return `${prefix} in patch ${item.Patch}. [View items](${iinfo_url})`
            + ` • [View patch notes](${patch_url})\n`;
 }
