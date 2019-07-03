@@ -11,25 +11,11 @@ import { discord_href,
          discord_icon,
          favicon_path,
          quality_colors_itemization } from "../../consts.js";
-import { ItemizationItem,
-         ItemizationItemMeta,
+import { ItemizationItemMeta,
          ItemizationQuery,
          Parser} from "../../typings/types.js";
 import message_helper from "./message_helpers";
 
-const search_url_stub = "https://itemization.info/?search=";
-const proffesions: {[s: string]: string} = {
-    Alchemy: "Alchemists",
-    Blacksmithing: "Blacksmiths",
-    Cooking: "Cooks",
-    Enchanting: "Enchanters",
-    Engineering: "Engineers",
-    Fishing: "Fishermen",
-    Herbalism: "Herbalists",
-    Leatherworking: "Leatherworkers",
-    Mining: "Mining",
-    Tailoring: "Tailors",
-};
 
 function item_to_message_desc(im: ItemizationItemMeta, patch?: string): string {
     const item_liststing = [im.Current, ...im.Previous];
