@@ -59,7 +59,8 @@ process.on("unhandledRejection", (e: Error) => handle_exception(e));
                 return;
             }
         }
- if (message.content.toLowerCase().includes("[26 dps]")) {
+
+        if (message.content.toLowerCase().includes("[26 dps]")) {
             message.channel.send(`Don't justify these peons with a response
                 Tips. They're probably a bunch of trash private server gamers
                 who will never amount to anything in retail classic. I bet
@@ -77,6 +78,12 @@ process.on("unhandledRejection", (e: Error) => handle_exception(e));
         current_parser = gp === "classicdb"
             ? classicdb_parser
             : itemization_parser;
+
+        if (message.content.includes("(classicdb)")) {
+            current_parser = classicdb_parser;
+        } else if (message.content.includes("(itemization)")) {
+            current_parser = itemization_parser;
+        }
 
         // Handle message recieved.
         const response = await current_parser.respond_to(message.content);
