@@ -46,6 +46,10 @@ process.on("unhandledRejection", (e: Error) => handle_exception(e));
         const author = `${message.author.username}@${message.author.id}`;
         const channel_identitiy = get_channel_identity(message.channel, author);
 
+        // Replace code markdown content.
+        message.content = message.content.replace(/`{1}[^`]+`{1}/g, "");
+        message.content = message.content.replace(/`{3}[^`]+`{3}/g, "");
+
         await DatabaseHandler.register_guild(channel_identitiy.guild_id);
         if (message.content.startsWith(`<@!${discord_client.user.id}>`)) {
             const command = message.content.split(" ")[1];
@@ -55,8 +59,7 @@ process.on("unhandledRejection", (e: Error) => handle_exception(e));
                 return;
             }
         }
-
-        if (message.content.toLowerCase().includes("[26 dps]")) {
+ if (message.content.toLowerCase().includes("[26 dps]")) {
             message.channel.send(`Don't justify these peons with a response
                 Tips. They're probably a bunch of trash private server gamers
                 who will never amount to anything in retail classic. I bet
