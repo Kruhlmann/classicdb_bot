@@ -14,7 +14,7 @@
 To invite the bot press [this link](https://discordapp.com/oauth2/authorize?client_id=545640068056875048&scope=bot&permissions=0) as the server owner. Invite the bot to the server of your choice and, if necessary, promote it to allow for posting in your desired channel(s).
 
 ### Local setup
-If you want to run your own instance of the bot the following packages are required:
+If you want to run your own instance of the bot the following packages are required (only tested on Ubuntu 18.04 & 19.04):
 * gcc
 * autoconf
 * libtool
@@ -23,6 +23,7 @@ If you want to run your own instance of the bot the following packages are requi
 * automake
 * nodejs
 * npm
+* zlib1g-dev `debian based systems`
 
 The following packages are reccomended:
 * sqlite3
