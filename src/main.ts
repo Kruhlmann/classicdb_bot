@@ -44,18 +44,21 @@ process.on("unhandledRejection", (e: Error) => handle_exception(e));
     // On message recieved behavior.
     discord_client.on("message", async (message) => {
         const author = `${message.author.username}@${message.author.id}`;
-        const channel_identitiy = get_channel_identity(message.channel, author);
+        const channel_identity = get_channel_identity(message.channel, author);
 
         // Replace code markdown content.
         message.content = message.content.replace(/`{1}[^`]+`{1}/g, "");
         message.content = message.content.replace(/`{3}[^`]+`{3}/g, "");
 
-        await DatabaseHandler.register_guild(channel_identitiy.guild_id);
+        await DatabaseHandler.register_guild(channel_identity.guild_id);
         if (message.content.startsWith(`<@!${discord_client.user.id}>`)) {
             const command = message.content.split(" ")[1];
             if (command) {
-                const resp = await execute(command, message, channel_identitiy);
+                const resp = await execute(command, message, channel_identity);
                 message.channel.send(resp);
+                log(`User ${message.author.id} requested to execute command
+                    ${command} with owner ${channel_identity.owner_id}`
+                    , LoggingLevel.DEV);
                 return;
             }
         }
@@ -68,13 +71,13 @@ process.on("unhandledRejection", (e: Error) => handle_exception(e));
                 in 2019 lul. Try talking to him when your guild can do a 3 hour
                 MC losers.`);
             log("Sent [26 dps] tips meme:", LoggingLevel.DEV);
-            log(`\tServer:  ${channel_identitiy.guild_name}`, LoggingLevel.DEV);
-            log(`\tChannel: ${channel_identitiy.name}`, LoggingLevel.DEV);
+            log(`\tServer:  ${channel_identity.guild_name}`, LoggingLevel.DEV);
+            log(`\tChannel: ${channel_identity.name}`, LoggingLevel.DEV);
             log(`\tRequested by: ${message.author.username}`, LoggingLevel.DEV);
             return;
         }
 
-        const gp = await DatabaseHandler.get_parser(channel_identitiy.guild_id);
+        const gp = await DatabaseHandler.get_parser(channel_identity.guild_id);
         current_parser = gp === "classicdb"
             ? classicdb_parser
             : itemization_parser;
@@ -94,8 +97,8 @@ process.on("unhandledRejection", (e: Error) => handle_exception(e));
             message.channel.send({embed: embed_msg}).catch(handle_exception);
         }
         log("Sent item tooltip:", LoggingLevel.DEV);
-        log(`\tServer:  ${channel_identitiy.guild_name}`, LoggingLevel.DEV);
-        log(`\tChannel: ${channel_identitiy.name}`, LoggingLevel.DEV);
+        log(`\tServer:  ${channel_identity.guild_name}`, LoggingLevel.DEV);
+        log(`\tChannel: ${channel_identity.name}`, LoggingLevel.DEV);
         log(`\tRequested by: ${message.author.username}`, LoggingLevel.DEV);
     });
 

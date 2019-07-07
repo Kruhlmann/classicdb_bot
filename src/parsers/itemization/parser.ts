@@ -106,9 +106,17 @@ function build_discord_message(query: ItemizationQuery,
         .setURL(`https://itemization.info/item/${item.ID}`)];
 }
 
+/**
+ * @class itemization.info parser instance.
+ */
 export class ItemizationParser implements Parser {
-
-    public async respond_to(message: string) {
+    /**
+     * Determines the appropriate response to a user message (if any).
+     *
+     * @param message - Message to respond to.
+     * @returns - Messages to send the the given channel.
+     */
+    public async respond_to(message: string): Promise<RichEmbed[]|undefined> {
         const query = get_item_request(message);
         if (!query.item || query.item === "") {
             return;
