@@ -16,7 +16,14 @@ import { ItemizationItemMeta,
          Parser} from "../../typings/types.js";
 import message_helper from "./message_helpers";
 
-
+/**
+ * Compiles information about an item into a description tooltip fit for a
+ * RuchEmbed discord message.
+ *
+ * @param im - Item metadata.
+ * @param patch - Patch if different from latest.
+ * @returns - Newline seperated string with item properties.
+ */
 function item_to_message_desc(im: ItemizationItemMeta, patch?: string): string {
     const item_liststing = [im.Current, ...im.Previous];
     const found_patched_item = item_liststing.find((i) => i.Patch === patch);
@@ -57,7 +64,12 @@ export function get_item_request(message_content: string): ItemizationQuery {
     return {item: null, patch: null};
 }
 
-function fetch_items(query: ItemizationQuery) {
+/**
+ * Queries the itemization.info API for items based on a user query.
+ *
+ * @param query - User query.
+ */
+function fetch_items(query: ItemizationQuery): request.RequestPromise {
     return request({
         body: {
             apiKey: config.itemization_token,
@@ -69,6 +81,13 @@ function fetch_items(query: ItemizationQuery) {
     });
 }
 
+/**
+ * Constructs a RichEmbed array based on an item.
+ *
+ * @param query - User query information.
+ * @param item - Item requested.
+ * @returns - List of messages to send based on user query.
+ */
 function build_discord_message(query: ItemizationQuery,
                                item: ItemizationItemMeta,
                                ): RichEmbed[] {
