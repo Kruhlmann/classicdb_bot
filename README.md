@@ -11,6 +11,8 @@
 
 ## Setup
 
+[![Connect to discord](connect.png)](https://discordapp.com/oauth2/authorize?client_id=545640068056875048&scope=bot&permissions=0)
+
 To invite the bot press [this link](https://discordapp.com/oauth2/authorize?client_id=545640068056875048&scope=bot&permissions=0) as the server owner. Invite the bot to the server of your choice and, if necessary, promote it to allow for posting in your desired channel(s).
 
 ### Local setup
