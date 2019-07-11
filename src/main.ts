@@ -56,9 +56,7 @@ process.on("unhandledRejection", (e: Error) => handle_exception(e));
             if (command) {
                 const resp = await execute(command, message, channel_identity);
                 message.channel.send(resp);
-                log(`User ${message.author.id} requested to execute command
-                    ${command} with owner ${channel_identity.owner_id}`
-                    , LoggingLevel.DEV);
+                log(`User ${message.author.id} requested to execute command ${command} with owner ${channel_identity.owner_id}`, LoggingLevel.DEV);
                 return;
             }
         }

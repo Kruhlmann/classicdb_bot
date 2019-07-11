@@ -5,22 +5,31 @@
  */
 
 import * as sentry from "@sentry/node";
+import * as fs from "fs";
+import * as path from "path";
 import * as config from "../config.json";
 import { LoggingLevel } from "./typings/types.js";
+
+const months = [
+    "January", "February", "March",
+    "April", "May", "June", "July",
+    "August", "September", "October",
+    "November", "December",
+];
 
 // Used for outputting formatted logs.
 const logging_formats = {
     [LoggingLevel.DEV]: (msg: string, time: string) => {
-        return `\x1b[32m[DEV] [${time}] ${msg}\x1b[0m`;
+        return `[\x1b[32mDEV\x1b[0m] [\x1b[36m${time}\x1b[0m] ${msg}`;
     },
     [LoggingLevel.INF]: (msg: string, time: string) => {
-        return `\x1b[37m[INF] [${time}] ${msg}\x1b[0m`;
+        return `[\x1b[37mINF\x1b[0m] [\x1b[36m${time}\x1b[0m] ${msg}`;
     },
     [LoggingLevel.WAR]: (msg: string, time: string) => {
-        return `\x1b[33m[WAR] [${time}] ${msg}\x1b[0m`;
+        return `[\x1b[33mWAR\x1b[0m] [\x1b[36m${time}\x1b[0m] ${msg}`;
     },
     [LoggingLevel.ERR]: (msg: string, time: string) => {
-        return `\x1b[1m\x1b[31m[ERR] [${time}] ${msg}\x1b[0m`;
+        return `[\x1b[1m\x1b[31mERR\x1b[0m] [\x1b[36m${time}\x1b[0m] ${msg}`;
     },
 };
 
@@ -50,9 +59,20 @@ export function log(message: string, level: LoggingLevel = LoggingLevel.INF) {
     if (config.deployment_mode === "production" && level === LoggingLevel.DEV) {
         return;
     }
-    const now = new Date().toLocaleString(config.locale || "en-GB", {
+    const now = new Date();
+    const now_locale = now.toLocaleString(config.locale || "en-GB", {
         timeZone: config.time_zone || "UTC",
     });
+    const formatted_message = logging_formats[level](message, now_locale);
+    const d = `${months[now.getMonth()]}_${now.getDate()}_${now.getFullYear()}`;
+    const log_path = path.resolve(__dirname, `../../logs/${d}.log`);
+
+    if (!fs.existsSync(log_path)) {
+        const header = `# LOGS FOR ${config.deployment_mode.toUpperCase()} #\n`;
+        fs.writeFileSync(log_path, header);
+    }
+
     // tslint:disable-next-line: no-console
-    console.log(logging_formats[level](message, now));
+    console.log(formatted_message);
+    fs.appendFileSync(log_path, `${formatted_message}\n`);
 }

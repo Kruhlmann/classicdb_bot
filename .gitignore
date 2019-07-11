@@ -9,3 +9,5 @@ dist
 db/*
 !db/example_db.db
 .nyc_output
+logs/*
+!logs/.gitkeep
