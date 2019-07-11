@@ -51,7 +51,7 @@ process.on("unhandledRejection", (e: Error) => handle_exception(e));
         message.content = message.content.replace(/`{3}[^`]+`{3}/g, "");
 
         await DatabaseHandler.register_guild(channel_identity.guild_id);
-        if (message.content.startsWith(`<@!${discord_client.user.id}>`)) {
+        if (message.isMentioned(discord_client.user)) {
             const command = message.content.split(" ")[1];
             if (command) {
                 const resp = await execute(command, message, channel_identity);
