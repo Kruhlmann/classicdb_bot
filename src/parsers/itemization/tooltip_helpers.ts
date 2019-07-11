@@ -85,11 +85,15 @@ export default class ItemizationItemTooltipHelpers {
      */
     public static stats(i: ItemizationItem): string {
         let result = "";
-        for (const stat of Object.keys(i.Stats) || []) {
-            result += `+${i.Stats[stat]} ${stat}\n`;
+        if (i.Stats) {
+            for (const stat of Object.keys(i.Stats)) {
+                result += `+${i.Stats[stat]} ${stat}\n`;
+            }
         }
-        for (const resistance of Object.keys(i.Resists) || []) {
-            result += `+${i.Resists[resistance]} ${resistance} Resistance\n`;
+        if (i.Resists) {
+            for (const resistance of Object.keys(i.Resists)) {
+                result += `+${i.Resists[resistance]} ${resistance} Resistance\n`;
+            }
         }
         return result;
     }
