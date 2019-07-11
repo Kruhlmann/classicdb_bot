@@ -64,12 +64,7 @@ process.on("unhandledRejection", (e: Error) => handle_exception(e));
         }
 
         if (message.content.toLowerCase().includes("[26 dps]")) {
-            message.channel.send(`Don't justify these peons with a response
-                Tips. They're probably a bunch of trash private server gamers
-                who will never amount to anything in retail classic. I bet
-                they're in raiding guilds who don't bring 8 mages to every raid
-                in 2019 lul. Try talking to him when your guild can do a 3 hour
-                MC losers.`);
+            message.channel.send(`Don't justify these peons with a response Tips. They're probably a bunch of trash private server gamers who will never amount to anything in retail classic. I bet they're in raiding guilds who don't bring 8 mages to every raid in 2019 lul. Try talking to him when your guild can do a 3 hour MC losers.`);
             log("Sent [26 dps] tips meme:", LoggingLevel.DEV);
             log(`\tServer:  ${channel_identity.guild_name}`, LoggingLevel.DEV);
             log(`\tChannel: ${channel_identity.name}`, LoggingLevel.DEV);
