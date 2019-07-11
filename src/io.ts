@@ -56,9 +56,6 @@ export function handle_exception(error: Error | string) {
  * @param message - Message to log.
  */
 export function log(message: string, level: LoggingLevel = LoggingLevel.INF) {
-    if (config.deployment_mode === "production" && level === LoggingLevel.DEV) {
-        return;
-    }
     const now = new Date();
     const now_locale = now.toLocaleString(config.locale || "en-GB", {
         timeZone: config.time_zone || "UTC",
@@ -72,7 +69,11 @@ export function log(message: string, level: LoggingLevel = LoggingLevel.INF) {
         fs.writeFileSync(log_path, header);
     }
 
-    // tslint:disable-next-line: no-console
-    console.log(formatted_message);
+    // Don't show debug messages in the stdout, only in the log.
+    if (config.deployment_mode !== "production" && level !== LoggingLevel.DEV) {
+        // tslint:disable-next-line: no-console
+        console.log(formatted_message);
+    }
+
     fs.appendFileSync(log_path, `${formatted_message}\n`);
 }
