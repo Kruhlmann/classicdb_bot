@@ -9,7 +9,7 @@ module.exports = {
         SharedArrayBuffer: "readonly"
     },
     parserOptions: {
-        ecmaVersion: 2018,
+        ecmaVersion: 2019,
         project: "./tsconfig.json",
         sourceType: "module"
     },
@@ -34,6 +34,5 @@ module.exports = {
     plugins: ["@typescript-eslint"],
     extends: [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended",
     ],
 };
