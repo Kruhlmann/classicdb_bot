@@ -24,9 +24,7 @@ Typing a partial name will result in the first item avaliable being fetched.
 
 As such typing `[thunder]` will result in the following output:
 
-<p align="center">
-  <img src="showcase.png" />
-</p>
+![Showcase](showcase.png)
 
 ### Local setup
 
