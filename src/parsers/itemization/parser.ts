@@ -161,7 +161,6 @@ export class ItemizationParser implements Parser {
 
         db.register_query(`${item.ID}`,
                           msg.guild.id,
-                          msg.guild.name,
                           "itemization");
 
         return build_discord_message(query, item);

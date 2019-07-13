@@ -11,12 +11,12 @@ import * as sqlite from "sqlite";
 
 import * as config from "../config.json";
 
-import { handle_exception, log } from "./io";
+import { log } from "./io";
 import { LoggingLevel } from "./typings/types";
 
 // SQLite DB object.
-let db: sqlite.Database;
-let connected = false;
+export let db: sqlite.Database;
+export let connected = false;
 
 /**
  * Opens a connection to the database file.
@@ -55,20 +55,29 @@ export async function connect(database_path: string): Promise<void> {
  * purposes.
  *
  * @async
- * @param query - The user query
  * @param item_id - ID of found item
  * @param server_id - Discord guild ID
- * @param server_name - Discord guild name.
  * @param parser - String identifier of used parser (same format as in the
  * `guild_configs`).
  */
 export async function register_query(item_id: string,
                                      server_id: string,
-                                     server_name: string,
                                      parser: string): Promise<void> {
-    const row = [item_id, server_id, server_name, parser];
-    const sql_query = "INSERT INTO queries VALUES (?, ?, ?, ?)";
-    await db.run(sql_query, row);
+    // tslint:disable-next-line: max-line-length
+    const exists_q = "SELECT EXISTS(SELECT 1 FROM queries WHERE server_id=? AND item_id=?) AS exi";
+    type t = {exi: number};
+    const exists = await db.get(exists_q,
+                                [server_id, item_id],
+                                ).then((r: t) => r.exi);
+
+    if (exists) {
+        // tslint:disable-next-line: max-line-length
+        const q = "UPDATE queries SET hits = hits + 1 WHERE server_id=? AND item_id=?";
+        await db.run(q, [server_id, item_id]);
+    } else {
+        const q = "INSERT INTO queries VALUES (?, ?, ?, 1)";
+        await db.run(q, [item_id, server_id, parser]);
+    }
 }
 
 /**
@@ -107,8 +116,8 @@ export async function set_parser(guild: Guild, parser: string): Promise<void> {
 export async function table_exists(table_name: string): Promise<boolean> {
     // tslint:disable-next-line: max-line-length
     const q = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=?";
-    type t = {["COUNT(*)"]: string};
-    return db.get(q, [table_name]).then((r: t) => r["COUNT(*)"] !== "0");
+    type t = {["COUNT(*)"]: number};
+    return db.get(q, [table_name]).then((r: t) => r["COUNT(*)"] !== 0);
 }
 
 /**
