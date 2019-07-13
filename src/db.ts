@@ -46,8 +46,8 @@ export async function connect(database_path: string): Promise<void> {
     const migration_options = config.deployment_mode === "development"
         ? {force: "last"}
         : {};
-    log ("Database migrated succeessfully", LoggingLevel.DEV);
     await db.migrate(migration_options);
+    log ("Database migrated succeessfully", LoggingLevel.DEV);
 }
 
 /**
@@ -120,9 +120,9 @@ export async function table_exists(table_name: string): Promise<boolean> {
  */
 export async function guild_exists(guild_id: string): Promise<boolean> {
     // tslint:disable-next-line: max-line-length
-    const q = "SELECT EXISTS(SELECT '1' FROM guild_configs WHERE id=? ) AS guild_exists";
-    type t = {guild_exists: string};
-    return db.get(q, [guild_id]).then((row: t) => row.guild_exists === "1");
+    const q = "SELECT EXISTS(SELECT '1' FROM guild_configs WHERE id=? ) AS exi";
+    type t = {exi: number};
+    return db.get(q, [guild_id]).then((row: t) => row.exi === 1);
 }
 
 /**
