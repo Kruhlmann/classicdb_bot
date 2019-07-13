@@ -4,11 +4,13 @@
  * @since 1.2.0
  */
 
-import { DMChannel, GroupDMChannel, Message, TextChannel } from "discord.js";
+import { DMChannel, GroupDMChannel, Guild, Message, TextChannel } from "discord.js";
 import * as request from "request-promise";
+
 import * as config from "../config.json";
+
 import { avaliable_parsers } from "./consts.js";
-import { DatabaseHandler } from "./db.js";
+import * as db from "./db.js";
 import { ChannelIdentity,
          CharacterClass,
          ItemQuality } from "./typings/types.js";
@@ -124,27 +126,26 @@ export function get_channel_identity(channel: TextChannel
 
 export async function execute(command_name: string,
                               message: Message,
-                              channel_identity: ChannelIdentity,
+                              guild: Guild,
                               ): Promise<string> {
-    const guild_id = channel_identity.guild_id;
-    const help_text =  `**Avaliable commands:**\`\`\`css\n`
-                       + `help:                               `
-                       + `- Displays this text.\n`
-                       + `set_parser: <classicdb|itemization>`
-                       + ` - Changes the parser of the bot.`
-                       + `\`\`\``;
+    const help_text =  "**Avaliable commands:**```css\n"
+                       + "help:                               "
+                       + "- Displays this text.\n"
+                       + "set_parser: <classicdb|itemization>"
+                       + " - Changes the parser of the bot."
+                       + "```";
     switch (command_name) {
         case "set_parser":
-            if (channel_identity.owner_id !== message.author.id) {
+            if (guild.ownerID !== message.author.id) {
                 return "Only the owner is allowed to change this.";
             }
             const parser = message.content.split(" ")[2];
             if (!parser || !avaliable_parsers.includes(parser)) {
                 return "Avaliable parsers are `classicdb` and `itemization`.";
             }
-            return DatabaseHandler.set_guild_parser(guild_id, parser)
+            return db.set_parser(guild, parser)
                 .then(() => `Updated parser to \`${parser}\`.`)
-                .catch(() => `An error occurred while updating parser.`);
+                .catch(() => "An error occurred while updating parser.");
         case "help":
             return help_text;
         default:
@@ -166,9 +167,8 @@ export async function fetch_thumbnail(id: string,
     const html = await request(url);
     // Find the JavaScript line with "Icon.create" in from which the item
     // identifier can be extracted.
-    const split_dom = html.split("\n").filter((html_stub: string) => {
-        return html_stub.includes("Icon.create");
-    }) || [];
+    const split_dom = html.split("\n").filter((html_stub: string) =>
+        html_stub.includes("Icon.create")) || [];
     if (split_dom.length < 1) {
         return "";
     }
@@ -180,8 +180,8 @@ export async function fetch_thumbnail(id: string,
 /**
  * Tests whether a string is a representation of a numerical integet.
  *
- * @param {string} str - String to test.
- * @returns {boolean} - True if string represents a numerical integer.
+ * @param str - String to test.
+ * @returns - True if string represents a numerical integer.
  */
 export function is_string_numerical_int(str: string): boolean {
     const type_string = typeof str === "string";

@@ -4,7 +4,7 @@
  * @since 1.2.0
  */
 
-import { RichEmbed } from "discord.js";
+import { Message, RichEmbed } from "discord.js";
 import { Effect } from "../parsers/classicdb/effect";
 
 export interface ParsedTooltip {
@@ -66,7 +66,7 @@ export interface ParserQuery {
 }
 
 export interface Parser {
-    respond_to: (query: string) => Promise<RichEmbed[]>;
+    respond_to(query: Message): Promise<RichEmbed[]>;
 }
 
 export interface QuestImplementable {
@@ -95,7 +95,7 @@ export interface ItemImplementable {
     armor?: number;
     equipment_slot?: string;
     equipment_type?: string;
-    damage_range?: {low: number, high: number};
+    damage_range?: {low: number; high: number};
     swing_speed?: number;
     dps?: number;
     flavor_text?: string;

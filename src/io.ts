@@ -46,6 +46,7 @@ export function handle_exception(error: Error | string) {
     if (config.deployment_mode === "production") {
         sentry.captureException(error);
     } else {
+        console.log(error)
         log(`${error.stack}`, LoggingLevel.ERR);
     }
 }
@@ -69,8 +70,7 @@ export function log(message: string, level: LoggingLevel = LoggingLevel.INF) {
         fs.writeFileSync(log_path, header);
     }
 
-    // Don't show debug messages in the stdout, only in the log.
-    if (config.deployment_mode !== "production" && level !== LoggingLevel.DEV) {
+    if (config.deployment_mode !== "production" || level !== LoggingLevel.DEV) {
         // tslint:disable-next-line: no-console
         console.log(formatted_message);
     }

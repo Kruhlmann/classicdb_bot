@@ -4,13 +4,14 @@
  * @since 1.2.0
  */
 
-import { RichEmbed } from "discord.js";
+import { Message, RichEmbed } from "discord.js";
 import * as request from "request-promise";
 import * as config from "../../../config.json";
 import { discord_href,
          discord_icon,
          favicon_path,
          quality_colors_itemization } from "../../consts.js";
+import * as db from "../../db.js";
 import { ItemizationItemMeta,
          ItemizationQuery,
          Parser} from "../../typings/types.js";
@@ -107,7 +108,7 @@ function build_discord_message(query: ItemizationQuery,
 }
 
 /**
- * @class itemization.info parser instance.
+ * itemization.info parser instance.
  */
 export class ItemizationParser implements Parser {
     /**
@@ -116,12 +117,14 @@ export class ItemizationParser implements Parser {
      * @param message - Message to respond to.
      * @returns - Messages to send the the given channel.
      */
-    public async respond_to(message: string): Promise<RichEmbed[]|undefined> {
-        const query = get_item_request(message);
+    public async respond_to(msg: Message): Promise<RichEmbed[] | undefined> {
+        const query = get_item_request(msg.content);
         if (!query.item || query.item === "") {
-            return;
+            return undefined;
         }
-        const items = await fetch_items(query);
+
+        // tslint:disable-next-line: await-promise
+        const items = await fetch_items(query) as ItemizationItemMeta[];
         const item: ItemizationItemMeta = items[0] || null;
 
         if (!item) {
@@ -142,9 +145,8 @@ export class ItemizationParser implements Parser {
             }];
         }
 
-        const item_had_patch_data = !item.Previous.find((i) => {
-            return i.Patch === query.patch;
-        }) && item.Current.Patch !== query.patch;
+        const item_had_patch_data = !item.Previous.find((i) =>
+            i.Patch === query.patch) && item.Current.Patch !== query.patch;
 
         if (query.patch && item_had_patch_data) {
             let suffix = `**[${item.Current.Name}]**\n`;
@@ -156,6 +158,11 @@ export class ItemizationParser implements Parser {
                 + `**\`${query.patch}\`**. The item has data for the following `
                 + `patch entries:\n\n${suffix}`)];
         }
+
+        db.register_query(`${item.ID}`,
+                          msg.guild.id,
+                          msg.guild.name,
+                          "itemization");
 
         return build_discord_message(query, item);
     }

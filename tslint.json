@@ -1,33 +1,103 @@
 {
-    "extends": "tslint:recommended",
+    "extends": ["tslint:all"],
     "rules": {
-        "max-line-length": {
-            "options": [80]
-        },
         "new-parens": true,
+        "no-import-side-effect": false,
         "no-arg": true,
-        "no-bitwise": true,
+        "no-bitwise": false,
         "no-conditional-assignment": true,
         "no-consecutive-blank-lines": false,
-        "no-unused-variable": true,
-        "no-var-requires": true,
-        "semicolon": true,
-        "no-duplicate-variable": true,
-        "no-eval": true,
-        "interface-name": [true, "never-prefix"],
-        "eofline": true,
-        "quotemark": [true, "quotemark"],
-        "variable-name": [
-            true,
-            "require-const-for-all-caps",
-            "ban-keywords",
-            "allow-trailing-underscore"
-        ],
-        "no-inferrable-types": true,
-        "curly": true,
         "no-console": {
             "severity": "warning",
-            "options": ["debug", "info", "log", "time", "timeEnd", "trace"]
-        }
+            "options": [
+                "debug",
+                "info",
+                "log",
+                "time",
+                "timeEnd",
+                "trace"
+            ]
+        },
+        "no-floating-promises": false,
+        "no-unused-variable": false,
+        "no-submodule-imports": false,
+        "no-null-keyword": false,
+        "newline-before-return": false,
+        "no-any": false,
+        "no-magic-numbers": false,
+        "interface-over-type-literal": false,
+        "no-parameter-properties": false,
+        "no-parameter-reassignment": false,
+        "no-require-imports": false,
+        "newline-per-chained-call": false,
+        "semicolon": [true, "always"],
+        "max-line-length": { "options": [80] },
+        "prefer-function-over-method": [false],
+        "strict-boolean-expressions": false,
+        "no-inferrable-types": false,
+        "file-name-casing": [true, "snake-case"],
+        "ban-ts-ignore": false,
+        "increment-decrement": false,
+        "promise-function-async": true,
+        "ban-types": [true, ["async", "Use Promises instead, it add a lot to bundle size."]],
+        "comment-format": [true, "check-space"],
+        "variable-name": [
+            true,
+            "ban-keywords",
+            "check-format",
+            "allow-leading-underscore",
+            "allow-snake-case"
+        ],
+        "completed-docs": [
+            true,
+            {
+            "classes": {
+                "tags": {
+                "content": {},
+                "existence": ["inheritDoc", "hidden"]
+                }
+            },
+            "enum-members": {
+                "tags": {
+                "content": {},
+                "existence": ["inheritDoc", "hidden"]
+                }
+            },
+            "functions": {
+                "tags": {
+                "content": {},
+                "existence": ["inheritDoc", "hidden"]
+                }
+            },
+            "interfaces": {
+                "tags": {
+                "content": {},
+                "existence": ["inheritDoc", "hidden"]
+                }
+            },
+            "methods": {
+                "tags": {
+                "content": {},
+                "existence": ["inheritDoc", "hidden"]
+                }
+            },
+            "properties": {
+                "tags": {
+                "content": {},
+                "existence": ["inheritDoc", "hidden"]
+                },
+                "locations": "instance"
+            }
+            }
+        ],
+        "interface-name": [true, "never-prefix"],
+        "member-ordering": [true, "statics-first"],
+        "only-arrow-functions": [true, "allow-named-functions"],
+        "typedef": [true, "call-signature", "parameter", "property-declaration", "member-variable-declaration"],
+        "naming-convention": [
+            true,
+            { "type": "member", "modifiers": "protected", "leadingUnderscore": "require" },
+            { "type": "member", "modifiers": "private", "leadingUnderscore": "require" }
+        ]
     }
 }
