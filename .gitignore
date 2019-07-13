@@ -6,8 +6,7 @@ config.json
 npm-debug.log
 dist
 .secret
-db/*
-!db/example_db.db
+db
 .nyc_output
 logs/*
 !logs/.gitkeep

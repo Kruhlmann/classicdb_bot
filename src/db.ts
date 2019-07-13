@@ -94,7 +94,7 @@ export async function get_parser(guild_id: string): Promise<string> {
 export async function set_parser(guild: Guild, parser: string): Promise<void> {
     log(`Changing parser to ${parser} for guild ${guild.name}`);
     const q = "UPDATE guild_configs SET parser=? WHERE id=?";
-    await db.run(q, [guild.id, parser]);
+    await db.run(q, [parser, guild.id]);
 }
 
 /**
@@ -134,8 +134,8 @@ export async function guild_exists(guild_id: string): Promise<boolean> {
 export async function register_guild(guild: Guild): Promise<void> {
     const exists = await guild_exists(guild.id);
     if (! exists) {
-        const q = "INSERT INTO guild_configs VALUES (?, 'classicdb', 0, ?)";
-        await db.run(q, [guild.id, guild.iconURL]);
+        const q = "INSERT INTO guild_configs VALUES (?, 'classicdb', 0, ?, ?)";
+        await db.run(q, [guild.id, guild.iconURL, guild.name]);
     }
 }
 
@@ -147,5 +147,6 @@ export async function register_guild(guild: Guild): Promise<void> {
  */
 export async function update_guild(guild: Guild): Promise<void> {
     await register_guild(guild);
-    await db.run("UPDATE guild_configs SET icon=?", [guild.iconURL]);
+    await db.run("UPDATE guild_configs SET icon=?, name=? WHERE id=?",
+                 [guild.iconURL, guild.name, guild.id]);
 }

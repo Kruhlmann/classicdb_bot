@@ -40,6 +40,4 @@ The following packages are reccomended:
 * sqlite3
 * pm2 `npm i -g pm2`
 
-You can copy the [example database](db/example_db.db) or create your own with `sqlite3`. (Remember to specify the path of the database in the config file.)
-
-Likewise you must rename [config.json.example](config.json.example) to `config.json` and fill it in with the required details.
+You must rename [config.json.example](config.json.example) to `config.json` and fill it in with the required details.
