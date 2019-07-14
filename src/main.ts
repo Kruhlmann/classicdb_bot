@@ -121,6 +121,11 @@ Requires Fury-Defiance specialization
             ? classicdb_parser
             : itemization_parser;
 
+        if (message.content.toLowerCase().includes("[nekrage]")) {
+            message.content = "[Alex's Ring of Audacity]";
+            current_parser = classicdb_parser;
+        }
+
         if (message.content.includes("(classicdb)")) {
             current_parser = classicdb_parser;
         } else if (message.content.includes("(itemization)")) {
