@@ -117,7 +117,7 @@ Requires Fury-Defiance specialization
 
         if (message.content.toLowerCase().includes("[unsubdued big wepan]")) {
             const unsubdued_wepan = new discord.RichEmbed()
-                .setColor(0xFF8000)
+                .setColor(0xA335EE)
                 .setTitle("The Unsubdued Big wEpan")
                 .setDescription(`Binds when picked up
 Two-handed Sowrd (alliance bis btw)
@@ -132,9 +132,9 @@ Requires Autism Level Oliver
                 .setAuthor("Classic DB Bot (itemization.info)",
                            favicon_path,
                            discord_href)
-                .setThumbnail("https://itemization.info/icons/inv_sword_39.png")
+                .setThumbnail("https://itemization.info/icons/inv_sword_50.png")
                 .setFooter("https://discord.gg/mRUEPnp", discord_icon)
-                .setURL("https://itemization.info/item/19019");
+                .setURL("https://itemization.info/item/19334");
             message.channel.send(unsubdued_wepan);
             log("Sent sunderfury meme:", LoggingLevel.DEV);
             log(`\tServer:  ${channel_identity.guild_name}`, LoggingLevel.DEV);
