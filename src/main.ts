@@ -100,7 +100,7 @@ Unique
 Durability 125/125
 Requires Fury-Defiance specialization
 **Chance on hit: Blast your enemies with a fat weapon increasing the SPM of the wielder. Each jump provides 1 point in unleashed rush, stacking up to five times.**
-**Equip: Do 20 cleaves in one MC**`)
+**Equip: Do 20 cleaves in one MC.**`)
                 .setAuthor("Classic DB Bot (itemization.info)",
                            favicon_path,
                            discord_href)
@@ -113,6 +113,33 @@ Requires Fury-Defiance specialization
             log(`\tChannel: ${channel_identity.name}`, LoggingLevel.DEV);
             log(`\tRequested by: ${message.author.username}`, LoggingLevel.DEV);
             return;
+        }
+
+        if (message.content.toLowerCase().includes("[unsubdued big wepan]")) {
+            const unsubdued_wepan = new discord.RichEmbed()
+                .setColor(0xFF8000)
+                .setTitle("The Unsubdued Big wEpan")
+                .setDescription(`Binds when picked up
+Two-handed Sowrd (alliance bis btw)
+**Spead 3.22**
+**192 - 289 = DamAges**
+**(70.7 big damages per hour)**
+-22 IQ
++16 Thonking
+Durability 120/120
+Requires Autism Level Oliver
+**Chance on hit: Geberates 300 Damages for every Stronk Slam used.**`)
+                .setAuthor("Classic DB Bot (itemization.info)",
+                           favicon_path,
+                           discord_href)
+                .setThumbnail("https://itemization.info/icons/inv_sword_39.png")
+                .setFooter("https://discord.gg/mRUEPnp", discord_icon)
+                .setURL("https://itemization.info/item/19019");
+            message.channel.send(unsubdued_wepan);
+            log("Sent sunderfury meme:", LoggingLevel.DEV);
+            log(`\tServer:  ${channel_identity.guild_name}`, LoggingLevel.DEV);
+            log(`\tChannel: ${channel_identity.name}`, LoggingLevel.DEV);
+            log(`\tRequested by: ${message.author.username}`, LoggingLevel.DEV);
             return;
         }
 
