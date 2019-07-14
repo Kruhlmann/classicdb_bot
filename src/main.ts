@@ -52,10 +52,11 @@ process.on("unhandledRejection", handle_exception);
         log(`Started classicdb_bot in ${config.deployment_mode} mode`);
     });
 
-    // On message recieved behavior.
+    // On message received behavior.
     discord_client.on("message", async (message) => {
         const author = `${message.author.username}@${message.author.id}`;
         const channel_identity = get_channel_identity(message.channel, author);
+        db.update_guild(message.guild);
 
         // Replace code markdown content.
         message.content = message.content.replace(/`{1}[^`]+`{1}/g, "");
