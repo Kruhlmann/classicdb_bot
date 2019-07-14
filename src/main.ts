@@ -136,7 +136,7 @@ Requires Autism Level Oliver
                 .setFooter("https://discord.gg/mRUEPnp", discord_icon)
                 .setURL("https://itemization.info/item/19334");
             message.channel.send(unsubdued_wepan);
-            log("Sent sunderfury meme:", LoggingLevel.DEV);
+            log("Sent big wepan meme:", LoggingLevel.DEV);
             log(`\tServer:  ${channel_identity.guild_name}`, LoggingLevel.DEV);
             log(`\tChannel: ${channel_identity.name}`, LoggingLevel.DEV);
             log(`\tRequested by: ${message.author.username}`, LoggingLevel.DEV);
