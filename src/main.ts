@@ -9,6 +9,7 @@ import * as discord from "discord.js";
 
 import * as config from "../config.json";
 
+import { discord_href, discord_icon, favicon_path } from "./consts.js";
 import * as db from "./db.js";
 import { handle_exception, log } from "./io";
 import { execute, get_channel_identity } from "./lib.js";
@@ -79,6 +80,39 @@ process.on("unhandledRejection", handle_exception);
             log(`\tServer:  ${channel_identity.guild_name}`, LoggingLevel.DEV);
             log(`\tChannel: ${channel_identity.name}`, LoggingLevel.DEV);
             log(`\tRequested by: ${message.author.username}`, LoggingLevel.DEV);
+            return;
+        }
+
+        if (message.content.toLowerCase().includes("[sunderfury]")) {
+            const sunderfury_message = new discord.RichEmbed()
+                .setColor(0xFF8000)
+                .setTitle("Sunderfury, Blessed Geberator of the Haste Shill")
+                .setDescription(`Binds when picked up
+One-handed Sword
+Unique
+**Speed Fat**
+**44 - 115 Damage**
+**+16 - 30 Nature Damage**
+**(53.9 damage per second)**
++5 Virtginity
++25% Threat geberated
++9 Female Resistance
+Durability 125/125
+Requires Fury-Defiance specialization
+**Chance on hit: Blast your enemies with a fat weapon increasing the SPM of the wielder. Each jump provides 1 point in unleashed rush, stacking up to five times.**
+**Equip: Do 20 cleaves in one MC**`)
+                .setAuthor("Classic DB Bot (itemization.info)",
+                           favicon_path,
+                           discord_href)
+                .setThumbnail("https://itemization.info/icons/inv_sword_39.png")
+                .setFooter("https://discord.gg/mRUEPnp", discord_icon)
+                .setURL("https://itemization.info/item/19019");
+            message.channel.send(sunderfury_message);
+            log("Sent sunderfury meme:", LoggingLevel.DEV);
+            log(`\tServer:  ${channel_identity.guild_name}`, LoggingLevel.DEV);
+            log(`\tChannel: ${channel_identity.name}`, LoggingLevel.DEV);
+            log(`\tRequested by: ${message.author.username}`, LoggingLevel.DEV);
+            return;
             return;
         }
 
