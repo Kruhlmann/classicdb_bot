@@ -9,7 +9,11 @@
 
 ## Setup
 
-[![Connect to discord](connect.png)](https://discordapp.com/oauth2/authorize?client_id=545640068056875048&scope=bot&permissions=0)
+<p align="center">
+  <a href="https://discordapp.com/oauth2/authorize?client_id=545640068056875048&scope=bot&permissions=0">
+    <img src="connect.png" />
+  </a>
+</p>
 
 To invite the bot click [this link](https://discordapp.com/oauth2/authorize?client_id=545640068056875048&scope=bot&permissions=0) (or the image above) as the server owner. Invite the bot to the server of your choice and, if necessary, promote it to allow for posting in your desired channel(s).
 
@@ -20,7 +24,7 @@ Typing a partial name will result in the first item avaliable being fetched.
 
 As such typing `[thunder]` will result in the following output:
 
-![Output showcase](showcase.png)
+![Showcase](showcase.png)
 
 ### Local setup
 
