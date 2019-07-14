@@ -7,6 +7,7 @@
 import { Guild } from "discord.js";
 import * as fs from "fs";
 import * as path from "path";
+import * as request from "request-promise";
 import * as sqlite from "sqlite";
 
 import * as config from "../config.json";
@@ -144,7 +145,7 @@ export async function register_guild(guild: Guild): Promise<void> {
     const exists = await guild_exists(guild.id);
     if (! exists) {
         const q = "INSERT INTO guild_configs VALUES (?, 'classicdb', 0, ?, ?)";
-        await db.run(q, [guild.id, guild.iconURL, guild.name]);
+        await db.run(q, [guild.id, path.basename(guild.iconURL), guild.name]);
     }
 }
 
@@ -155,7 +156,22 @@ export async function register_guild(guild: Guild): Promise<void> {
  * @param guild - Guild to update.
  */
 export async function update_guild(guild: Guild): Promise<void> {
+    update_guild_icon(guild);
     await register_guild(guild);
     await db.run("UPDATE guild_configs SET icon=?, name=? WHERE id=?",
-                 [guild.iconURL, guild.name, guild.id]);
+                 [path.basename(guild.iconURL), guild.name, guild.id]);
+}
+
+/**
+ * Fetches the icon for a guild and stores it locally.
+ *
+ * @param guild - Guild from which to fetch the icon from.
+ */
+export function update_guild_icon(guild: Guild): void {
+    const rel_path = `${config.icon_path}/${path.basename(guild.iconURL)}`;
+    const icon_path = path.resolve(__dirname, rel_path);
+    if (!fs.existsSync(icon_path)) {
+        request(guild.iconURL).pipe(fs.createWriteStream(icon_path));
+        log(`Downloaded new icon for ${guild.name}`, LoggingLevel.DEV);
+    }
 }
