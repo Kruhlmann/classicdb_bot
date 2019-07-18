@@ -168,6 +168,9 @@ export async function update_guild(guild: Guild): Promise<void> {
  * @param guild - Guild from which to fetch the icon from.
  */
 export function update_guild_icon(guild: Guild): void {
+    if (!guild.iconURL) {
+        return;
+    }
     const rel_path = `${config.icon_path}/${path.basename(guild.iconURL)}`;
     const icon_path = path.resolve(__dirname, rel_path);
     if (!fs.existsSync(icon_path)) {
