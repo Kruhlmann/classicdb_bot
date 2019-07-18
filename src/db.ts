@@ -142,10 +142,11 @@ export async function guild_exists(guild_id: string): Promise<boolean> {
  * @param guild - Guild to register.
  */
 export async function register_guild(guild: Guild): Promise<void> {
+    const icon = guild.iconURL ? path.basename(guild.iconURL) : "";
     const exists = await guild_exists(guild.id);
     if (! exists) {
         const q = "INSERT INTO guild_configs VALUES (?, 'classicdb', 0, ?, ?)";
-        await db.run(q, [guild.id, path.basename(guild.iconURL), guild.name]);
+        await db.run(q, [guild.id, icon, guild.name]);
     }
 }
 
@@ -156,10 +157,11 @@ export async function register_guild(guild: Guild): Promise<void> {
  * @param guild - Guild to update.
  */
 export async function update_guild(guild: Guild): Promise<void> {
+    const icon = guild.iconURL ? path.basename(guild.iconURL) : "";
     update_guild_icon(guild);
     await register_guild(guild);
     await db.run("UPDATE guild_configs SET icon=?, name=? WHERE id=?",
-                 [path.basename(guild.iconURL), guild.name, guild.id]);
+                 [icon, guild.name, guild.id]);
 }
 
 /**
