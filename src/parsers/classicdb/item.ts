@@ -7,6 +7,7 @@
 import * as cheerio from "cheerio";
 import { RichEmbed } from "discord.js";
 import * as request from "request-promise";
+
 import * as config from "../../../config.json";
 import { discord_href,
          discord_icon,
@@ -17,9 +18,10 @@ import { css_class_to_item_quality,
          css_class_to_player_class,
          fetch_thumbnail } from "../../lib";
 import { CharacterClass, ItemBinding } from "../../typings/types";
+
 import { Effect } from "./effect";
-import { Quest } from "./quest.js";
 import { equipment_str } from "./parser.js";
+import { Quest } from "./quest.js";
 
 export class Item {
 
@@ -67,8 +69,15 @@ export class Item {
             const regex = /[0-9]+ Armor/g;
             return ((line || "").match(regex) || []).length > 0;
         }) || "").split(" ");
+        const block_line = (html_lines.find((line) => {
+            const regex = /[0-9]+ Block/g;
+            return ((line || "").match(regex) || []).length > 0;
+        }) || "").split(" ");
         const armor = armor_line.length > 1
             ? parseInt(armor_line[0], 10)
+            : null;
+        const block = block_line.length > 1
+            ? parseInt(block_line[0], 10)
             : null;
         const level_line = (html_lines.find((line) => {
             const regex = /Requires Level [0-9]+/g;
@@ -84,9 +93,8 @@ export class Item {
         const durability = durability_line.length > 1
             ? parseInt(durability_line[1].trim(), 10)
             : null;
-        const primary_stats = html_lines.filter((line) => {
-            return line.startsWith("+") || line.startsWith("-");
-        });
+        const primary_stats = html_lines.filter((line) =>
+            line.startsWith("+") || line.startsWith("-"));
 
         const quest_a = table_contents.find("a").filter((_, a) => {
             const t = $(a).text();
@@ -121,9 +129,8 @@ export class Item {
         const swing_speed = does_damage
             ? parseFloat(swing_speed_line.split("Speed ")[1])
             : null;
-        const dps_line = html_lines.find((line) => {
-            return line.startsWith("(") && line.includes("damage per second)");
-        }) || "";
+        const dps_line = html_lines.find((line) =>
+            line.startsWith("(") && line.includes("damage per second)")) || "";
         const dps = dps_line !== ""
             ? parseFloat(dps_line.replace("(", "")
                 .replace(" damage per second)", "")
@@ -143,6 +150,7 @@ export class Item {
                         primary_stats,
                         effects,
                         armor,
+                        block,
                         equipment_slot,
                         equipment_type,
                         damage_range,
@@ -205,9 +213,10 @@ export class Item {
     public primary_stats?: string[];
     public effects?: Effect[];
     public armor?: number;
+    public block?: number;
     public equipment_slot?: string;
     public equipment_type?: string;
-    public damage_range?: {low: number, high: number};
+    public damage_range?: {low: number; high: number};
     public swing_speed?: number;
     public dps?: number;
     public flavor_text?: string;
@@ -215,7 +224,6 @@ export class Item {
     /**
      *  Constructor.
      *
-     * @constructor
      * @param id- Item id in database.
      * @param name - In-game name.
      * @param href - Database link.
@@ -231,6 +239,7 @@ export class Item {
      * elemental damage.
      * @param effects - List of associated effects.
      * @param armor - Armor value.
+     * @param block - Block value.
      * @param equipment_slot - Slot where item is equipped.
      * @param equipment_type - Type of item.
      * @param damage_range - The range of damage values the item can do.
@@ -251,9 +260,10 @@ export class Item {
                        primary_stats?: string[],
                        effects?: Effect[],
                        armor?: number,
+                       block?: number,
                        equipment_slot?: string,
                        equipment_type?: string,
-                       damage_range?: {low: number, high: number},
+                       damage_range?: {low: number; high: number},
                        swing_speed?: number,
                        dps?: number,
                        flavor_text?: string) {
@@ -271,6 +281,7 @@ export class Item {
         this.primary_stats = primary_stats;
         this.effects = effects;
         this.armor = armor;
+        this.block = block;
         this.equipment_slot = equipment_slot;
         this.equipment_type = equipment_type;
         this.damage_range = damage_range;
@@ -303,7 +314,7 @@ export class Item {
             // damage stats. Added elemental damage can still occur in the list
             // of item stats.
             ? `**${this.damage_range.low} - ${this.damage_range.high}**`
-              + ` damage every `
+              + " damage every "
               + `**${this.swing_speed}** seconds (`
               + `**${this.dps}** damage per second)\n`
             : "";
@@ -349,9 +360,8 @@ export class Item {
             // function `as_short_tooltip`.
             // Non-complex effects such as added hit % or spell power will not
             // need their own message and are kept in full.
-            ? `\n${this.effects.map((e) => {
-                    return `[${e.as_short_tooltip()}](${e.href})`;
-                }).join("\n")}`
+            ? `\n${this.effects.map((e) =>
+                    `[${e.as_short_tooltip()}](${e.href})`).join("\n")}`
             : "";
 
         return `${this.binds_on ? `${this.binds_on}\n` : ""}`
@@ -360,6 +370,7 @@ export class Item {
             + `${equipment_formatted}`
             + `${dmg_formatted}`
             + `${this.armor ? `${this.armor} Armor\n` : ""}`
+            + `${this.block ? `${this.block} Block\n` : ""}`
             + `${stats_formatted}`
             + `${durability_formatted}`
             + `${class_restrictions}`
@@ -389,8 +400,8 @@ export class Item {
             .setTitle(this.name)
             .setDescription(this.build_message_description())
             .setAuthor("Classic DB Bot (classicdb.ch)",
-                        favicon_path,
-                        discord_href)
+                       favicon_path,
+                       discord_href)
             .setThumbnail(this.thumbnail_href)
             .setFooter("https://discord.gg/mRUEPnp", discord_icon)
             .setURL(this.href), ...await effects];

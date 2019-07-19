@@ -34,6 +34,7 @@ function item_to_message_desc(im: ItemizationItemMeta, patch?: string): string {
         + message_helper.slot(item)
         + message_helper.unique(item)
         + message_helper.armor(item)
+        + message_helper.block(item)
         + message_helper.speed(item)
         + message_helper.damage(item)
         + message_helper.dps(item)

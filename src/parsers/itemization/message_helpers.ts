@@ -5,6 +5,7 @@
  */
 
 import { ItemizationItem, ItemizationItemMeta } from "../../typings/types";
+
 import tooltip_helper from "./tooltip_helpers";
 
 export default class ItemizationItemHelper {
@@ -48,6 +49,22 @@ export default class ItemizationItemHelper {
      */
     public static armor(i: ItemizationItem): string {
         return `${i.Armor ? `**${i.Armor} Armor**\n` : ""}`;
+    }
+
+    /**
+     * Returns the block value of an item.
+     *
+     * @param i - Item to parse.
+     * @returns - Block value.
+     */
+    public static block(i: ItemizationItem): string {
+        if (i.Block) {
+            if (i.Block !== i.BlockValue) {
+                return `**${i.Block} (+${i.BlockValue - i.Block}) Block**\n`;
+            }
+            return `**${i.Block} Block**\n`;
+        }
+        return "";
     }
 
     /**

@@ -7,10 +7,12 @@
 import * as cheerio from "cheerio";
 import { RichEmbed } from "discord.js";
 import * as request from "request-promise";
+
 import * as config from "../../../config.json";
 import { html_tag_regex, misc_icon } from "../../consts";
 import { fetch_thumbnail } from "../../lib";
 import { Operator } from "../../typings/types";
+
 import { Effect } from "./effect.js";
 import { EffectExtendable } from "./extendables/effect_extendable";
 import { ClassicDBParser } from "./parser";
@@ -23,11 +25,10 @@ export class ClassicDBEffect extends EffectExtendable {
      * @param table - Tooltip HTML as a Cheerio element.
      * @returns - Generated effects.
      */
-    public static from_item_table(table: Cheerio): Promise<Effect[]> {
+    public static async from_item_table(table: Cheerio): Promise<Effect[]> {
         const $ = cheerio.load(table.html());
         const effects: Array<Promise<Effect>> = [];
         table.find("span.q2").each((_, node) => {
-            const h = $(node).find("a").attr("href");
             const id = $(node).find("a").attr("href").replace("?spell=", "");
             const trigger = $(node).text().split(":")[0];
             effects.push(Effect.from_id(id, trigger));
@@ -58,11 +59,10 @@ export class ClassicDBEffect extends EffectExtendable {
         const stats_td = $(stat_table).find("td").first();
         const stat_html_lines = stats_td.html().split(html_tag_regex);
         // Make a shortcut for parsing dom with a list of RegExp.
-        const regex_parse_or = (regex_list: RegExp[]) => {
-            return ClassicDBParser.find_in_dom(stat_html_lines,
-                                               regex_list,
-                                               Operator.OR);
-        };
+        const regex_parse_or = (regex_list: RegExp[]) =>
+            ClassicDBParser.find_in_dom(stat_html_lines,
+                                        regex_list,
+                                        Operator.OR);
 
         const range_line = regex_parse_or(ClassicDBParser.range_rg).split(" ");
         const cast_line = regex_parse_or(ClassicDBParser.cast_rg).split(" ");
@@ -85,7 +85,6 @@ export class ClassicDBEffect extends EffectExtendable {
      * Generates an item based on an effect id and a trigger.
      *
      * @async
-     * @override
      * @param id - Database effect id.
      * @param trigger - Effect trigger.
      * @returns - Generated effect.

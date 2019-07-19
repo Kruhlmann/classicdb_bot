@@ -5,6 +5,7 @@
  */
 
 import { Message, RichEmbed } from "discord.js";
+
 import { Effect } from "../parsers/classicdb/effect";
 
 export interface ParsedTooltip {
@@ -134,6 +135,8 @@ export interface ItemizationItem {
     Unique: boolean;
     Bonding?: string;
     Armor?: number;
+    Block?: number;
+    BlockValue?: number;
     Speed?: number;
     Stats?: {
         [key: string]: number;
