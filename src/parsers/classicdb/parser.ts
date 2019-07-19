@@ -51,7 +51,7 @@ export class ClassicDBParser implements Parser {
         }) || "");
     }
 
-    public async respond_to(message: Message) {
+    public async respond_to(message: Message): Promise<RichEmbed[]> {
         const match = get_item_request(message.content);
         if (!match) { return undefined; }
         // If the match is an id build the message with that in mind.

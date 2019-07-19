@@ -58,13 +58,7 @@ export default class ItemizationItemHelper {
      * @returns - Block value.
      */
     public static block(i: ItemizationItem): string {
-        if (i.Block) {
-            if (i.Block !== i.BlockValue) {
-                return `**${i.Block} (+${i.BlockValue - i.Block}) Block**\n`;
-            }
-            return `**${i.Block} Block**\n`;
-        }
-        return "";
+        return `${i.Block ? `**${i.Block} Block**\n` : ""}`;
     }
 
     /**
