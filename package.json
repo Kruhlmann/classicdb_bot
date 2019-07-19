@@ -1,6 +1,6 @@
 {
   "name": "classicdb_bot",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "A discord bot, which makes it easy to link items from the WoW Classic database on classicdb.ch",
   "main": "src/main.js",
   "scripts": {

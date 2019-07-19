@@ -37,7 +37,7 @@ export default class ItemizationItemTooltipHelpers {
                 case "One-hand": prefix = "One-handed"; break;
                 case "Two-hand": prefix = "Two-handed"; break;
                 case "Ranged": prefix = ""; break;
-                default: prefix = i.Slot; break;
+                default: prefix = i.Slot;
             }
             return `**${prefix} ${suffix}**`;
         } else {
@@ -132,6 +132,10 @@ export default class ItemizationItemTooltipHelpers {
         if (i.Source.Type === "Quest" && i.Source.Entity) {
             // Entity in this case represents the name of a quest.
             return `Source: Awarded from _${i.Source.Entity}_ ${zone}\n`;
+        }
+
+        if (i.Source.Type === "Container" && i.Source.Entity) {
+            return `Source: Contained in _${i.Source.Entity}_ ${zone}\n`;
         }
 
         if (i.Source.Type === "Drop" && i.Source.Entity) {
