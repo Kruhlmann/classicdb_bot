@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://discordapp.com/oauth2/authorize?client_id=545640068056875048&scope=bot&permissions=0">
-    <img src="connect.png" />
+    <img src="doc/connect.png" />
   </a>
 </p>
 
@@ -22,7 +22,7 @@ Typing a partial name will result in the first item avaliable being fetched.
 
 As such typing `[thunder]` will result in the following output:
 
-![Showcase](showcase.png)
+![Showcase](doc/showcase.png)
 
 ### Local setup
 
