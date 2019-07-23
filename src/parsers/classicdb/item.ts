@@ -39,6 +39,10 @@ export class Item {
                                    href: string,
                                    effects: Effect[],
                                    table: Cheerio): Promise<Item> {
+        const regex_find = (lines: string[], regex: RegExp): string[] =>
+            (lines.find((line) =>
+                ((line || "").match(regex) || []).length > 0) || "").split(" ");
+
         const $ = cheerio.load(table.html());
         const thumbnail = await fetch_thumbnail(id);
         const table_contents = table.find("tr td").first();
@@ -65,33 +69,23 @@ export class Item {
             const regex = /Unique/g;
             return ((line || "").match(regex) || []).length > 0;
         }) || []).length > 0;
-        const armor_line = (html_lines.find((line) => {
-            const regex = /[0-9]+ Armor/g;
-            return ((line || "").match(regex) || []).length > 0;
-        }) || "").split(" ");
-        const block_line = (html_lines.find((line) => {
-            const regex = /[0-9]+ Block/g;
-            return ((line || "").match(regex) || []).length > 0;
-        }) || "").split(" ");
+
+        const armor_line = regex_find(html_lines, /[0-9]+ Armor/g);
+        const block_line = regex_find(html_lines, /[0-9]+ Block/g);
+        const level_line = regex_find(html_lines, /Requires Level [0-9]+/g);
+        const dur_line = regex_find(html_lines, /Durability [0-9]+ \/ [0-9]+/g);
+
         const armor = armor_line.length > 1
             ? parseInt(armor_line[0], 10)
             : null;
         const block = block_line.length > 1
             ? parseInt(block_line[0], 10)
             : null;
-        const level_line = (html_lines.find((line) => {
-            const regex = /Requires Level [0-9]+/g;
-            return ((line || "").match(regex) || []).length > 0;
-        }) || "").split(" ");
         const level_requirement = level_line.length > 2
             ? parseInt(level_line[2], 10)
             : null;
-        const durability_line = (html_lines.find((line) => {
-            const regex = /Durability [0-9]+ \/ [0-9]+/g;
-            return ((line || "").match(regex) || []).length > 0;
-        }) || "").split("/");
-        const durability = durability_line.length > 1
-            ? parseInt(durability_line[1].trim(), 10)
+        const durability = dur_line.length > 1
+            ? parseInt(dur_line[1].trim(), 10)
             : null;
         const primary_stats = html_lines.filter((line) =>
             line.startsWith("+") || line.startsWith("-"));
