@@ -77,7 +77,7 @@ export class Effect {
             : null;
         const description = $(misc_table).find("span.q").first().text() || "";
         const is_misc = thumbnail === misc_icon;
-        return new Effect(id, name, `${config.host}/?item=${id}`, description, thumbnail, trigger, is_misc, cast_time, range);
+        return new Effect(id, name, `${config.host}/?spell=${id}`, description, thumbnail, trigger, is_misc, cast_time, range);
     }
 
     /**
