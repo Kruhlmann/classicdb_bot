@@ -1,3 +1,9 @@
+/**
+ * @fileoverview Functions for parsing non API related queries.
+ * @author Andreas Kruehlmann
+ * @since 1.4.7
+ */
+
 import * as discord from "discord.js";
 
 import * as _memes from "../../../memes.json";
