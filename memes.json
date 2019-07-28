@@ -1,0 +1,22 @@
+{
+    "items": {
+        "[sunderfury]": {
+            "color": 16744448,
+            "title": "Sunderfury, Blessed Geberator of the Haste Shill",
+            "icon": "https://itemization.info/icons/inv_sword_39.png",
+            "description": "Binds when picked up\nOne-handed Sword\nUnique\n**Speed Fat**\n**44 - 115 Damage**\n**+16 - 30 Nature Damage**\n**(53.9 damage per second)**\n+5 Virtginity\n+25% Threat geberated\n+9 Female Resistance\nDurability 125/125\nRequires Fury-Defiance specialization\n**Chance on hit: Blast your enemies with a fat weapon increasing the SPM of the wielder. Each jump provides 1 point in unleashed rush, stacking up to five times.**\n**Equip: Do 20 cleaves in one MC.**"
+        },
+        "[unsubdued big wepan]": {
+            "color": 10696174,
+            "title": "The Unsubdued Big wEpan",
+            "icon": "https://itemization.info/icons/inv_sword_50.png",
+            "description": "Binds when picked up\nTwo-handed Sowrd (alliance bis btw)\n**Spead 3.22**\n**192 - 289 = DamAges**\n**(70.7 big damages per hour)**\n-22 IQ\n+16 Thonking\nDurability 120/120\nRequires Autism Level Oliver\n**Chance on hit: Geberates 300 Damages for every Stronk Slam used.**"
+        }
+    },
+    "plaintext": {
+        "[26 dps]": "Don't justify these peons with a response Tips. They're probably a bunch of trash private server gamers who will never amount to anything in retail classic. I bet they're in raiding guilds who don't bring 8 mages to every raid in 2019 lul. Try talking to him when your guild can do a 3 hour MC losers."
+    },
+    "alias": {
+        "[nekrage]": "[Alex's Ring of Audacity]"
+    }
+}

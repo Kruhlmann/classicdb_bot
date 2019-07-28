@@ -2,10 +2,11 @@
  * @fileoverview Unit tests
  * @author Andreas Kruhlmann
  */
-import "chai";
 import * as assert from "assert";
+import "chai";
 import { Client, Guild, Permissions, RichEmbed, TextChannel } from "discord.js";
 import * as fs from "fs";
+
 import { create_client, find_channel } from "./client";
 // import { Processor } from "./processor";
 
@@ -24,9 +25,8 @@ let reports_channel: TextChannel;
 let client: Client;
 let guild: Guild;
 
-const create_text_channel = async (g: Guild, name: string) => {
-    return await g.createChannel(name, "text") as TextChannel;
-};
+const create_text_channel = async (g: Guild, name: string) =>
+    await g.createChannel(name, "text") as TextChannel;
 
 describe("Discord bot", () => {
     before(async () => {
@@ -40,7 +40,7 @@ describe("Discord bot", () => {
     });
 
     it("should do basic arithmetic", () => {
-        assert.equal(2 + 2, 4);
+        assert.strictEqual(2 + 2, 4);
     });
 
     it("should launch bot", () => {
@@ -48,7 +48,7 @@ describe("Discord bot", () => {
     });
 
     it("should find guild", () => {
-        assert.ok(guild)
+        assert.ok(guild);
     });
 
     it("should find unit test channel", () => {
@@ -77,6 +77,23 @@ describe("Discord bot", () => {
             reject();
         });
     });
+
+    // it("should remove the production bot from the channel", async () => {
+    //     test_channel.overwritePermissions()
+    // });
+
+    // it("should request an item correctly", async () => {
+    //     await test_channel.send("[thunderfury]");
+    //     const messages = (await test_channel.fetchMessages()).array();
+    //     return new Promise((resolve, reject) => {
+    //         messages.forEach((message) => {
+    //             console.log(message.content);
+    //         });
+    //         resolve();
+    //         reject();
+    //         // reject();
+    //     });
+    // });
 
     after(async () => {
         await test_channel.delete();
