@@ -96,26 +96,28 @@ export function get_channel_identity(channel: TextChannel
                                             | DMChannel,
                                      author: string,
                                      ): ChannelIdentity {
-    const channel_name = channel.type === "dm"
-        ? `Private DM for user ${author}`
-        : channel.type === "group"
-            ? "Group DM"
-            : (channel as TextChannel).name;
-    const guild_name = channel.type === "dm"
-        ? `Private DM for user ${author}`
-        : channel.type === "group"
-            ? "Group DM"
-            : (channel as TextChannel).guild.name;
-    const guild_id = channel.type === "dm"
-        ? `Private DM for user ${author}`
-        : channel.type === "group"
-            ? null
-            : (channel as TextChannel).guild.id;
-    const owner_id = channel.type === "dm"
-        ? `Private DM for user ${author}`
-        : channel.type === "group"
-            ? null
-            : (channel as TextChannel).guild.ownerID;
+    let channel_name = "";
+    let guild_name = "";
+    let owner_id = "";
+    let guild_id = "";
+
+    if (channel.type === "dm") {
+        channel_name = `Private DM for user ${author}`;
+        guild_name = `Private DM for user ${author}`;
+        guild_id = `Private DM for user ${author}`;
+        owner_id = `Private DM for user ${author}`;
+    } else if (channel.type === "group") {
+        channel_name = "Group DM";
+        guild_name = "Group DM";
+        guild_id = null;
+        owner_id = null;
+    } else {
+        channel_name = (channel as TextChannel).name;
+        guild_name = (channel as TextChannel).guild.name;
+        guild_id = (channel as TextChannel).guild.id;
+        owner_id = (channel as TextChannel).guild.ownerID;
+    }
+
     return {
         guild_id,
         guild_name,

@@ -13,6 +13,13 @@ import * as config from "../../../config.json";
 import { html_tag_regex, misc_icon } from "../../consts.js";
 import { fetch_thumbnail } from "../../lib.js";
 
+function range_and_cast_format(r1: RegExp, r2: RegExp, l: string[]): string[] {
+    return (l.find((line) => {
+        const match = (line || "").match(r1) || (line || "").match(r2);
+        return (match || []).length > 0;
+    }) || "").split(" ");
+}
+
 export class Effect {
 
     /**
@@ -44,15 +51,6 @@ export class Effect {
     public static async from_effect_html(id: string,
                                          html: string,
                                          trigger: string): Promise<Effect> {
-        // Function for finding range and cast speed for an effect.
-        const range_and_cast_format = (r1: RegExp,
-                                       r2: RegExp,
-                                       lines: string[]): string[] =>
-            (lines.find((line) => {
-                const match = (line || "").match(r1) || (line || "").match(r2);
-                return (match || []).length > 0;
-            }) || "").split(" ");
-
         const $ = cheerio.load(html);
         const tables = $("div.tooltip > table tbody tr td").children("table");
 
