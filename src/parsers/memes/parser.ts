@@ -26,6 +26,7 @@ type MLib = {
     items: MItems;
     plaintext: MPlain;
     alias: MPlain;
+    files: MPlain;
 };
 
 const memes = _memes as MLib;
@@ -91,4 +92,21 @@ export function plaintext_meme_response(msg: discord.Message): string {
         }
     }
     return "";
+}
+
+/**
+ * Finds any file related memes in a message and returns a message with the file
+ * attached if any were found.
+ *
+ * @param msg - Message to search.
+ * @returns - Message response object.
+ */
+export function file_meme_response(msg: discord.Message): discord.RichEmbed {
+    for (const file_key of Object.keys(memes.files)) {
+        if (msg.content.toLowerCase() === file_key) {
+            const file_path = memes.files[file_key];
+            return new discord.RichEmbed().attachFile(`static/${file_path}`);
+        }
+    }
+    return undefined;
 }

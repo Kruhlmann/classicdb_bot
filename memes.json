@@ -14,10 +14,12 @@
         }
     },
     "plaintext": {
-        "[extreme haste]": "https://cdn.discordapp.com/attachments/383597174815981568/487287168004521994/unknown.png",
         "[26 dps]": "Don't justify these peons with a response Tips. They're probably a bunch of trash private server gamers who will never amount to anything in retail classic. I bet they're in raiding guilds who don't bring 8 mages to every raid in 2019 lul. Try talking to him when your guild can do a 3 hour MC losers."
     },
     "alias": {
         "[nekrage]": "[Alex's Ring of Audacity]"
+    },
+    "files": {
+        "[extreme haste]": "extreme_haste.png"
     }
 }

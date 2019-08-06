@@ -9,13 +9,16 @@ import * as discord from "discord.js";
 
 import * as config from "../config.json";
 
-import { discord_href, discord_icon, favicon_path } from "./consts.js";
 import * as db from "./db.js";
 import { handle_exception, log } from "./io";
 import { execute, get_channel_identity } from "./lib.js";
 import { ClassicDBParser } from "./parsers/classicdb/parser.js";
 import { ItemizationParser } from "./parsers/itemization/parser.js";
-import { alias_meme_response, item_meme_response, plaintext_meme_response } from "./parsers/memes/parser.js";
+import { alias_meme_response,
+         file_meme_response,
+         item_meme_response,
+         plaintext_meme_response,
+         } from "./parsers/memes/parser.js";
 import { LoggingLevel, Parser } from "./typings/types.js";
 
 declare global {
@@ -85,6 +88,12 @@ process.on("unhandledRejection", handle_exception);
         const meme_response_p = plaintext_meme_response(message);
         if (meme_response_p !== "") {
             message.channel.send(meme_response_p);
+            return;
+        }
+
+        const meme_response_f = file_meme_response(message);
+        if (meme_response_f) {
+            message.channel.send(meme_response_f);
             return;
         }
 
