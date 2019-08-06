@@ -87,7 +87,9 @@ process.on("unhandledRejection", handle_exception);
 
         const meme_response_p = plaintext_meme_response(message);
         if (meme_response_p !== "") {
-            message.channel.send(meme_response_p);
+            const author_mention = `<@${message.author.id}>`;
+            const m_res = meme_response_p.replace(/%USER%/g, author_mention);
+            message.channel.send(m_res);
             return;
         }
 

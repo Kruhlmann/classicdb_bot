@@ -101,11 +101,11 @@ export function plaintext_meme_response(msg: discord.Message): string {
  * @param msg - Message to search.
  * @returns - Message response object.
  */
-export function file_meme_response(msg: discord.Message): discord.RichEmbed {
+export function file_meme_response(msg: discord.Message): discord.Attachment {
     for (const file_key of Object.keys(memes.files)) {
         if (msg.content.toLowerCase() === file_key) {
-            const file_path = memes.files[file_key];
-            return new discord.RichEmbed().attachFile(`static/${file_path}`);
+            const file_name = memes.files[file_key];
+            return new discord.Attachment(`static/${file_name}`);
         }
     }
     return undefined;

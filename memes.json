@@ -14,12 +14,17 @@
         }
     },
     "plaintext": {
-        "[26 dps]": "Don't justify these peons with a response Tips. They're probably a bunch of trash private server gamers who will never amount to anything in retail classic. I bet they're in raiding guilds who don't bring 8 mages to every raid in 2019 lul. Try talking to him when your guild can do a 3 hour MC losers."
+        "[26 dps]": "Don't justify these peons with a response Tips. They're probably a bunch of trash private server gamers who will never amount to anything in retail classic. I bet they're in raiding guilds who don't bring 8 mages to every raid in 2019 lul. Try talking to him when your guild can do a 3 hour MC losers.",
+        "[strength shill]": "so you're going by \"strength shill\" now %USER%? Haha whats up douche bags, it's the Haste Shills from Lightbringer. Remember us? Me and the guys used to give you a hard time in BWL. Sorry you were just an easy target lol. I can see not much has changed. Remember steppenwolf and his sheet that you had a crush on? Yeah, he's a haste shill now. I do 1150 dps world  buffed and gain 1 extra attack per 28seconds of attacks. I guess some things never change huh loser? Nice catching up lol. Pathetic."
     },
     "alias": {
         "[nekrage]": "[Alex's Ring of Audacity]"
     },
     "files": {
-        "[extreme haste]": "extreme_haste.png"
+        "[extreme haste]": "extreme_haste.png",
+        "[extreme strength]": "extreme_strength.png",
+        "[defense cap]": "defense_cap.png",
+        "[the geberators]": "the_geberators.png",
+        "[kosmos]": "kosmos.png"
     }
 }
