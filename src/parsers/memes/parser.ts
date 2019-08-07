@@ -70,7 +70,8 @@ export function alias_meme_response(msg: discord.Message): discord.Message {
     for (const alias of Object.keys(memes.alias)) {
         if (msg.content.toLowerCase().includes(alias)) {
             const found_alias = memes.alias[alias];
-            msg.content = msg.content.replace(alias, found_alias);
+            // This could be problematic.
+            msg.content = msg.content.toLowerCase().replace(alias, found_alias);
         }
     }
     return msg;
