@@ -99,7 +99,7 @@ process.on("unhandledRejection", handle_exception);
             return;
         }
 
-        const old_message_content = message.content;
+        // Replace alias with proper item names.
         message = alias_meme_response(message);
 
         // Default guild parser;
@@ -107,12 +107,6 @@ process.on("unhandledRejection", handle_exception);
         current_parser = gp === "classicdb"
             ? classicdb_parser
             : itemization_parser;
-
-        // Aliases override parser settings as well.
-        if (old_message_content !== message.content) {
-            current_parser = classicdb_parser;
-        }
-
         // Manual parser overrides.
         if (message.content.includes("(classicdb)")) {
             current_parser = classicdb_parser;

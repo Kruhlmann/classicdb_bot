@@ -18,7 +18,10 @@
         "[strength shill]": "so you're going by \"strength shill\" now %USER%? Haha whats up douche bags, it's the Haste Shills from Lightbringer. Remember us? Me and the guys used to give you a hard time in BWL. Sorry you were just an easy target lol. I can see not much has changed. Remember steppenwolf and his sheet that you had a crush on? Yeah, he's a haste shill now. I do 1150 dps world  buffed and gain 1 extra attack per 28seconds of attacks. I guess some things never change huh loser? Nice catching up lol. Pathetic."
     },
     "alias": {
-        "[nekrage]": "[Alex's Ring of Audacity]"
+        "[nekrage]": "[Alex's Ring of Audacity](classicdb)",
+        "[bre]": "[Bonereaver's Edge]",
+        "[utb]": "[The Untamed Blade]",
+        "[msa]": "[Misplaced Servo Arm]"
     },
     "files": {
         "[extreme haste]": "extreme_haste.png",
