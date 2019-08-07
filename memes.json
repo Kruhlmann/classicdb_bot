@@ -19,6 +19,7 @@
     },
     "alias": {
         "[nekrage]": "[Alex's Ring of Audacity](classicdb)",
+        "[scylla]": "[Breastplate of the Chromatic Flight]",
         "[bre]": "[Bonereaver's Edge]",
         "[utb]": "[The Untamed Blade]",
         "[msa]": "[Misplaced Servo Arm]",
@@ -36,7 +37,10 @@
         "[cts]": "[Chromatically Tempered Sword]",
         "[aqr]": "[Ancient Qiraji Ripper]",
         "[db]": "[Deathbringer]",
-        "[if]": "[Ironfoe]"
+        "[if]": "[Ironfoe]",
+        "[es]": "[Earthstrike]",
+        "[oeb]": "[Obsidian Edged Blade]",
+        "[bb]": "[Blackhand's Breadth]"
     },
     "files": {
         "[extreme haste]": "extreme_haste.png",
