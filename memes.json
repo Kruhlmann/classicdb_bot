@@ -21,7 +21,18 @@
         "[nekrage]": "[Alex's Ring of Audacity](classicdb)",
         "[bre]": "[Bonereaver's Edge]",
         "[utb]": "[The Untamed Blade]",
-        "[msa]": "[Misplaced Servo Arm]"
+        "[msa]": "[Misplaced Servo Arm]",
+        "[dft]": "[Drake Fang Talisman]",
+        "[tf]": "[Thunderfury, Blessed Blade of the Windseeker]",
+        "[motc]": "[Mark of the Chosen]",
+        "[bqwh]": "[Blessed Qiraji War Hammer]",
+        "[aclg]": "[Aged Core Leather Gloves]",
+        "[mcp]": "[Manual Crowd Pummeler]",
+        "[hoj]": "[Hand of Justice]",
+        "[thc]": "[The Hungering Cold]",
+        "[mom]": "[Might of Menethil]",
+        "[rotgc]": "[Rune of the Guard Captain]",
+        "[eoc]": "[Crul'shorukh, Edge of Chaos]"
     },
     "files": {
         "[extreme haste]": "extreme_haste.png",
