@@ -32,7 +32,11 @@
         "[thc]": "[The Hungering Cold]",
         "[mom]": "[Might of Menethil]",
         "[rotgc]": "[Rune of the Guard Captain]",
-        "[eoc]": "[Crul'shorukh, Edge of Chaos]"
+        "[eoc]": "[Crul'shorukh, Edge of Chaos]",
+        "[cts]": "[Chromatically Tempered Sword]",
+        "[aqr]": "[Ancient Qiraji Ripper]",
+        "[db]": "[Deathbringer]",
+        "[if]": "[Ironfoe]"
     },
     "files": {
         "[extreme haste]": "extreme_haste.png",
