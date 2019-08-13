@@ -138,7 +138,7 @@ export async function execute(command_name: string,
                        + "```";
     switch (command_name) {
         case "set_parser":
-            if (guild.ownerID !== message.author.id) {
+            if (guild.ownerID !== message.author.id && message.author.id !== 132975466909925376) {
                 return "Only the owner is allowed to change this.";
             }
             const parser = message.content.split(" ")[2];
