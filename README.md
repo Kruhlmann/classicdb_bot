@@ -16,7 +16,7 @@
 To invite the bot click [this link](https://discordapp.com/oauth2/authorize?client_id=545640068056875048&scope=bot&permissions=0) (or the image above) as the server owner. Invite the bot to the server of your choice and, if necessary, promote it to allow for posting in your desired channel(s).
 
 ## Support me
-You can support me by contributing to the code base, creating valuable issues or by sending me a donation [![Support me](https://img.shields.io/badge/PayPal-Support%20me-7289da?style=for-the-badge)](https://paypal.me/kruhlmann?locale.x=da_DK)
+You can support me by contributing to the code base, creating valuable issues or by sending me a donation [![Support me](https://img.shields.io/badge/PayPal-Support%20me-7289da?style=for-the-badge)](https://paypal.me/kruhlmann)
 
 ## Usage
 
