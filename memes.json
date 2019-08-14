@@ -21,7 +21,6 @@
     },
     "alias": {
         "[nekrage]": "[Alex's Ring of Audacity](classicdb)",
-        "[scylla]": "[Breastplate of the Chromatic Flight]",
         "[bre]": "[Bonereaver's Edge]",
         "[utb]": "[The Untamed Blade]",
         "[msa]": "[Misplaced Servo Arm]",
@@ -49,6 +48,7 @@
         "[extreme strength]": "extreme_strength.png",
         "[defense cap]": "defense_cap.png",
         "[the geberators]": "the_geberators.png",
-        "[kosmos]": "kosmos.png"
+        "[kosmos]": "kosmos.png",
+        "[scylla]": "scylla.png"
     }
 }
