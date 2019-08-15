@@ -106,7 +106,7 @@ export function file_meme_response(msg: discord.Message): discord.Attachment {
     for (const file_key of Object.keys(memes.files)) {
         if (msg.content.toLowerCase() === file_key) {
             const file_name = memes.files[file_key];
-            return new discord.Attachment(`static/${file_name}`);
+            return new discord.Attachment(`img/${file_name}`);
         }
     }
     return undefined;
