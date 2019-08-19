@@ -41,7 +41,8 @@
         "[if]": "[Ironfoe]",
         "[es]": "[Earthstrike]",
         "[oeb]": "[Obsidian Edged Blade]",
-        "[bb]": "[Blackhand's Breadth]"
+        "[bb]": "[Blackhand's Breadth]",
+        "[anni]": "[Annihilator]"
     },
     "files": {
         "[extreme haste]": "extreme_haste.png",
@@ -50,6 +51,7 @@
         "[the geberators]": "the_geberators.png",
         "[kosmos]": "kosmos.png",
         "[scylla]": "scylla.png",
-        "[hazzikostas]": "hazzikostas.png"
+        "[hazzikostas]": "hazzikostas.png",
+        "[averwill]": "averwill.png"
     }
 }
