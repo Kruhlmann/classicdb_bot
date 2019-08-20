@@ -6,10 +6,10 @@
 
 import * as discord from "discord.js";
 
-import * as _memes from "../../../memes.json";
+import * as _aliases from "../../../aliases.json";
 import { discord_href, discord_icon, favicon_path } from "../../consts.js";
 
-type MItems = {
+type AItems = {
     [key: string]: {
         color: number;
         title: string;
@@ -18,18 +18,18 @@ type MItems = {
     };
 };
 
-type MPlain= {
+type APlain= {
     [key: string]: string;
 };
 
-type MLib = {
-    items: MItems;
-    plaintext: MPlain;
-    alias: MPlain;
-    files: MPlain;
+type ALib = {
+    items: AItems;
+    plaintext: APlain;
+    alias: APlain;
+    files: APlain;
 };
 
-const memes = _memes as MLib;
+const aliases = _aliases as ALib;
 
 /**
  * Finds any item related memes in a message and builds the first response
@@ -40,9 +40,9 @@ const memes = _memes as MLib;
  */
 export function item_meme_response(msg: discord.Message,
                             ): discord.RichEmbed | undefined {
-    for (const item_trigger of Object.keys(memes.items)) {
+    for (const item_trigger of Object.keys(aliases.items)) {
         if (msg.content.toLowerCase().includes(item_trigger)) {
-            const found_item = memes.items[item_trigger];
+            const found_item = aliases.items[item_trigger];
             return new discord.RichEmbed()
                 .setColor(found_item.color)
                 .setTitle(found_item.title)
@@ -67,9 +67,9 @@ export function item_meme_response(msg: discord.Message,
  * @returns - Message with manipulated content.
  */
 export function alias_meme_response(msg: discord.Message): discord.Message {
-    for (const alias of Object.keys(memes.alias)) {
+    for (const alias of Object.keys(aliases.alias)) {
         if (msg.content.toLowerCase().includes(alias)) {
-            const found_alias = memes.alias[alias];
+            const found_alias = aliases.alias[alias];
             // This could be problematic.
             msg.content = msg.content.toLowerCase().replace(alias, found_alias);
         }
@@ -86,9 +86,9 @@ export function alias_meme_response(msg: discord.Message): discord.Message {
  * @returns - Message response object.
  */
 export function plaintext_meme_response(msg: discord.Message): string {
-    for (const plaintext of Object.keys(memes.plaintext)) {
+    for (const plaintext of Object.keys(aliases.plaintext)) {
         if (msg.content.toLowerCase() === plaintext) {
-            const found_plaintext = memes.plaintext[plaintext];
+            const found_plaintext = aliases.plaintext[plaintext];
             return found_plaintext;
         }
     }
@@ -103,9 +103,9 @@ export function plaintext_meme_response(msg: discord.Message): string {
  * @returns - Message response object.
  */
 export function file_meme_response(msg: discord.Message): discord.Attachment {
-    for (const file_key of Object.keys(memes.files)) {
+    for (const file_key of Object.keys(aliases.files)) {
         if (msg.content.toLowerCase() === file_key) {
-            const file_name = memes.files[file_key];
+            const file_name = aliases.files[file_key];
             return new discord.Attachment(`img/${file_name}`);
         }
     }
