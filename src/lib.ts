@@ -138,13 +138,17 @@ export async function execute(command_name: string,
                        + "```";
     switch (command_name) {
         case "set_parser":
-            if (guild.ownerID !== message.author.id && message.author.id !== "132975466909925376") {
+            const is_owner = guild.ownerID !== message.author.id;
+            const override = config.override_ids.includes(message.author.id);
+            if (!is_owner && !override) {
                 return "Only the owner is allowed to change this.";
             }
+
             const parser = message.content.split(" ")[2];
             if (!parser || !avaliable_parsers.includes(parser)) {
                 return "Avaliable parsers are `classicdb` and `itemization`.";
             }
+
             return db.set_parser(guild, parser)
                 .then(() => `Updated parser to \`${parser}\`.`)
                 .catch(() => "An error occurred while updating parser.");
