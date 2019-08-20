@@ -51,6 +51,7 @@
         "[kosmos]": "kosmos.png",
         "[scylla]": "scylla.png",
         "[hazzikostas]": "hazzikostas.png",
-        "[averwill]": "averwill.png"
+        "[averwill]": "averwill.png",
+        "[tweet]": "tweet_is_dead.png"
     }
 }
