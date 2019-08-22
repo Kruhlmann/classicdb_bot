@@ -13,7 +13,7 @@
     "locale": "en-GB",
     "time_zone": "UTC",
     "itemization_token": "",
-    "database": "db/example_bot.db"
+    "database": "db/example_bot.db",
     "icon_path": "",
     "override_ids": []
 }
