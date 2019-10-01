@@ -62,6 +62,7 @@
         "[tweet]": "tweet_is_dead.png",
         "[snowscara]": "snowscara.png",
         "[lordsly]": "lordsly.png",
-        "[trace]": "trace.png"
+        "[trace]": "trace.png",
+        "[priority]": "priority.png"
     }
 }
