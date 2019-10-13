@@ -66,6 +66,7 @@
         "[trace]": "trace.png",
         "[priority]": "priority.png",
         "[hannu]": "hannu.png",
-        "[human male]": "human_male.jpg"
+        "[human male]": "human_male.jpg",
+    	"[caocai]": "caocai.png"
     }
 }
