@@ -46,3 +46,5 @@ The following packages are reccomended:
 * pm2 `npm i -g pm2`
 
 You must rename [config.json.example](config.json.example) to `config.json` and fill it in with the required details.
+
+Similarly, [aliases.json.example](aliases.json.example) must be renamed to `aliases.json` and filled out to enable aliases. 
