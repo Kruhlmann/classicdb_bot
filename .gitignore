@@ -10,3 +10,4 @@ db
 .nyc_output
 logs/*
 !logs/.gitkeep
+aliases.json
