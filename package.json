@@ -11,7 +11,7 @@
     "fix": "tslint src/**/*.ts",
     "build": "tsc",
     "watch": "tsc -w",
-    "logs": "journalctl -r -u classicdb_bot --since \"5 minutes ago\""
+    "logs": "journalctl -lf -u classicdb_bot --since \"5 minutes ago\" | ccze"
   },
   "repository": {
     "type": "git",
