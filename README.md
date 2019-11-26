@@ -43,6 +43,7 @@ If you want to run your own instance of the bot the following packages are requi
 The following packages are reccomended:
 
 * sqlite3
+* ccze
 * pm2 `npm i -g pm2`
 
 You must rename [config.json.example](config.json.example) to `config.json` and fill it in with the required details.
