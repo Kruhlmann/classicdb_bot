@@ -17,6 +17,7 @@ import { ItemizationParser } from "./parsers/itemization/parser.js";
 import { alias_meme_response,
          file_meme_response,
          item_meme_response,
+         help_response,
          plaintext_meme_response,
          } from "./parsers/memes/parser.js";
 import { LoggingLevel, Parser } from "./typings/types.js";
@@ -63,6 +64,9 @@ process.on("unhandledRejection", handle_exception);
         const channel_identity = get_channel_identity(message.channel, author);
         db.update_guild(message.guild);
 
+        // Default guild parser;
+        const gp = await db.get_parser(channel_identity.guild_id);
+
         // Replace code markdown content.
         message.content = message.content.replace(/`{1}[^`]+`{1}/g, "");
         message.content = message.content.replace(/`{3}[^`]+`{3}/g, "");
@@ -76,6 +80,13 @@ process.on("unhandledRejection", handle_exception);
                 log(`User ${message.author.id} requested to execute command ${command} with owner ${channel_identity.owner_id}`, LoggingLevel.DEV);
                 return;
             }
+        }
+
+        // Help command.
+        const help_res = help_response(message, gp);
+        if (help_res) {
+            message.channel.send(help_res);
+            return;
         }
 
         // Meme reponses
@@ -102,8 +113,6 @@ process.on("unhandledRejection", handle_exception);
         // Replace alias with proper item names.
         message = alias_meme_response(message);
 
-        // Default guild parser;
-        const gp = await db.get_parser(channel_identity.guild_id);
         current_parser = gp === "classicdb"
             ? classicdb_parser
             : itemization_parser;

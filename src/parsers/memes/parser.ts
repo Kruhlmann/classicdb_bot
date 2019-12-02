@@ -111,3 +111,52 @@ export function file_meme_response(msg: discord.Message): discord.Attachment {
     }
     return undefined;
 }
+
+
+
+/**
+ * Shows a help command to the user if they requested it.
+ *
+ * @param msg - Message to search.
+ * @param parser - Current parser used by the guild
+ * @returns - If command is `?` will return a help message.
+ */
+export function help_response(msg: discord.Message,
+                                   parser: string,
+                                   ): discord.RichEmbed | undefined {
+    if (msg.content !== "[?]") {
+        return;
+    }
+
+    let help_desc = `Current parser: **${parser}**\n`;
+
+    help_desc += "\n**Joke items:**\n";
+    Object.entries(aliases.items).forEach((k: any) => {
+        help_desc += `• ${k[0]}\n`;
+    });
+
+    help_desc += "\n**Plaintext:**\n";
+    Object.entries(aliases.plaintext).forEach((k: any) => {
+        help_desc += `• ${k[0]}\n`;
+    });
+
+    help_desc += "\n**Shortcuts:**\n";
+    Object.entries(aliases.alias).forEach((k: any) => {
+        help_desc += `• ${k[0]} -> **${k[1]}**\n`;
+    });
+
+    help_desc += "\n**Images:**\n";
+    Object.entries(aliases.files).forEach((k: any) => {
+        help_desc += `• ${k[0]} -> **${k[1]}**\n`;
+    });
+
+    return new discord.RichEmbed()
+        .setColor(0x777777)
+        .setTitle("Classic DB Bot Help")
+        .setDescription(help_desc)
+        .setAuthor("Classic DB Bot",
+                   favicon_path,
+                   discord_href)
+        .setFooter("https://discord.gg/mRUEPnp", discord_icon)
+        .setURL("https://discord.gg/mRUEPnp");
+}
