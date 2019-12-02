@@ -10,7 +10,8 @@
     "lint": "tslint src/**/*.ts",
     "fix": "tslint src/**/*.ts",
     "build": "tsc",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "logs": "journalctl -lf -u classicdb_bot --since \"1 hour ago\" | ccze"
   },
   "repository": {
     "type": "git",
