@@ -60,6 +60,11 @@ process.on("unhandledRejection", handle_exception);
 
     // On message received behavior.
     discord_client.on("message", async (message) => {
+        if (!message.guild) {
+            // Ignore DMs.
+            return;
+        }
+
         const author = `${message.author.username}@${message.author.id}`;
         const channel_identity = get_channel_identity(message.channel, author);
         db.update_guild(message.guild);
