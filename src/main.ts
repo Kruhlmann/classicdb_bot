@@ -85,7 +85,7 @@ process.on("unhandledRejection", handle_exception);
         // Help command.
         const help_res = help_response(message, gp);
         if (help_res) {
-            message.channel.send(help_res);
+            message.author.send(help_res);
             return;
         }
 
