@@ -6,6 +6,7 @@
 
 import * as sentry from "@sentry/node";
 import * as discord from "discord.js";
+import * as fs from "fs";
 
 import * as config from "../config.json";
 
@@ -35,6 +36,17 @@ global.__rootdir__ = __dirname || process.cwd();
 process.on("uncaughtException", handle_exception);
 process.on("unhandledRejection", handle_exception);
 
+
+let requests_handled = 0;
+const requests_fs = fs.createWriteStream("requests_per_minute", { flags: "a" });
+
+function log_requests() {
+    setTimeout(() => {
+        requests_fs.write(`${requests_handled}\n`);
+        requests_handled = 0;
+    });
+}
+
 (async () => {
     // Init discord virtual client.
     const discord_client = new discord.Client();
@@ -56,10 +68,13 @@ process.on("unhandledRejection", handle_exception);
     log("Awaiting response from discord", LoggingLevel.DEV);
     discord_client.on("ready", () => {
         log(`Started classicdb_bot in ${config.deployment_mode} mode`);
+        log_requests();
     });
 
     // On message received behavior.
     discord_client.on("message", async (message) => {
+        requests_handled ++;
+
         if (!message.guild) {
             // Ignore DMs.
             return;
