@@ -41,10 +41,10 @@ let requests_handled = 0;
 const requests_fs = fs.createWriteStream("requests_per_minute", { flags: "a" });
 
 function log_requests() {
-    setTimeout(() => {
+    setInterval(() => {
         requests_fs.write(`${requests_handled}\n`);
         requests_handled = 0;
-    });
+    }, 1000 * 60);
 }
 
 (async () => {
