@@ -15,7 +15,6 @@ import * as request from "request-promise";
 
 import * as config from "../config.json";
 
-import { avaliable_parsers } from "./consts.js";
 import * as db from "./db.js";
 import {
     ChannelIdentity,
@@ -170,25 +169,6 @@ export async function toggle_memes(guild: Guild) {
     } catch (e) {
         return "An error occurred while toggling memes.";
     }
-}
-
-export function set_parser(guild: Guild, message: Message) {
-    const is_owner = guild.ownerID !== message.author.id;
-    const override = config.override_ids.includes(message.author.id);
-
-    if (!is_owner && !override) {
-        return "Only the owner is allowed to change this.";
-    }
-
-    const parser = message.content.split(" ")[2];
-    if (!parser || !avaliable_parsers.includes(parser)) {
-        return "Avaliable parsers are `classicdb` and `itemization`.";
-    }
-
-    return db
-        .set_parser(guild, parser)
-        .then(() => `Updated parser to \`${parser}\`.`)
-        .catch(() => "An error occurred while updating parser.");
 }
 
 export async function execute_user_command(
