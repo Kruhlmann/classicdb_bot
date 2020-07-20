@@ -118,24 +118,29 @@ function log_requests() {
         }
 
         // Meme reponses
-        const meme_response_i = item_meme_response(message);
-        if (meme_response_i) {
-            message.channel.send(meme_response_i);
-            return;
-        }
+        if (await db.get_meme_status(message.guild)) {
+            const meme_response_i = item_meme_response(message);
+            if (meme_response_i) {
+                message.channel.send(meme_response_i);
+                return;
+            }
 
-        const meme_response_p = plaintext_meme_response(message);
-        if (meme_response_p !== "") {
-            const author_mention = `<@${message.author.id}>`;
-            const m_res = meme_response_p.replace(/%USER%/g, author_mention);
-            message.channel.send(m_res);
-            return;
-        }
+            const meme_response_p = plaintext_meme_response(message);
+            if (meme_response_p !== "") {
+                const author_mention = `<@${message.author.id}>`;
+                const m_res = meme_response_p.replace(
+                    /%USER%/g,
+                    author_mention
+                );
+                message.channel.send(m_res);
+                return;
+            }
 
-        const meme_response_f = file_meme_response(message);
-        if (meme_response_f) {
-            message.channel.send(meme_response_f);
-            return;
+            const meme_response_f = file_meme_response(message);
+            if (meme_response_f) {
+                message.channel.send(meme_response_f);
+                return;
+            }
         }
 
         // Replace alias with proper item names.

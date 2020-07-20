@@ -163,9 +163,9 @@ export async function toggle_memes(guild: Guild) {
     try {
         const enabled = await db.toggle_memes(guild);
         if (enabled) {
-            return "Memes have been toggled on.";
+            return "Memes have been toggled **ON**.";
         }
-        return "Memes have been toggled off.";
+        return "Memes have been toggled **OFF**.";
     } catch (e) {
         return "An error occurred while toggling memes.";
     }
@@ -173,13 +173,19 @@ export async function toggle_memes(guild: Guild) {
 
 export async function execute_user_command(
     command_name: string,
-    _message: Message,
+    message: Message,
     guild: Guild
 ): Promise<string> {
     if (command_name == "help") {
         return HELP_TEXT;
     } else if (command_name == "toggle_memes") {
-        return toggle_memes(guild);
+        const is_owner = message.author.id === message.guild.ownerID;
+        const is_sudo = config.override_ids.includes(message.author.id);
+        if (is_owner || is_sudo) {
+            return toggle_memes(guild);
+        } else {
+            return `Only the head janitor is allowed to do that. Ask for ${message.guild.owner.displayName}`;
+        }
     }
     return `*Unrecognized command* \`${command_name}\`\n\n${HELP_TEXT}`;
 }

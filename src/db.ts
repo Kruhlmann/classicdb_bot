@@ -110,14 +110,18 @@ export async function set_parser(guild: Guild, parser: string): Promise<void> {
 
 export async function toggle_memes(guild: Guild): Promise<boolean> {
     log(`Toggling memes for ${guild.name}`);
-    const get_query = "SELECT memes FROM guild_configs WHERE id=?";
-    const current_status = await db.get(get_query, [guild.id]).then((row) => {
-        return row.memes === 1;
-    });
     const set_query = "UPDATE guild_configs set MEMES=? WHERE id=?";
+    const current_status = await get_meme_status(guild);
     const new_status = current_status ? 0 : 1;
     await db.run(set_query, [new_status, guild.id]);
     return new_status === 1;
+}
+
+export async function get_meme_status(guild: Guild): Promise<boolean> {
+    const get_query = "SELECT memes FROM guild_configs WHERE id=?";
+    return db.get(get_query, [guild.id]).then((row) => {
+        return row.memes === 1;
+    });
 }
 
 /**
