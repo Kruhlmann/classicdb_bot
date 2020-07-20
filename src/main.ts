@@ -12,15 +12,16 @@ import * as config from "../config.json";
 
 import * as db from "./db.js";
 import { handle_exception, log } from "./io";
-import { execute, get_channel_identity } from "./lib.js";
+import { execute_user_command, get_channel_identity } from "./lib.js";
 import { ClassicDBParser } from "./parsers/classicdb/parser.js";
 import { ItemizationParser } from "./parsers/itemization/parser.js";
-import { alias_meme_response,
-         file_meme_response,
-         item_meme_response,
-         help_response,
-         plaintext_meme_response,
-         } from "./parsers/memes/parser.js";
+import {
+    alias_meme_response,
+    file_meme_response,
+    item_meme_response,
+    help_response,
+    plaintext_meme_response,
+} from "./parsers/memes/parser.js";
 import { LoggingLevel, Parser } from "./typings/types.js";
 
 declare global {
@@ -36,7 +37,6 @@ global.__rootdir__ = __dirname || process.cwd();
 process.on("uncaughtException", handle_exception);
 process.on("unhandledRejection", handle_exception);
 
-
 let requests_handled = 0;
 const requests_fs = fs.createWriteStream("requests_per_minute", { flags: "a" });
 
@@ -50,9 +50,10 @@ function log_requests() {
 (async () => {
     // Init discord virtual client.
     const discord_client = new discord.Client();
-    const dicord_token = config.deployment_mode === "production"
-        ? config.discord_bot_token.production
-        : config.discord_bot_token.development;
+    const dicord_token =
+        config.deployment_mode === "production"
+            ? config.discord_bot_token.production
+            : config.discord_bot_token.development;
 
     // Init parser.
     const classicdb_parser: Parser = new ClassicDBParser();
@@ -63,7 +64,7 @@ function log_requests() {
     await db.connect(config.database);
 
     // Initialize error reporting.
-    sentry.init({dsn: config.sentry_dsn});
+    sentry.init({ dsn: config.sentry_dsn });
 
     log("Awaiting response from discord", LoggingLevel.DEV);
     discord_client.on("ready", () => {
@@ -73,7 +74,7 @@ function log_requests() {
 
     // On message received behavior.
     discord_client.on("message", async (message) => {
-        requests_handled ++;
+        requests_handled++;
 
         if (!message.guild) {
             // Ignore DMs.
@@ -95,9 +96,16 @@ function log_requests() {
         if (message.isMentioned(discord_client.user)) {
             const command = message.content.split(" ")[1];
             if (command) {
-                const resp = await execute(command, message, message.guild);
+                const resp = await execute_user_command(
+                    command,
+                    message,
+                    message.guild
+                );
                 message.channel.send(resp);
-                log(`User ${message.author.id} requested to execute command ${command} with owner ${channel_identity.owner_id}`, LoggingLevel.DEV);
+                log(
+                    `User ${message.author.id} requested to execute command ${command} with owner ${channel_identity.owner_id}`,
+                    LoggingLevel.DEV
+                );
                 return;
             }
         }
@@ -133,9 +141,8 @@ function log_requests() {
         // Replace alias with proper item names.
         message = alias_meme_response(message);
 
-        current_parser = gp === "classicdb"
-            ? classicdb_parser
-            : itemization_parser;
+        current_parser =
+            gp === "classicdb" ? classicdb_parser : itemization_parser;
         // Manual parser overrides.
         if (message.content.includes("(classicdb)")) {
             current_parser = classicdb_parser;
@@ -149,13 +156,10 @@ function log_requests() {
             return;
         }
         for (const embed_msg of response) {
-            message.channel.send({embed: embed_msg})
-                .catch(handle_exception);
+            message.channel.send({ embed: embed_msg }).catch(handle_exception);
         }
     });
 
     // Authenticate.
-    discord_client.login(dicord_token)
-        .catch(handle_exception);
-
+    discord_client.login(dicord_token).catch(handle_exception);
 })();

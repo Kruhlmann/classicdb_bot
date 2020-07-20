@@ -4,16 +4,32 @@
  * @since 1.2.0
  */
 
-import { DMChannel, GroupDMChannel, Guild, Message, TextChannel } from "discord.js";
+import {
+    DMChannel,
+    GroupDMChannel,
+    Guild,
+    Message,
+    TextChannel,
+} from "discord.js";
 import * as request from "request-promise";
 
 import * as config from "../config.json";
 
 import { avaliable_parsers } from "./consts.js";
 import * as db from "./db.js";
-import { ChannelIdentity,
-         CharacterClass,
-         ItemQuality } from "./typings/types.js";
+import {
+    ChannelIdentity,
+    CharacterClass,
+    ItemQuality,
+} from "./typings/types.js";
+
+const HELP_TEXT =
+    "**Avaliable commands:**```css\n" +
+    "help:                               " +
+    "- Displays this text.\n" +
+    "toggle_memes:" +
+    " - Allows/disallows the use of joke responses." +
+    "```";
 
 /**
  * Returns the URL of an icon based on it's name in the JavaScript.
@@ -22,8 +38,8 @@ import { ChannelIdentity,
  * based websites.
  * @returns {string} - Asbolute icon URL.
  */
-export function get_large_icon_url(icon_name: string) {
-    icon_name  = icon_name.toLowerCase();
+export function get_large_icon_url(icon_name: string): string {
+    icon_name = icon_name.toLowerCase();
     return `${config.host}/images/icons/large/${icon_name}.jpg`;
 }
 
@@ -35,15 +51,24 @@ export function get_large_icon_url(icon_name: string) {
  */
 export function css_class_to_item_quality(class_name: string): ItemQuality {
     switch (class_name) {
-        case "q0": return ItemQuality.POOR;
-        case "q1": return ItemQuality.COMMON;
-        case "q2": return ItemQuality.UNCOMMON;
-        case "q3": return ItemQuality.RARE;
-        case "q4": return ItemQuality.EPIC;
-        case "q5": return ItemQuality.LEGENDARY;
-        case "q6": return ItemQuality.ARTIFACT;
-        case "q7": return ItemQuality.BLIZZARD;
-        default: return ItemQuality.NOQUALITY;
+        case "q0":
+            return ItemQuality.POOR;
+        case "q1":
+            return ItemQuality.COMMON;
+        case "q2":
+            return ItemQuality.UNCOMMON;
+        case "q3":
+            return ItemQuality.RARE;
+        case "q4":
+            return ItemQuality.EPIC;
+        case "q5":
+            return ItemQuality.LEGENDARY;
+        case "q6":
+            return ItemQuality.ARTIFACT;
+        case "q7":
+            return ItemQuality.BLIZZARD;
+        default:
+            return ItemQuality.NOQUALITY;
     }
 }
 
@@ -55,16 +80,26 @@ export function css_class_to_item_quality(class_name: string): ItemQuality {
  */
 export function css_class_to_player_class(class_name: string): CharacterClass {
     switch (class_name) {
-        case "c1": return CharacterClass.WARRIOR;
-        case "c2": return CharacterClass.PALADIN;
-        case "c3": return CharacterClass.HUNTER;
-        case "c4": return CharacterClass.ROGUE;
-        case "c5": return CharacterClass.PRIEST;
-        case "c7": return CharacterClass.SHAMAN;
-        case "c8": return CharacterClass.MAGE;
-        case "c9": return CharacterClass.WARLOCK;
-        case "c11": return CharacterClass.DRUID;
-        default: return CharacterClass.NOCLASS;
+        case "c1":
+            return CharacterClass.WARRIOR;
+        case "c2":
+            return CharacterClass.PALADIN;
+        case "c3":
+            return CharacterClass.HUNTER;
+        case "c4":
+            return CharacterClass.ROGUE;
+        case "c5":
+            return CharacterClass.PRIEST;
+        case "c7":
+            return CharacterClass.SHAMAN;
+        case "c8":
+            return CharacterClass.MAGE;
+        case "c9":
+            return CharacterClass.WARLOCK;
+        case "c11":
+            return CharacterClass.DRUID;
+        default:
+            return CharacterClass.NOCLASS;
     }
 }
 
@@ -91,11 +126,10 @@ export function find_first_item_index(item_details: number[][]): number {
  * @param author - Author of message in the channel.
  * @returns - ChannelIdentity object withhannel and guild name as strings.
  */
-export function get_channel_identity(channel: TextChannel
-                                            | GroupDMChannel
-                                            | DMChannel,
-                                     author: string,
-                                     ): ChannelIdentity {
+export function get_channel_identity(
+    channel: TextChannel | GroupDMChannel | DMChannel,
+    author: string
+): ChannelIdentity {
     let channel_name = "";
     let guild_name = "";
     let owner_id = "";
@@ -126,37 +160,48 @@ export function get_channel_identity(channel: TextChannel
     };
 }
 
-export async function execute(command_name: string,
-                              message: Message,
-                              guild: Guild,
-                              ): Promise<string> {
-    const help_text =  "**Avaliable commands:**```css\n"
-                       + "help:                               "
-                       + "- Displays this text.\n"
-                       + "set_parser: <classicdb|itemization>"
-                       + " - Changes the parser of the bot."
-                       + "```";
-    switch (command_name) {
-        case "set_parser":
-            const is_owner = guild.ownerID !== message.author.id;
-            const override = config.override_ids.includes(message.author.id);
-            if (!is_owner && !override) {
-                return "Only the owner is allowed to change this.";
-            }
-
-            const parser = message.content.split(" ")[2];
-            if (!parser || !avaliable_parsers.includes(parser)) {
-                return "Avaliable parsers are `classicdb` and `itemization`.";
-            }
-
-            return db.set_parser(guild, parser)
-                .then(() => `Updated parser to \`${parser}\`.`)
-                .catch(() => "An error occurred while updating parser.");
-        case "help":
-            return help_text;
-        default:
-            return `*Unrecognized command* \`${command_name}\`\n\n${help_text}`;
+export async function toggle_memes(guild: Guild) {
+    try {
+        const enabled = await db.toggle_memes(guild);
+        if (enabled) {
+            return "Memes have been toggled on.";
+        }
+        return "Memes have been toggled off.";
+    } catch (e) {
+        return "An error occurred while toggling memes.";
     }
+}
+
+export function set_parser(guild: Guild, message: Message) {
+    const is_owner = guild.ownerID !== message.author.id;
+    const override = config.override_ids.includes(message.author.id);
+
+    if (!is_owner && !override) {
+        return "Only the owner is allowed to change this.";
+    }
+
+    const parser = message.content.split(" ")[2];
+    if (!parser || !avaliable_parsers.includes(parser)) {
+        return "Avaliable parsers are `classicdb` and `itemization`.";
+    }
+
+    return db
+        .set_parser(guild, parser)
+        .then(() => `Updated parser to \`${parser}\`.`)
+        .catch(() => "An error occurred while updating parser.");
+}
+
+export async function execute_user_command(
+    command_name: string,
+    _message: Message,
+    guild: Guild
+): Promise<string> {
+    if (command_name == "help") {
+        return HELP_TEXT;
+    } else if (command_name == "toggle_memes") {
+        return toggle_memes(guild);
+    }
+    return `*Unrecognized command* \`${command_name}\`\n\n${HELP_TEXT}`;
 }
 
 /**
@@ -167,18 +212,23 @@ export async function execute(command_name: string,
  * @param spell - If true will look for a spell, else looks
  * for an item.
  */
-export async function fetch_thumbnail(id: string,
-                                      spell = false): Promise <string> {
+export async function fetch_thumbnail(
+    id: string,
+    spell = false
+): Promise<string> {
     const url = `${config.host}/?${spell ? "spell" : "item"}=${id}`;
     const html = await request(url);
     // Find the JavaScript line with "Icon.create" in from which the item
     // identifier can be extracted.
-    const split_dom = html.split("\n").filter((html_stub: string) =>
-        html_stub.includes("Icon.create")) || [];
+    const split_dom =
+        html
+            .split("\n")
+            .filter((html_stub: string) => html_stub.includes("Icon.create")) ||
+        [];
     if (split_dom.length < 1) {
         return "";
     }
-    const split_js =  split_dom[0].trim().split("Icon.create");
+    const split_js = split_dom[0].trim().split("Icon.create");
     const icon = split_js[split_js.length - 1].split("'")[1];
     return get_large_icon_url(icon);
 }

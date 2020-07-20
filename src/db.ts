@@ -43,12 +43,11 @@ export async function connect(database_path: string): Promise<void> {
     connected = true;
     log(`Connected to ${database_path}`);
 
-    log ("Migrating database", LoggingLevel.DEV);
-    const migration_options = config.deployment_mode === "development"
-        ? {force: "last"}
-        : {};
+    log("Migrating database", LoggingLevel.DEV);
+    const migration_options =
+        config.deployment_mode === "development" ? { force: "last" } : {};
     await db.migrate(migration_options);
-    log ("Database migrated succeessfully", LoggingLevel.DEV);
+    log("Database migrated succeessfully", LoggingLevel.DEV);
 }
 
 /**
@@ -61,19 +60,21 @@ export async function connect(database_path: string): Promise<void> {
  * @param parser - String identifier of used parser (same format as in the
  * `guild_configs`).
  */
-export async function register_query(item_id: string,
-                                     server_id: string,
-                                     parser: string): Promise<void> {
-    // tslint:disable-next-line: max-line-length
-    const exists_q = "SELECT EXISTS(SELECT 1 FROM queries WHERE server_id=? AND item_id=?) AS exi";
-    type t = {exi: number};
-    const exists = await db.get(exists_q,
-                                [server_id, item_id],
-                                ).then((r: t) => r.exi);
+export async function register_query(
+    item_id: string,
+    server_id: string,
+    parser: string
+): Promise<void> {
+    const exists_q =
+        "SELECT EXISTS(SELECT 1 FROM queries WHERE server_id=? AND item_id=?) AS exi";
+    type t = { exi: number };
+    const exists = await db
+        .get(exists_q, [server_id, item_id])
+        .then((r: t) => r.exi);
 
     if (exists) {
-        // tslint:disable-next-line: max-line-length
-        const q = "UPDATE queries SET hits = hits + 1 WHERE server_id=? AND item_id=?";
+        const q =
+            "UPDATE queries SET hits = hits + 1 WHERE server_id=? AND item_id=?";
         await db.run(q, [server_id, item_id]);
     } else {
         const q = "INSERT INTO queries VALUES (?, ?, ?, 1)";
@@ -90,7 +91,7 @@ export async function register_query(item_id: string,
  */
 export async function get_parser(guild_id: string): Promise<string> {
     const q = "SELECT parser FROM guild_configs WHERE id=?";
-    type t = {parser: string};
+    type t = { parser: string };
     return db.get(q, [guild_id]).then((r: t) => r.parser);
 }
 
@@ -107,6 +108,18 @@ export async function set_parser(guild: Guild, parser: string): Promise<void> {
     await db.run(q, [parser, guild.id]);
 }
 
+export async function toggle_memes(guild: Guild): Promise<boolean> {
+    log(`Toggling memes for ${guild.name}`);
+    const get_query = "SELECT memes FROM guild_configs WHERE id=?";
+    const current_status = await db.get(get_query, [guild.id]).then((row) => {
+        return row.memes === 1;
+    });
+    const set_query = "UPDATE guild_configs set MEMES=? WHERE id=?";
+    const new_status = current_status ? 0 : 1;
+    await db.run(set_query, [new_status, guild.id]);
+    return new_status === 1;
+}
+
 /**
  * Returns the existance of a table given a table name.
  *
@@ -116,8 +129,9 @@ export async function set_parser(guild: Guild, parser: string): Promise<void> {
  */
 export async function table_exists(table_name: string): Promise<boolean> {
     // tslint:disable-next-line: max-line-length
-    const q = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=?";
-    type t = {["COUNT(*)"]: number};
+    const q =
+        "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=?";
+    type t = { ["COUNT(*)"]: number };
     return db.get(q, [table_name]).then((r: t) => r["COUNT(*)"] !== 0);
 }
 
@@ -131,7 +145,7 @@ export async function table_exists(table_name: string): Promise<boolean> {
 export async function guild_exists(guild_id: string): Promise<boolean> {
     // tslint:disable-next-line: max-line-length
     const q = "SELECT EXISTS(SELECT '1' FROM guild_configs WHERE id=? ) AS exi";
-    type t = {exi: number};
+    type t = { exi: number };
     return db.get(q, [guild_id]).then((row: t) => row.exi === 1);
 }
 
@@ -144,7 +158,7 @@ export async function guild_exists(guild_id: string): Promise<boolean> {
 export async function register_guild(guild: Guild): Promise<void> {
     const icon = guild.iconURL ? path.basename(guild.iconURL) : "";
     const exists = await guild_exists(guild.id);
-    if (! exists) {
+    if (!exists) {
         const q = "INSERT INTO guild_configs VALUES (?, 'classicdb', 0, ?, ?)";
         await db.run(q, [guild.id, icon, guild.name]);
     }
@@ -160,8 +174,11 @@ export async function update_guild(guild: Guild): Promise<void> {
     const icon = guild.iconURL ? path.basename(guild.iconURL) : "";
     update_guild_icon(guild);
     await register_guild(guild);
-    await db.run("UPDATE guild_configs SET icon=?, name=? WHERE id=?",
-                 [icon, guild.name, guild.id]);
+    await db.run("UPDATE guild_configs SET icon=?, name=? WHERE id=?", [
+        icon,
+        guild.name,
+        guild.id,
+    ]);
 }
 
 /**
