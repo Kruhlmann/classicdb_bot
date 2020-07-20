@@ -25,7 +25,7 @@ import {
 
 const HELP_TEXT =
     "**Avaliable commands:**```css\n" +
-    "help:                               " +
+    "help:         " +
     "- Displays this text.\n" +
     "toggle_memes:" +
     " - Allows/disallows the use of joke responses." +
