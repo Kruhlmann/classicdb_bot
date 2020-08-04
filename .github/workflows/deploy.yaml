@@ -1,0 +1,26 @@
+name: Docker build & publish
+
+on:
+    push:
+        branches:
+            - "master"
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@master
+              with:
+                lfs: true
+            - name: Publish to registry
+              uses: azure/docker-login@v1
+              with:
+                  username: ${{ secrets.DOCKER_USER }}
+                  password: ${{ secrets.DOCKER_PASS }}
+            - name: Publish to registry
+              run: |
+                  docker build --cache-from $ONBUILD -t $ONBUILD -f docker/Dockerfile .
+                  docker push $IMAGE
+              env:
+                  ONBUILD: kruhlmann/classicdb:onbuild
+                  IMAGE: kruhlmann/classicdb
