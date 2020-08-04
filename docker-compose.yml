@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  classicdb_bot:
+    container_name: classicdb-bot
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    command: npm run start
+    volumes:
+        - ./aliases.json:/usr/app/aliases.json
+        - ./config.json:/usr/app/config.json
+        - ./db:/usr/app/db
+        - ./guild_icons:/www/classicdb_bot_web/static/icons/guilds/
+

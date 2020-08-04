@@ -55,6 +55,8 @@ function log_requests() {
             ? config.discord_bot_token.production
             : config.discord_bot_token.development;
 
+    console.log("Starting up...");
+
     // Init parser.
     const classicdb_parser: Parser = new ClassicDBParser();
     const itemization_parser: Parser = new ItemizationParser();
