@@ -13,5 +13,6 @@ services:
         - ./config.json:/usr/app/config.json
         - ./db:/usr/app/db
         - ./img:/usr/app/img
+        - ./logs:/usr/app/logs
         - ./guild_icons:/www/classicdb_bot_web/static/icons/guilds/
 
