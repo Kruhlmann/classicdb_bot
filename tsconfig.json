@@ -12,10 +12,11 @@
         "lib": ["esnext"],
         "outDir": "dist",
         "moduleResolution": "node",
+        "experimentalDecorators": true,
         "allowJs": true
     },
     "include": [
-        "src/**/*.ts"
+        "src3/**/*.ts"
     ],
     "exclude": [
         "node_modules",

@@ -1,78 +1,55 @@
 {
-  "name": "classicdb_bot",
-  "version": "1.5.0",
-  "description": "A discord bot, which makes it easy to link items from the WoW Classic database on classicdb.ch",
-  "main": "src/main.js",
-  "scripts": {
-    "start": "npm run build && node dist/src/main.js",
-    "test": "mocha -r ts-node/register test/**/*.spec.ts --exit",
-    "coverage": "nyc npm run test",
-    "lint": "tslint src/**/*.ts",
-    "fix": "tslint src/**/*.ts",
-    "build": "tsc",
-    "watch": "tsc -w",
-    "logs": "journalctl -lf -u classicdb_bot --since \"1 hour ago\" | ccze"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Kruhlmann/classicdb_bot.git"
-  },
-  "author": "Andreas Kruhlmann",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Kruhlmann/classicdb_bot/issues"
-  },
-  "homepage": "https://github.com/Kruhlmann/classicdb_bot#readme",
-  "devDependencies": {
-    "@istanbuljs/nyc-config-typescript": "^0.1.3",
-    "@types/chai": "^4.1.7",
-    "@types/cheerio": "^0.22.11",
-    "@types/mocha": "^5.2.6",
-    "@types/request-promise": "^4.1.43",
-    "@types/sqlite3": "^3.1.5",
-    "@typescript-eslint/eslint-plugin": "^1.11.0",
-    "@typescript-eslint/parser": "^1.11.0",
-    "eslint": "^6.0.1",
-    "mocha": "^6.1.4",
-    "nyc": "^14.1.0",
-    "source-map-support": "^0.5.12",
-    "ts-node": "^8.1.0",
-    "typescript": "^3.4.5",
-    "uws": "^9.14.0"
-  },
-  "dependencies": {
-    "@sentry/node": "^4.6.1",
-    "bufferutil": "^3.0.3",
-    "chai": "^4.2.0",
-    "cheerio": "^1.0.0-rc.2",
-    "discord.js": "^11.4.2",
-    "erlpack": "github:discordapp/erlpack",
-    "libsodium-wrappers": "^0.7.4",
-    "moment": "^2.24.0",
-    "node-opus": "^0.2.7",
-    "opusscript": "^0.0.6",
-    "request": "^2.88.0",
-    "request-promise": "^4.2.2",
-    "sqlite": "^3.0.3"
-  },
-  "nyc": {
-    "include": [
-      "src/*.ts",
-      "src/**/*.ts"
-    ],
-    "exclude": [
-      "typings"
-    ],
-    "extension": [
-      ".ts"
-    ],
-    "require": [
-      "ts-node/register"
-    ],
-    "reporter": [
-      "json",
-      "html"
-    ],
-    "all": true
-  }
+    "name": "classicdb_bot",
+    "version": "1.5.0",
+    "description": "A discord bot, which makes it easy to link items from the WoW Classic database on classicdb.ch",
+    "scripts": {
+        "start": "npm run build && node dist/index.js",
+        "test": "jest --verbose --config jest.config.js",
+        "coverage": "nyc npm run test",
+        "build": "tsc",
+        "watch": "tsc -w",
+        "dev": "tsc-watch --onSuccess 'node dist/index.js'",
+        "logs": "journalctl -lf -u classicdb_bot --since \"1 hour ago\" | ccze"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Kruhlmann/classicdb_bot.git"
+    },
+    "author": "Andreas Kruhlmann",
+    "license": "GPL-3-or-later",
+    "bugs": {
+        "url": "https://github.com/Kruhlmann/classicdb_bot/issues"
+    },
+    "homepage": "https://github.com/Kruhlmann/classicdb_bot#readme",
+    "devDependencies": {
+        "@istanbuljs/nyc-config-typescript": "^0.1.3",
+        "@types/cheerio": "^0.22.24",
+        "@types/request-promise": "^4.1.43",
+        "@types/sequelize": "^4.28.9",
+        "@types/sqlite3": "^3.1.5",
+        "@typescript-eslint/eslint-plugin": "^1.11.0",
+        "@typescript-eslint/parser": "^1.11.0",
+        "eslint": "^6.0.1",
+        "source-map-support": "^0.5.12",
+        "tsc-watch": "^4.2.9",
+        "typescript": "^3.4.5",
+        "uws": "^9.14.0"
+    },
+    "dependencies": {
+        "@sentry/node": "^4.6.1",
+        "@types/jest": "^26.0.20",
+        "bufferutil": "^3.0.3",
+        "cheerio": "^1.0.0-rc.2",
+        "discord.js": "^11.4.2",
+        "erlpack": "github:discordapp/erlpack",
+        "jest": "^26.6.3",
+        "libsodium-wrappers": "^0.7.4",
+        "moment": "^2.24.0",
+        "node-opus": "^0.2.7",
+        "opusscript": "^0.0.6",
+        "pg": "^8.5.1",
+        "request": "^2.88.0",
+        "sequelize": "^6.5.0",
+        "ts-jest": "^26.5.2"
+    }
 }

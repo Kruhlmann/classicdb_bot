@@ -1,3 +1,6 @@
+coverage/
+swap-pane
+tags
 config.js
 .vscode
 .eslintrc.json
