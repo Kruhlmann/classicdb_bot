@@ -5,6 +5,8 @@ export class ThumbnailParser extends Parser<string> {
 
     public async parse(): Promise<string> {
         const icon_creation_match = this.page_html_source.match(ThumbnailParser.icon_creation_javascript_pattern);
-        return "";
+        if (!icon_creation_match || icon_creation_match) {
+            return "";
+        }
     }
 }
