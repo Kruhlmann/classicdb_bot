@@ -33,4 +33,8 @@ export const item_page_sources = {
         classicdb: fs.readFileSync("res/test/classicdb_empty_barrel.html").toString(),
         tbcdb: fs.readFileSync("res/test/tbcdb_empty_barrel.html").toString(),
     },
+    arcanist_belt: {
+        classicdb: fs.readFileSync("res/test/classicdb_arcanist_belt.html").toString(),
+        tbcdb: fs.readFileSync("res/test/tbcdb_arcanist_belt.html").toString(),
+    },
 };
