@@ -17,6 +17,10 @@ export const item_page_sources = {
         classicdb: fs.readFileSync("res/test/classicdb_band_of_cenarius.html").toString(),
         tbcdb: fs.readFileSync("res/test/tbcdb_band_of_cenarius.html").toString(),
     },
+    shadowfang: {
+        classicdb: fs.readFileSync("res/test/classicdb_shadowfang.html").toString(),
+        tbcdb: fs.readFileSync("res/test/tbcdb_shadowfang.html").toString(),
+    },
     nozdormu: {
         classicdb: fs.readFileSync("res/test/classicdb_agent_of_nozdormu.html").toString(),
         tbcdb: fs.readFileSync("res/test/tbcdb_agent_of_nozdormu.html").toString(),
