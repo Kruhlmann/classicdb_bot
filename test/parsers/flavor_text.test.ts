@@ -1,36 +1,31 @@
 /// <reference types="jest" />
-import * as fs from "fs";
-import { TBCDBClassParser, ClassicDBClassParser } from "../../src/parsers/class";
+import { item_page_sources } from "../resources";
+import { FlavorTextParser } from "../../src/parsers/flavor_text";
 
-const classicdb_thunderfury_page_source = fs.readFileSync("res/test/classicdb_thunderfury_item_page.html").toString();
-const tbcdb_thunderfury_page_source = fs.readFileSync("res/test/tbcdb_thunderfury_item_page.html").toString();
-const classicdb_quelserrar_page_source = fs.readFileSync("res/test/classicdb_quelserrar_item_page.html").toString();
-const tbcdb_quelserrar_page_source = fs.readFileSync("res/test/tbcdb_quelserrar_item_page.html").toString();
-
-describe("Class parser", () => {
+describe("Flavor text parser", () => {
     describe("ClassicDB", () => {
-        it("parses class requirements from classicdb.ch item page source", async () => {
-            const parser = new ClassicDBClassParser(classicdb_quelserrar_page_source);
+        it("parses flavor text from classicdb.ch item page source", async () => {
+            const parser = new FlavorTextParser(item_page_sources.quelserrar.classicdb);
             const result = await parser.parse();
-            expect(result).toStrictEqual(["Warrior", "Paladin"]);
+            expect(result).toBe('"The High Blade"');
         });
-        it("fails to parse class requirements from empty item page source", async () => {
-            const parser = new ClassicDBClassParser(classicdb_thunderfury_page_source);
+        it("fails to parse flavor text from item page source with no flavor text", async () => {
+            const parser = new FlavorTextParser(item_page_sources.thunderfury.classicdb);
             const result = await parser.parse();
-            expect(result).toStrictEqual([]);
+            expect(result).toBe("");
         });
     });
 
     describe("TBCDB", () => {
-        it("parses class requirements from tbcdb.com item page source", async () => {
-            const parser = new TBCDBClassParser(tbcdb_quelserrar_page_source);
+        it("parses flavor text from tbcdb.com item page source", async () => {
+            const parser = new FlavorTextParser(item_page_sources.quelserrar.tbcdb);
             const result = await parser.parse();
-            expect(result).toStrictEqual(["Warrior", "Paladin"]);
+            expect(result).toBe('"The High Blade"');
         });
-        it("fails to parse class requirements from empty item page source", async () => {
-            const parser = new TBCDBClassParser(tbcdb_thunderfury_page_source);
+        it("fails to parse flavor text from item page source with no flavor text", async () => {
+            const parser = new FlavorTextParser(item_page_sources.thunderfury.tbcdb);
             const result = await parser.parse();
-            expect(result).toStrictEqual([]);
+            expect(result).toBe("");
         });
     });
 });
