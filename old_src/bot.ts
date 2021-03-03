@@ -3,6 +3,7 @@ import {
     Client as DiscordAPIClient,
     Message as DiscordMessage,
 } from "discord.js";
+import { RequestLogger } from "./request_logger";
 import { BotAlreadyStartedError } from "./exceptions";
 import { Message } from "./message";
 
@@ -14,11 +15,13 @@ export class ClassicDBBot {
     private has_started: boolean = false;
     private database: SQLiteDatabaseConnection;
     private discord_api_client: DiscordAPIClient;
+    private requests_logger: RequestLogger;
 
     public constructor(token: string, sqlite_database_path: string) {
         this.token = token;
         this.discord_api_client = new DiscordAPIClient();
         this.database = new SQLiteDatabaseConnection(sqlite_database_path);
+        this.requests_logger = new RequestLogger("requests_pre_minute", 60000);
     }
 
     public start(): void {
@@ -36,7 +39,7 @@ export class ClassicDBBot {
     }
 
     private process_discord_channel_message(message: Message): void {
-        console.log(message);
+        this.requests_logger.register_request_recieved();
     }
 
     private should_ignore_message(message: Message) {

@@ -34,14 +34,27 @@ export class Message {
         this.is_own_message = is_own_message;
     }
 
-    public static replace_code_markdown_content(message_content: string): string {
-        return message_content.replace(SINGLE_CODE_MARKDOWN_REGEX, "").replace(MULTI_CODE_MARKDOWN_REGEX, "");
+    public static replace_code_markdown_content(
+        message_content: string
+    ): string {
+        return message_content
+            .replace(SINGLE_CODE_MARKDOWN_REGEX, "")
+            .replace(MULTI_CODE_MARKDOWN_REGEX, "");
     }
 
-    public static from_discord_api_message(message: DiscordMessage, client: DiscordAPIClient): Message {
+    public static from_discord_api_message(
+        message: DiscordMessage,
+        client: DiscordAPIClient
+    ): Message {
         const is_direct_message = !!message.guild;
         const content = Message.replace_code_markdown_content(message.content);
         const is_own_message = message.author.id === client.user.id;
-        return new Message(is_direct_message, content, message.author, message.channel, is_own_message);
+        return new Message(
+            is_direct_message,
+            content,
+            message.author,
+            message.channel,
+            is_own_message
+        );
     }
 }
