@@ -37,4 +37,8 @@ export const item_page_sources = {
         classicdb: fs.readFileSync("res/test/classicdb_arcanist_belt.html").toString(),
         tbcdb: fs.readFileSync("res/test/tbcdb_arcanist_belt.html").toString(),
     },
+    the_hungering_cold: {
+        classicdb: fs.readFileSync("res/test/classicdb_the_hungering_cold.html").toString(),
+        tbcdb: fs.readFileSync("res/test/tbcdb_the_hungering_cold.html").toString(),
+    },
 };
