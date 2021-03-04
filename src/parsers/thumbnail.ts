@@ -1,6 +1,6 @@
-import { Parser } from ".";
+import { HTMLParser } from ".";
 
-abstract class ThumbnailParser extends Parser<string> {
+abstract class ThumbnailParser extends HTMLParser<string> {
     public static icon_creation_javascript_pattern = /\(Icon.create\('(.*?)'.*?\)\)/;
 
     public async parse(): Promise<string> {

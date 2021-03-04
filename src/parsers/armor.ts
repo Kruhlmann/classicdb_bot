@@ -1,8 +1,8 @@
 import * as cheerio from "cheerio";
 
-import { Parser } from ".";
+import { HTMLParser } from ".";
 
-export class ArmorValueParser extends Parser<number> {
+export class ArmorValueParser extends HTMLParser<number> {
     public static readonly armor_pattern = /([0-9]+) Armor/;
     public static readonly no_armor_value = -1;
 

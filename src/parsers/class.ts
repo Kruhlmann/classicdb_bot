@@ -1,8 +1,8 @@
 import * as cheerio from "cheerio";
 
-import { Parser } from ".";
+import { HTMLParser } from ".";
 
-export class ClassicDBClassParser extends Parser<string[]> {
+export class ClassicDBClassParser extends HTMLParser<string[]> {
     public async parse(): Promise<string[]> {
         const $ = cheerio.load(this.page_html_source);
         const classes: string[] = [];
@@ -14,7 +14,7 @@ export class ClassicDBClassParser extends Parser<string[]> {
     }
 }
 
-export class TBCDBClassParser extends Parser<string[]> {
+export class TBCDBClassParser extends HTMLParser<string[]> {
     public static class_pattern = /<br \/>\s*?Classes: (.*?)\s*?<br \/>/;
 
     public async parse(): Promise<string[]> {

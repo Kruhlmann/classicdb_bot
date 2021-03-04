@@ -1,8 +1,8 @@
 import * as cheerio from "cheerio";
 
-import { Parser } from ".";
+import { HTMLParser } from ".";
 
-export class QualityParser extends Parser<string> {
+export class QualityParser extends HTMLParser<string> {
     public static css_class_quality_lookup_table: Record<string, string> = {
         q0: "poor",
         q1: "common",

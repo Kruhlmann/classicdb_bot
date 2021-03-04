@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 
-import { Parser } from ".";
+import { HTMLParser } from ".";
 
 export enum ItemBinding {
     ON_PICKUP,
@@ -8,7 +8,7 @@ export enum ItemBinding {
     NONE,
 }
 
-export class BindingParser extends Parser<ItemBinding> {
+export class BindingParser extends HTMLParser<ItemBinding> {
     public static readonly bind_on_pickup = "Binds when picked up";
     public static readonly bind_on_equip = "Binds when equipped";
 

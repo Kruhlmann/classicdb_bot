@@ -1,8 +1,8 @@
 import * as cheerio from "cheerio";
 
-import { Parser } from ".";
+import { HTMLParser } from ".";
 
-abstract class NameParser extends Parser<string> {
+abstract class NameParser extends HTMLParser<string> {
     public async parse(): Promise<string> {
         const $ = cheerio.load(this.page_html_source);
         const name_node = $("div.text > h1").first();

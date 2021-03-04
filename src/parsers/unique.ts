@@ -1,8 +1,8 @@
 import * as cheerio from "cheerio";
 
-import { Parser } from ".";
+import { HTMLParser } from ".";
 
-export class UniqueParser extends Parser<boolean> {
+export class UniqueParser extends HTMLParser<boolean> {
     public static readonly bind_on_pickup = "Binds when picked up";
     public static readonly bind_on_equip = "Binds when equipped";
 
