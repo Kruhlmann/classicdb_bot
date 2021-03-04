@@ -1,6 +1,7 @@
 /// <reference types="jest" />
 import { item_page_sources } from "../resources";
-import { WeaponDamageParser, DamageType } from "../../src/parsers/weapon_damage";
+import { WeaponDamageParser } from "../../src/parsers/weapon_damage";
+import { DamageType } from "../../src/parsers/damage_type";
 
 const empty_weapon_damage_parse_result = {
     dps: -1,
@@ -10,7 +11,7 @@ const thunderfury_weapon_damage_parse_result = {
     dps: 53.9,
     damage_ranges: [
         { low: 44, high: 115, type: DamageType.PHYSICAL },
-        { low: 16, high: 30, type: "Nature" },
+        { low: 16, high: 30, type: DamageType.NATURE },
     ],
 };
 

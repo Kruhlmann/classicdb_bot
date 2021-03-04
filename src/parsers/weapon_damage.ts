@@ -1,17 +1,7 @@
 import * as cheerio from "cheerio";
 
 import { HTMLTooltipBodyParser, HTMLParser } from ".";
-
-export enum DamageType {
-    NONE,
-    PHYSICAL,
-    FIRE,
-    FROST,
-    ARCANE,
-    NATURE,
-    SHADOW,
-    HOLY,
-}
+import { DamageType, DamageTypeLookupTable } from "./damage_type";
 
 export type WeaponDamageRange = {
     low: number;
@@ -39,7 +29,7 @@ class WeaponDamagePerSecondParser extends HTMLTooltipBodyParser<number> {
 }
 
 class WeaponPhysicalDamageRangeParser extends HTMLTooltipBodyParser<WeaponDamageRange> {
-    public static readonly damage_range_pattern = /([0-9]+) - ([0-9]+) {2}Damage/;
+    public static readonly damage_range_pattern = /([0-9]+) - ([0-9]+)\s+Damage/;
     public static readonly no_damage_range_value: WeaponDamageRange = { low: -1, high: -1, type: DamageType.NONE };
 
     public async parse(): Promise<WeaponDamageRange> {
@@ -87,7 +77,7 @@ class WeaponMagicDamageRangeParser extends HTMLTooltipBodyParser<WeaponDamageRan
         return {
             low: parseInt(bottom_end_string),
             high: parseInt(top_end_string),
-            type: damage_type,
+            type: DamageTypeLookupTable.get_damage_type_from_string(damage_type),
         };
     }
 }
