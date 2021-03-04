@@ -7,12 +7,25 @@ describe("Block value parser", () => {
         it("parses block value from classicdb.ch item page source", async () => {
             const parser = new BlockValueParser(item_page_sources.skullflame_shield.classicdb);
             const result = await parser.parse();
-            expect(result).toStrictEqual(40);
+            expect(result).toBe(40);
         });
         it("fails to parse block value from item page source without block value", async () => {
             const parser = new BlockValueParser(item_page_sources.thunderfury.classicdb);
             const result = await parser.parse();
-            expect(result).toStrictEqual(-1);
+            expect(result).toBe(-1);
+        });
+    });
+
+    describe("TBCDB", () => {
+        it("parses block value from tbcdb.com item page source", async () => {
+            const parser = new BlockValueParser(item_page_sources.skullflame_shield.tbcdb);
+            const result = await parser.parse();
+            expect(result).toBe(53);
+        });
+        it("fails to parse block value from item page source without block value", async () => {
+            const parser = new BlockValueParser(item_page_sources.thunderfury.tbcdb);
+            const result = await parser.parse();
+            expect(result).toBe(-1);
         });
     });
 });

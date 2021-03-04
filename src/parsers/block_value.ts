@@ -5,11 +5,11 @@ export class BlockValueParser extends HTMLTooltipBodyParser<number> {
     public static readonly no_block_value = -1;
 
     public async parse(): Promise<number> {
-        const armor_pattern_match = this.tooltip_table_html.match(BlockValueParser.block_pattern);
-        if (!armor_pattern_match || armor_pattern_match.length < 2) {
+        const block_value_pattern_match = this.tooltip_table_html.match(BlockValueParser.block_pattern);
+        if (!block_value_pattern_match || block_value_pattern_match.length < 2) {
             return BlockValueParser.no_block_value;
         }
-        const armor_value_string = armor_pattern_match[1];
-        return parseInt(armor_value_string);
+        const block_value_string = block_value_pattern_match[1];
+        return parseInt(block_value_string);
     }
 }
