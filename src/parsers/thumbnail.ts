@@ -5,7 +5,7 @@ abstract class ThumbnailParser extends HTMLParser<string> {
 
     public async parse(): Promise<string> {
         const icon_creation_match = this.page_html_source.match(ThumbnailParser.icon_creation_javascript_pattern);
-        if (!icon_creation_match || icon_creation_match.length < 2) {
+        if (!icon_creation_match) {
             return "";
         }
         const item_thumbnail_id = icon_creation_match[1].toLowerCase();
