@@ -20,7 +20,7 @@ class WeaponDamagePerSecondParser extends HTMLTooltipBodyParser<number> {
 
     public async parse(): Promise<number> {
         const dps_pattern_match = this.tooltip_table_html.match(WeaponDamagePerSecondParser.weapon_dps_pattern);
-        if (!dps_pattern_match || dps_pattern_match.length < 2) {
+        if (!dps_pattern_match) {
             return WeaponDamagePerSecondParser.no_dps_value;
         }
         const dps_value_string = dps_pattern_match[1];
@@ -34,7 +34,7 @@ class WeaponPhysicalDamageRangeParser extends HTMLTooltipBodyParser<WeaponDamage
 
     public async parse(): Promise<WeaponDamageRange> {
         const dmg_range_match = this.tooltip_table_html.match(WeaponPhysicalDamageRangeParser.damage_range_pattern);
-        if (!dmg_range_match || dmg_range_match.length < 3) {
+        if (!dmg_range_match) {
             return WeaponPhysicalDamageRangeParser.no_damage_range_value;
         }
         const bottom_end_string = dmg_range_match[1];
@@ -67,7 +67,7 @@ class WeaponMagicDamageRangeParser extends HTMLTooltipBodyParser<WeaponDamageRan
     }
 
     private extract_damage_range_from_regex_match(match: string[]): WeaponDamageRange | undefined {
-        if (!match || match.length < 4) {
+        if (!match) {
             return;
         }
         const bottom_end_string = match[1];
@@ -77,7 +77,7 @@ class WeaponMagicDamageRangeParser extends HTMLTooltipBodyParser<WeaponDamageRan
         return {
             low: parseInt(bottom_end_string),
             high: parseInt(top_end_string),
-            type: DamageTypeLookupTable.get_damage_type_from_string(damage_type),
+            type: new DamageTypeLookupTable().perform_lookup(damage_type),
         };
     }
 }

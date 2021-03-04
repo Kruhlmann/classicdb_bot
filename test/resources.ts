@@ -45,4 +45,24 @@ export const item_page_sources = {
         classicdb: fs.readFileSync("res/test/classicdb_skullflame_shield.html").toString(),
         tbcdb: fs.readFileSync("res/test/tbcdb_skullflame_shield.html").toString(),
     },
+    tome_of_knowledge: {
+        classicdb: fs.readFileSync("res/test/classicdb_tome_of_knowledge.html").toString(),
+        tbcdb: fs.readFileSync("res/test/tbcdb_tome_of_knowledge.html").toString(),
+    },
+    thorium_armor: {
+        classicdb: fs.readFileSync("res/test/classicdb_thorium_armor.html").toString(),
+        tbcdb: fs.readFileSync("res/test/tbcdb_thorium_armor.html").toString(),
+    },
+    shriveled_heart: {
+        classicdb: fs.readFileSync("res/test/classicdb_shriveled_heart.html").toString(),
+        tbcdb: fs.readFileSync("res/test/tbcdb_shriveled_heart.html").toString(),
+    },
+    huge_gnoll_paw: {
+        classicdb: fs.readFileSync("res/test/classicdb_huge_gnoll_paw.html").toString(),
+        tbcdb: fs.readFileSync("res/test/tbcdb_huge_gnoll_paw.html").toString(),
+    },
+    owatankas_tailspike: {
+        classicdb: fs.readFileSync("res/test/classicdb_owatankas_tailspike.html").toString(),
+        tbcdb: fs.readFileSync("res/test/tbcdb_owatankas_tailspike.html").toString(),
+    },
 };

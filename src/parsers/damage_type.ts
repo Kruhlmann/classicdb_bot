@@ -1,3 +1,5 @@
+import { LookupTable } from "./lookup_table";
+
 export enum DamageType {
     NONE,
     PHYSICAL,
@@ -9,8 +11,8 @@ export enum DamageType {
     HOLY,
 }
 
-export class DamageTypeLookupTable {
-    private static lookup_table: Record<string, DamageType> = {
+export class DamageTypeLookupTable extends LookupTable<DamageType> {
+    protected lookup_table: Record<string, DamageType> = {
         // If no damage type is specified that means the damage is physical.
         [""]: DamageType.PHYSICAL,
         none: DamageType.NONE,
@@ -21,16 +23,5 @@ export class DamageTypeLookupTable {
         shadow: DamageType.SHADOW,
         holy: DamageType.HOLY,
     };
-
-    public static get_damage_type_from_string(damage_type_string?: string): DamageType {
-        if (damage_type_string === undefined) {
-            return DamageType.NONE;
-        }
-        const lowercase_damage_type_string = damage_type_string.toLowerCase();
-        const type = DamageTypeLookupTable.lookup_table[lowercase_damage_type_string];
-        if (!type) {
-            return DamageType.NONE;
-        }
-        return type;
-    }
+    protected default_value = DamageType.NONE;
 }
