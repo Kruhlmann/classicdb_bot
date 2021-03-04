@@ -20,3 +20,18 @@ export abstract class HTMLTooltipBodyParser<ParserResultType> extends HTMLParser
         this.tooltip_table_html = this.$("div.tooltip table tr td table tr td").html();
     }
 }
+
+export abstract class RegexHTMLTooltipBodyParser<ParserResultType> extends HTMLTooltipBodyParser<ParserResultType> {
+    protected abstract readonly pattern: RegExp;
+    protected abstract readonly default_value: ParserResultType;
+
+    public async parse(): Promise<ParserResultType> {
+        const matches = this.tooltip_table_html.match(this.pattern);
+        if (!matches) {
+            return this.default_value;
+        }
+        return this.postformat(matches);
+    }
+
+    protected abstract postformat(parse_result: string[]): ParserResultType;
+}
