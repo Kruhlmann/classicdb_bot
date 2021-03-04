@@ -1,6 +1,6 @@
-import { RegexHTMLTooltipBodyParser } from ".";
+import { MonoRegexHTMLTooltipBodyParser } from ".";
 
-export class LevelRequirementParser extends RegexHTMLTooltipBodyParser<number> {
+export class LevelRequirementParser extends MonoRegexHTMLTooltipBodyParser<number> {
     protected readonly pattern = /Requires Level ([0-9]+)/;
     protected readonly default_value = -1;
 

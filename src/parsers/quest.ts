@@ -1,4 +1,4 @@
-import { HTMLTooltipBodyParser, RegexHTMLTooltipBodyParser } from ".";
+import { HTMLTooltipBodyParser, MonoRegexHTMLTooltipBodyParser } from ".";
 
 export class IsPartOfQuestParser extends HTMLTooltipBodyParser<boolean> {
     public async parse(): Promise<boolean> {
@@ -6,7 +6,7 @@ export class IsPartOfQuestParser extends HTMLTooltipBodyParser<boolean> {
     }
 }
 
-abstract class BeginsQuestParser extends RegexHTMLTooltipBodyParser<string> {
+abstract class BeginsQuestParser extends MonoRegexHTMLTooltipBodyParser<string> {
     protected readonly pattern = /<a.*?href="\?quest=([0-9]+)">This Item Begins a Quest<\/a>/;
     protected readonly default_value = "";
 }

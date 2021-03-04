@@ -1,6 +1,6 @@
-import { RegexHTMLTooltipBodyParser } from ".";
+import { MonoRegexHTMLTooltipBodyParser } from ".";
 
-export class DurabilityParser extends RegexHTMLTooltipBodyParser<number> {
+export class DurabilityParser extends MonoRegexHTMLTooltipBodyParser<number> {
     protected readonly pattern = /Durability ([0-9]+) \/ [0-9]+/;
     protected readonly default_value = -1;
 

@@ -21,7 +21,7 @@ export abstract class HTMLTooltipBodyParser<ParserResultType> extends HTMLParser
     }
 }
 
-export abstract class RegexHTMLTooltipBodyParser<ParserResultType> extends HTMLTooltipBodyParser<ParserResultType> {
+export abstract class MonoRegexHTMLTooltipBodyParser<ParserResultType> extends HTMLTooltipBodyParser<ParserResultType> {
     protected abstract readonly pattern: RegExp;
     protected abstract readonly default_value: ParserResultType;
 
@@ -34,4 +34,30 @@ export abstract class RegexHTMLTooltipBodyParser<ParserResultType> extends HTMLT
     }
 
     protected abstract postformat(parse_result: string[]): ParserResultType;
+}
+
+export abstract class MultiRegexHTMLTooltipBodyParser<ParserResultType> extends HTMLTooltipBodyParser<
+    ParserResultType[]
+> {
+    protected abstract readonly pattern: RegExp;
+
+    public async parse(): Promise<ParserResultType[]> {
+        const results: ParserResultType[] = [];
+
+        let match;
+        do {
+            match = this.pattern.exec(this.tooltip_table_html);
+            if (!match) {
+                break;
+            }
+            const result = this.postformat(match);
+            if (result) {
+                results.push(result);
+            }
+        } while (match);
+
+        return results;
+    }
+
+    protected abstract postformat(parse_result: string[]): ParserResultType | undefined;
 }

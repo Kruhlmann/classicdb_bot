@@ -1,6 +1,6 @@
-import { RegexHTMLTooltipBodyParser } from ".";
+import { MonoRegexHTMLTooltipBodyParser } from ".";
 
-export class BlockValueParser extends RegexHTMLTooltipBodyParser<number> {
+export class BlockValueParser extends MonoRegexHTMLTooltipBodyParser<number> {
     protected readonly pattern = /([0-9]+) Block/;
     protected readonly default_value = -1;
 

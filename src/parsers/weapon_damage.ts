@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 
-import { HTMLTooltipBodyParser, HTMLParser } from ".";
+import { MonoRegexHTMLTooltipBodyParser, HTMLParser, MultiRegexHTMLTooltipBodyParser } from ".";
 import { DamageType, DamageTypeLookupTable } from "./damage_type";
 
 export type WeaponDamageRange = {
@@ -14,31 +14,22 @@ export type WeaponDamage = {
     damage_ranges: WeaponDamageRange[];
 };
 
-class WeaponDamagePerSecondParser extends HTMLTooltipBodyParser<number> {
-    public static readonly weapon_dps_pattern = /\((.*?) damage per second\)/;
-    public static readonly no_dps_value = -1;
+class WeaponDamagePerSecondParser extends MonoRegexHTMLTooltipBodyParser<number> {
+    protected readonly pattern = /\((.*?) damage per second\)/;
+    protected readonly default_value = -1;
 
-    public async parse(): Promise<number> {
-        const dps_pattern_match = this.tooltip_table_html.match(WeaponDamagePerSecondParser.weapon_dps_pattern);
-        if (!dps_pattern_match) {
-            return WeaponDamagePerSecondParser.no_dps_value;
-        }
-        const dps_value_string = dps_pattern_match[1];
-        return parseFloat(dps_value_string);
+    protected postformat(parse_result: string[]): number {
+        return parseFloat(parse_result[1]);
     }
 }
 
-class WeaponPhysicalDamageRangeParser extends HTMLTooltipBodyParser<WeaponDamageRange> {
-    public static readonly damage_range_pattern = /([0-9]+) - ([0-9]+)\s+Damage/;
-    public static readonly no_damage_range_value: WeaponDamageRange = { low: -1, high: -1, type: DamageType.NONE };
+class WeaponPhysicalDamageRangeParser extends MonoRegexHTMLTooltipBodyParser<WeaponDamageRange> {
+    protected readonly pattern = /([0-9]+) - ([0-9]+)\s+Damage/;
+    protected readonly default_value = { low: -1, high: -1, type: DamageType.NONE };
 
-    public async parse(): Promise<WeaponDamageRange> {
-        const dmg_range_match = this.tooltip_table_html.match(WeaponPhysicalDamageRangeParser.damage_range_pattern);
-        if (!dmg_range_match) {
-            return WeaponPhysicalDamageRangeParser.no_damage_range_value;
-        }
-        const bottom_end_string = dmg_range_match[1];
-        const top_end_string = dmg_range_match[2];
+    protected postformat(parse_result: string[]): WeaponDamageRange {
+        const bottom_end_string = parse_result[1];
+        const top_end_string = parse_result[2];
         return {
             low: parseInt(bottom_end_string),
             high: parseInt(top_end_string),
@@ -47,32 +38,13 @@ class WeaponPhysicalDamageRangeParser extends HTMLTooltipBodyParser<WeaponDamage
     }
 }
 
-class WeaponMagicDamageRangeParser extends HTMLTooltipBodyParser<WeaponDamageRange[]> {
-    public static readonly damage_range_pattern = /\+([0-9]+) - ([0-9]+) (.*?) Damage/g;
-    public static readonly no_damage_range_value: WeaponDamageRange = { low: -1, high: -1, type: DamageType.NONE };
+class WeaponMagicDamageRangeParser extends MultiRegexHTMLTooltipBodyParser<WeaponDamageRange> {
+    protected readonly pattern = /\+([0-9]+) - ([0-9]+) (.*?) Damage/g;
 
-    public async parse(): Promise<WeaponDamageRange[]> {
-        const damage_ranges: WeaponDamageRange[] = [];
-
-        let dmg_range_match;
-        do {
-            dmg_range_match = WeaponMagicDamageRangeParser.damage_range_pattern.exec(this.tooltip_table_html);
-            const damage_range = this.extract_damage_range_from_regex_match(dmg_range_match);
-            if (damage_range) {
-                damage_ranges.push(damage_range);
-            }
-        } while (dmg_range_match);
-
-        return damage_ranges;
-    }
-
-    private extract_damage_range_from_regex_match(match: string[]): WeaponDamageRange | undefined {
-        if (!match) {
-            return;
-        }
-        const bottom_end_string = match[1];
-        const top_end_string = match[2];
-        const damage_type = match[3];
+    protected postformat(parse_result: string[]): WeaponDamageRange | undefined {
+        const bottom_end_string = parse_result[1];
+        const top_end_string = parse_result[2];
+        const damage_type = parse_result[3];
 
         return {
             low: parseInt(bottom_end_string),

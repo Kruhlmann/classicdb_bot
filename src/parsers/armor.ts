@@ -1,6 +1,6 @@
-import { RegexHTMLTooltipBodyParser } from ".";
+import { MonoRegexHTMLTooltipBodyParser } from ".";
 
-export class ArmorValueParser extends RegexHTMLTooltipBodyParser<number> {
+export class ArmorValueParser extends MonoRegexHTMLTooltipBodyParser<number> {
     protected readonly pattern = /([0-9]+) Armor/;
     protected readonly default_value = -1;
 
