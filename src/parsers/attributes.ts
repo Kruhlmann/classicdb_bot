@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 
-import { HTMLTooltipBodyParser } from ".";
+import { HTMLTooltipBodyParser, MultiRegexHTMLTooltipBodyParser } from ".";
 import { LookupTable } from "./lookup_table";
 
 export enum Attribute {
@@ -38,30 +38,12 @@ export class AttributeLookupTable extends LookupTable<Attribute> {
     protected default_value = Attribute.NONE;
 }
 
-export class AttributeParser extends HTMLTooltipBodyParser<AttributeStat[]> {
-    public static readonly attribute_pattern = /([+|-][0-9]+) (Agility|Strength|Intellect|Spirit|Stamina|(?:Fire|Frost|Arcane|Nature|Shadow) Resistance)/g;
+export class AttributeParser extends MultiRegexHTMLTooltipBodyParser<AttributeStat> {
+    protected readonly pattern = /([+|-][0-9]+) (Agility|Strength|Intellect|Spirit|Stamina|(?:Fire|Frost|Arcane|Nature|Shadow) Resistance)/g;
 
-    public async parse(): Promise<AttributeStat[]> {
-        const attributes: AttributeStat[] = [];
-
-        let attribute_match;
-        do {
-            attribute_match = AttributeParser.attribute_pattern.exec(this.tooltip_table_html);
-            const attribute = this.extract_attribute_from_regex_match(attribute_match);
-            if (attribute) {
-                attributes.push(attribute);
-            }
-        } while (attribute_match);
-
-        return attributes;
-    }
-
-    private extract_attribute_from_regex_match(match: string[]): AttributeStat | undefined {
-        if (!match) {
-            return;
-        }
-        const attribute_value = parseInt(match[1]);
-        const attribute_type = match[2];
+    protected postformat(parse_result: string[]): AttributeStat | undefined {
+        const attribute_value = parseInt(parse_result[1]);
+        const attribute_type = parse_result[2];
 
         return {
             value: attribute_value,

@@ -17,7 +17,7 @@ export abstract class HTMLTooltipBodyParser<ParserResultType> extends HTMLParser
     public constructor(page_html_source: string) {
         super(page_html_source);
         this.$ = cheerio.load(this.page_html_source);
-        this.tooltip_table_html = this.$("div.tooltip table tr td table tr td").html();
+        this.tooltip_table_html = this.$("div.tooltip table tr td table tr td").html() || "";
     }
 }
 
