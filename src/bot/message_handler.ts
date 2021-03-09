@@ -13,8 +13,8 @@ export class MessageHandler {
     private readonly tbc_item_factory: ItemFactory;
 
     public constructor() {
-        this.classic_wowhead = new TBCDB("https://classicdb.ch");
-        this.tbc_wowhead = new ClassicDB("https://tbcdb.com");
+        this.classic_wowhead = new ClassicDB("https://tbcdb.com");
+        this.tbc_wowhead = new TBCDB("https://classicdb.ch");
         this.classic_item_factory = new ItemFactory(Expansion.CLASSIC);
         this.tbc_item_factory = new ItemFactory(Expansion.CLASSIC);
     }

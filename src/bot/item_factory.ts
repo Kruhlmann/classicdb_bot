@@ -73,6 +73,7 @@ export class ItemFactory {
 
     private from_tbcdb_page_source(page_source: string): Item {
         const armor = new ArmorValueParser(page_source).parse();
+        console.log(armor);
         const attributes = new AttributeParser(page_source).parse();
         const binding = new BindingParser(page_source).parse();
         const block_value = new BlockValueParser(page_source).parse();
