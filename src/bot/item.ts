@@ -1,11 +1,10 @@
-import { AttributeStat, AttributeParser } from "../parsers/attributes";
-import { ItemBinding } from "../parsers/binding";
-import { Expansion } from "../expansion";
-import { Slot, Type } from "../parsers/slot_type";
 import { WeaponDamage } from "../parsers/weapon_damage";
-import { ArmorValueParser } from "../parsers/armor";
+import { Type, Slot } from "../parsers/slot_type";
+import { Expansion } from "../expansion";
+import { ItemBinding } from "../parsers/binding";
+import { AttributeStat } from "../parsers/attributes";
 
-class Item {
+export class Item {
     public readonly armor: number;
     public readonly attributes: AttributeStat[];
     public readonly binding: ItemBinding;
@@ -60,10 +59,5 @@ class Item {
         this.thumbnail = thumbnail;
         this.uniquely_equipped = uniquely_equipped;
         this.damage = damage;
-    }
-
-    public static from_page_source(page_source: string): Item {
-        const armor = new ArmorValueParser(page_source).parse();
-        const attributes = new AttributeParser(page_source).parse();
     }
 }
