@@ -26,25 +26,25 @@ describe("Weapon damage parser", () => {
     describe("ClassicDB", () => {
         it("parses stat attributes from classicdb.ch item page source", async () => {
             const parser = new AttributeParser(item_page_sources.tome_of_knowledge.classicdb);
-            const result = await parser.parse();
+            const result = parser.parse();
             expect(result).toStrictEqual(tome_of_knowledge_parse_result);
         });
 
         it("parses negative stat attributes from classicdb.ch item page source", async () => {
             const parser = new AttributeParser(item_page_sources.shriveled_heart.classicdb);
-            const result = await parser.parse();
+            const result = parser.parse();
             expect(result).toStrictEqual(shriveled_heart_parse_result);
         });
 
         it("parses resistance attributes from classicdb.ch item page source", async () => {
             const parser = new AttributeParser(item_page_sources.thorium_armor.classicdb);
-            const result = await parser.parse();
+            const result = parser.parse();
             expect(result).toStrictEqual(thorium_armor_parse_result);
         });
 
         it("fails to parse status from item page source with no attributes", async () => {
             const parser = new AttributeParser(item_page_sources.barrel.classicdb);
-            const result = await parser.parse();
+            const result = parser.parse();
             expect(result).toStrictEqual([]);
         });
     });
@@ -52,13 +52,13 @@ describe("Weapon damage parser", () => {
     //describe("TBCDB", () => {
     //it("parses damage value status from tbcdb.com item page source", async () => {
     //const parser = new AttributeParser(item_page_sources.thunderfury.tbcdb);
-    //const result = await parser.parse();
+    //const result = parser.parse();
     //expect(result).toStrictEqual(tome_of_knowledge_parse_result);
     //});
 
     //it("fails to parse status from item page source with no damage value", async () => {
     //const parser = new AttributeParser(item_page_sources.arcanist_belt.tbcdb);
-    //const result = await parser.parse();
+    //const result = parser.parse();
     //expect(result).toStrictEqual(empty_weapon_damage_parse_result);
     //});
     //});

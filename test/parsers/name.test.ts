@@ -6,13 +6,13 @@ describe("Name parser", () => {
     describe("ClassicDB", () => {
         it("parses an item name from classicdb.ch item page source", async () => {
             const parser = new ClassicDBNameParser(item_page_sources.thunderfury.classicdb);
-            const result = await parser.parse();
+            const result = parser.parse();
             expect(result).toBe("Thunderfury, Blessed Blade of the Windseeker");
         });
 
         it("fails to parse an item name from empty item page source", async () => {
             const parser = new ClassicDBNameParser("");
-            const result = await parser.parse();
+            const result = parser.parse();
             expect(result).toBe("");
         });
     });
@@ -20,13 +20,13 @@ describe("Name parser", () => {
     describe("TBCDB", () => {
         it("parses an item name from tbcdb.com item page source", async () => {
             const parser = new TBCDBNameParser(item_page_sources.thunderfury.tbcdb);
-            const result = await parser.parse();
+            const result = parser.parse();
             expect(result).toBe("Thunderfury, Blessed Blade of the Windseeker");
         });
 
         it("fails to parse an item name from empty item page source", async () => {
             const parser = new TBCDBNameParser("");
-            const result = await parser.parse();
+            const result = parser.parse();
             expect(result).toBe("");
         });
     });

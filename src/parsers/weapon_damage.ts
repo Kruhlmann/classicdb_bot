@@ -55,16 +55,16 @@ class WeaponMagicDamageRangeParser extends MultiRegexHTMLTooltipBodyParser<Weapo
 }
 
 export class WeaponDamageParser extends HTMLParser<WeaponDamage> {
-    public async parse(): Promise<WeaponDamage> {
+    public parse(): WeaponDamage {
         const dps_parser = new WeaponDamagePerSecondParser(this.page_html_source);
         const physical_damage_parser = new WeaponPhysicalDamageRangeParser(this.page_html_source);
         const magic_damage_parser = new WeaponMagicDamageRangeParser(this.page_html_source);
 
-        const physical_damage_range = await physical_damage_parser.parse();
-        const magic_damage_ranges = await magic_damage_parser.parse();
+        const physical_damage_range = physical_damage_parser.parse();
+        const magic_damage_ranges = magic_damage_parser.parse();
 
         return {
-            dps: await dps_parser.parse(),
+            dps: dps_parser.parse(),
             damage_ranges: [physical_damage_range, ...magic_damage_ranges],
         };
     }

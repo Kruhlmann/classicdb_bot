@@ -10,7 +10,7 @@ export class BindingParser extends HTMLTooltipBodyParser<ItemBinding> {
     public static readonly bind_on_pickup = "Binds when picked up";
     public static readonly bind_on_equip = "Binds when equipped";
 
-    public async parse(): Promise<ItemBinding> {
+    public parse(): ItemBinding {
         if (this.tooltip_table_html.includes(BindingParser.bind_on_pickup)) {
             return ItemBinding.ON_PICKUP;
         }

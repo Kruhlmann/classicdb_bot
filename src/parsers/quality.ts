@@ -14,7 +14,7 @@ export class QualityParser extends HTMLParser<string> {
         q7: "blizzard",
     };
 
-    public async parse(): Promise<string> {
+    public parse(): string {
         const $ = cheerio.load(this.page_html_source);
         const name_node = $("div.tooltip table tr td table tr td b").first();
         return this.name_node_to_quality_string($(name_node));

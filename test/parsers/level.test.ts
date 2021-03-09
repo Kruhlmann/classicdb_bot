@@ -6,12 +6,12 @@ describe("Level requirement parser", () => {
     describe("ClassicDB", () => {
         it("parses level requirement from classicdb.ch item page source", async () => {
             const parser = new LevelRequirementParser(item_page_sources.skullflame_shield.classicdb);
-            const result = await parser.parse();
+            const result = parser.parse();
             expect(result).toBe(54);
         });
         it("fails to parse level requirement from item page source without a level requirement", async () => {
             const parser = new LevelRequirementParser(item_page_sources.barrel.classicdb);
-            const result = await parser.parse();
+            const result = parser.parse();
             expect(result).toBe(-1);
         });
     });
@@ -19,12 +19,12 @@ describe("Level requirement parser", () => {
     describe("TBCDB", () => {
         it("parses level requirement from tbcdb.com item page source", async () => {
             const parser = new LevelRequirementParser(item_page_sources.skullflame_shield.tbcdb);
-            const result = await parser.parse();
+            const result = parser.parse();
             expect(result).toBe(54);
         });
         it("fails to parse level requirement from item page source without a level requirement", async () => {
             const parser = new LevelRequirementParser(item_page_sources.barrel.tbcdb);
-            const result = await parser.parse();
+            const result = parser.parse();
             expect(result).toBe(-1);
         });
     });

@@ -1,7 +1,7 @@
 import { HTMLTooltipBodyParser, MonoRegexHTMLTooltipBodyParser } from ".";
 
 export class IsPartOfQuestParser extends HTMLTooltipBodyParser<boolean> {
-    public async parse(): Promise<boolean> {
+    public parse(): boolean {
         return this.tooltip_table_html.includes("Quest Item");
     }
 }

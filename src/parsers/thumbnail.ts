@@ -3,7 +3,7 @@ import { HTMLParser } from ".";
 abstract class ThumbnailParser extends HTMLParser<string> {
     public static icon_creation_javascript_pattern = /\(Icon.create\('(.*?)'.*?\)\)/;
 
-    public async parse(): Promise<string> {
+    public parse(): string {
         const icon_creation_match = this.page_html_source.match(ThumbnailParser.icon_creation_javascript_pattern);
         if (!icon_creation_match) {
             return "";

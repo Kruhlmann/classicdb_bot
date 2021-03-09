@@ -3,7 +3,7 @@ import * as cheerio from "cheerio";
 import { HTMLParser } from ".";
 
 abstract class NameParser extends HTMLParser<string> {
-    public async parse(): Promise<string> {
+    public parse(): string {
         const $ = cheerio.load(this.page_html_source);
         const name_node = $("div.text > h1").first();
         const name = name_node.text();

@@ -1,12 +1,13 @@
 import { Client } from "discord.js";
 import { BotAlreadyStartedError } from "../exceptions";
 import { DiscordEventHandler } from "./event_handler";
+import { WowHead } from "../wowhead";
 
 export class ClassicDBBot {
     private token: string;
     private has_started: boolean = false;
     private discord_event_handler: DiscordEventHandler;
-    public discord_api_client: Client;
+    public readonly discord_api_client: Client;
 
     public constructor(token: string) {
         this.token = token;
