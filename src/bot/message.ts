@@ -5,11 +5,18 @@ import {
     TextChannel,
     GroupDMChannel,
     DMChannel,
-    RichEmbed,
 } from "discord.js";
 
-const SINGLE_CODE_MARKDOWN_REGEX = /`{1}[^`]+`{1}/g;
-const MULTI_CODE_MARKDOWN_REGEX = /`{3}[^`]+`{3}/g;
+class CodeMarkdownRemover {
+    private readonly SINGLE_CODE_MARKDOWN_REGEX = /`{1}[^`]+`{1}/g;
+    private readonly MULTI_CODE_MARKDOWN_REGEX = /`{3}[^`]+`{3}/g;
+
+    public remove_markdown_code_content(content: string) {
+        let result = content.replace(this.SINGLE_CODE_MARKDOWN_REGEX, "");
+        result = result.replace(this.MULTI_CODE_MARKDOWN_REGEX, "");
+        return result;
+    }
+}
 
 export class Message {
     public readonly is_direct_message: boolean;
@@ -34,13 +41,10 @@ export class Message {
         this.is_own_message = is_own_message;
     }
 
-    public static replace_code_markdown_content(message_content: string): string {
-        return message_content.replace(SINGLE_CODE_MARKDOWN_REGEX, "").replace(MULTI_CODE_MARKDOWN_REGEX, "");
-    }
-
     public static from_discord_api_message(message: DiscordMessage, client: DiscordAPIClient): Message {
-        const is_direct_message = !!message.guild;
-        const content = Message.replace_code_markdown_content(message.content);
+        const is_direct_message = message.guild === undefined;
+        const markdown_remover = new CodeMarkdownRemover();
+        const content = markdown_remover.remove_markdown_code_content(message.content);
         const is_own_message = message.author.id === client.user.id;
         return new Message(is_direct_message, content, message.author, message.channel, is_own_message);
     }

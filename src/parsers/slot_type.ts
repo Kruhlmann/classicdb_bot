@@ -1,5 +1,5 @@
 import { MonoRegexHTMLTooltipBodyParser } from ".";
-import { LookupTable } from "./lookup_table";
+import { LookupTable } from "../lookup_table";
 
 export enum Slot {
     NONE,

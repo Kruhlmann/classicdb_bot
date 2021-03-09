@@ -1,4 +1,4 @@
-import { LookupTable } from "./lookup_table";
+import { LookupTable } from "../lookup_table";
 
 export enum DamageType {
     NONE,

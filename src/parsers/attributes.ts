@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 
 import { HTMLTooltipBodyParser, MultiRegexHTMLTooltipBodyParser } from ".";
-import { LookupTable } from "./lookup_table";
+import { LookupTable } from "../lookup_table";
 
 export enum Attribute {
     NONE,

@@ -3,7 +3,9 @@ import { PostgresDatabaseConnection } from "./database";
 import { ClassicDBBot } from "./bot";
 
 async function main(): Promise<void> {
-    console.log(1);
+    const bot = new ClassicDBBot(process.env["CLASSICDB_BOT_TOKEN"]);
+    await bot.start();
+    console.log("Bot connected");
 }
 
 main();
