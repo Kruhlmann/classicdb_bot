@@ -14,7 +14,7 @@ import { QualityParser } from "../parsers/quality";
 import { ClassicDBBeginsQuestParser, TBCDBBeginsQuestParser } from "../parsers/quest";
 import { ClassicDBThumbnailParser, TBCDBThumbnailParser } from "../parsers/thumbnail";
 import { UniqueParser } from "../parsers/unique";
-import { Item } from "./item";
+import { Item } from ".";
 
 export class ItemFactory {
     private readonly expansion: Expansion;
@@ -23,14 +23,14 @@ export class ItemFactory {
         this.expansion = expansion;
     }
 
-    public from_page_source(page_source: string): Item {
+    public from_page_source(page_source: string, page_url: string): Item {
         if (this.expansion === Expansion.TBC) {
-            return this.from_tbcdb_page_source(page_source);
+            return this.from_tbcdb_page_source(page_source, page_url);
         }
-        return this.from_classicdb_page_source(page_source);
+        return this.from_classicdb_page_source(page_source, page_url);
     }
 
-    private from_classicdb_page_source(page_source: string): Item {
+    private from_classicdb_page_source(page_source: string, page_url: string): Item {
         const armor = new ArmorValueParser(page_source).parse();
         const attributes = new AttributeParser(page_source).parse();
         const binding = new BindingParser(page_source).parse();
@@ -67,11 +67,12 @@ export class ItemFactory {
             type,
             thumbnail,
             uniquely_equipped,
-            damage
+            damage,
+            page_url
         );
     }
 
-    private from_tbcdb_page_source(page_source: string): Item {
+    private from_tbcdb_page_source(page_source: string, page_url: string): Item {
         const armor = new ArmorValueParser(page_source).parse();
         console.log(armor);
         const attributes = new AttributeParser(page_source).parse();
@@ -109,7 +110,8 @@ export class ItemFactory {
             type,
             thumbnail,
             uniquely_equipped,
-            damage
+            damage,
+            page_url
         );
     }
 }

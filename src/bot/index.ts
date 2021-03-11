@@ -1,7 +1,6 @@
 import { Client } from "discord.js";
 import { BotAlreadyStartedError } from "../exceptions";
 import { DiscordEventHandler } from "./event_handler";
-import { WowHead } from "../wowhead";
 
 export class ClassicDBBot {
     private token: string;

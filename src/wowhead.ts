@@ -1,7 +1,20 @@
 import * as request from "request-promise";
 
-type ItemDetails = Array<[number, number] | [number, number, number] | [number, number, string, number]>;
-type OpenAPIResponse = [string, string[], never[], never[], never[], never[], never[], ItemDetails];
+export type ItemDetails = Array<[number, number] | [number, number, number] | [number, number, string, number]>;
+export type OpenAPIResponse = [
+    string,
+    string[],
+    undefined[],
+    undefined[],
+    undefined[],
+    undefined[],
+    undefined[],
+    ItemDetails
+];
+export type PageSourceContext = {
+    page_source: string;
+    page_url: string;
+};
 
 export abstract class WowHead {
     private readonly OPENAPI_ITEM_DETAILS_INDEX = 7;
@@ -14,8 +27,12 @@ export abstract class WowHead {
         this.base_path = base_path;
     }
 
+    public get_item_url_from_id(item_id: string | number): string {
+        return `${this.base_path}/?item=${item_id}`;
+    }
+
     private async get_page_source_from_id(item_id: string | number): Promise<string> {
-        return request(`${this.base_path}/?item=${item_id}`);
+        return request(this.get_item_url_from_id(item_id));
     }
 
     private async get_item_id_from_query(query: string): Promise<number> {
@@ -39,7 +56,7 @@ export abstract class WowHead {
         });
     }
 
-    private get_id_of_first_item_in_nonempty_openapi_response(results: OpenAPIResponse): number | number {
+    public get_id_of_first_item_in_nonempty_openapi_response(results: OpenAPIResponse): number | number {
         const item_details = this.get_item_details_from_openapi_response(results);
         if (item_details[0]) {
             const item_id = item_details[0][this.OPENAPI_ITEM_ID_INDEX];
@@ -47,33 +64,33 @@ export abstract class WowHead {
         }
     }
 
-    protected async get_page_source_from_query(item_query: string): Promise<string> {
+    protected async get_page_source_from_query(item_query: string): Promise<PageSourceContext> {
         const id = await this.get_item_id_from_query(item_query);
-        return this.get_page_source_from_id(id);
+        return { page_source: await this.get_page_source_from_id(id), page_url: this.get_item_url_from_id(id) };
     }
 
-    public abstract async get_classic_item_page_source_from_query(query: string): Promise<string>;
-    public abstract async get_tbc_item_page_source_from_query(query: string): Promise<string>;
+    public abstract async get_classic_item_page_source_from_query(query: string): Promise<PageSourceContext>;
+    public abstract async get_tbc_item_page_source_from_query(query: string): Promise<PageSourceContext>;
 }
 
 export class ClassicDB extends WowHead {
-    public async get_classic_item_page_source_from_query(query: string): Promise<string> {
+    public async get_classic_item_page_source_from_query(query: string): Promise<PageSourceContext> {
         return this.get_page_source_from_query(query);
     }
 
-    public async get_tbc_item_page_source_from_query(_query: string): Promise<string> {
+    public async get_tbc_item_page_source_from_query(): Promise<PageSourceContext> {
         console.warn("Tried to request a TBC page source using a classic instance of WowHead");
-        return "";
+        return { page_source: "", page_url: "" };
     }
 }
 
 export class TBCDB extends WowHead {
-    public async get_tbc_item_page_source_from_query(query: string): Promise<string> {
+    public async get_tbc_item_page_source_from_query(query: string): Promise<PageSourceContext> {
         return this.get_page_source_from_query(query);
     }
 
-    public async get_classic_item_page_source_from_query(_query: string): Promise<string> {
+    public async get_classic_item_page_source_from_query(): Promise<PageSourceContext> {
         console.warn("Tried to request a classic page source using a TBC instance of WowHead");
-        return "";
+        return { page_source: "", page_url: "" };
     }
 }

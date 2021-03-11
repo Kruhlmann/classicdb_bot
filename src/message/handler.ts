@@ -1,10 +1,11 @@
 import { ClassicDB, TBCDB, WowHead } from "../wowhead";
-import { Message } from "./message";
+import { Message } from ".";
 import { ItemQuery } from "./query_extractor";
 import { Expansion } from "../expansion";
-import { ItemQueryProcessor } from "./item_processor";
-import { HTMLParser } from "../parsers";
-import { ItemFactory } from "./item_factory";
+import { ItemQueryProcessor } from "../item/processor";
+import { ItemFactory } from "../item/factory";
+import { Item } from "../item";
+import { RichEmbedFactory } from "./richembed_factory";
 
 export class MessageHandler {
     private readonly classic_wowhead: WowHead;
@@ -23,12 +24,24 @@ export class MessageHandler {
         return ItemQueryProcessor.get_all_item_queries_from_message(message, Expansion.CLASSIC);
     }
 
-    private async act_on_item_query(item_query: ItemQuery, message: Message): Promise<void> {
+    public async item_query_to_item(item_query: ItemQuery): Promise<Item> {
         if (item_query.expansion === Expansion.CLASSIC) {
-            const page_source = await this.classic_wowhead.get_classic_item_page_source_from_query(item_query.query);
-            const item = this.classic_item_factory.from_page_source(page_source);
-            message.channel.send(JSON.stringify(item));
+            const { page_source, page_url } = await this.classic_wowhead.get_classic_item_page_source_from_query(
+                item_query.query
+            );
+            const item = this.classic_item_factory.from_page_source(page_source, page_url);
+            return item;
         }
+        const { page_source, page_url } = await this.tbc_wowhead.get_tbc_item_page_source_from_query(item_query.query);
+        const item = this.tbc_item_factory.from_page_source(page_source, page_url);
+        return item;
+    }
+
+    private async act_on_item_query(item_query: ItemQuery, message: Message): Promise<void> {
+        const item = await this.item_query_to_item(item_query);
+        const richembed_factory = new RichEmbedFactory("", "", "");
+        const richembed = richembed_factory.make_richembed_from_item(item);
+        message.channel.send(richembed);
     }
 
     public async act_on_message(message: Message): Promise<void[]> {

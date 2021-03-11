@@ -22,6 +22,7 @@ export class Item {
     public readonly thumbnail: string;
     public readonly uniquely_equipped: boolean;
     public readonly damage: WeaponDamage;
+    public readonly url: string;
 
     public constructor(
         armor: number,
@@ -40,7 +41,8 @@ export class Item {
         type: Type,
         thumbnail: string,
         uniquely_equipped: boolean,
-        damage: WeaponDamage
+        damage: WeaponDamage,
+        url: string
     ) {
         this.armor = armor;
         this.attributes = attributes;
@@ -59,5 +61,6 @@ export class Item {
         this.thumbnail = thumbnail;
         this.uniquely_equipped = uniquely_equipped;
         this.damage = damage;
+        this.url = url;
     }
 }

@@ -1,10 +1,10 @@
 import { Client } from "discord.js";
 
 import { ClassicDBBot } from ".";
-import { Message } from "./message";
-import { ItemQueryProcessor } from "./item_processor";
+import { Message } from "../message";
+import { ItemQueryProcessor } from "../item/processor";
 import { Expansion } from "../expansion";
-import { MessageHandler } from "./message_handler";
+import { MessageHandler } from "../message/handler";
 
 class MessageRelevancyEvaluater {
     public readonly discord_api_client: Client;
