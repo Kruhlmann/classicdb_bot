@@ -1,13 +1,17 @@
-export abstract class LookupTable<LookupValueType extends string | number | symbol> {
+type RecordKey = string | number;
+
+export abstract class LookupTable<LookupValueType extends RecordKey> {
     protected abstract lookup_table: Record<string, LookupValueType>;
     protected abstract default_value: LookupValueType;
 
-    public perform_lookup(key?: string): LookupValueType {
+    public perform_lookup(key?: RecordKey): LookupValueType {
         if (key === undefined) {
             return this.default_value;
         }
-        const lowercase_key = key.toLowerCase();
-        const value = this.lookup_table[lowercase_key];
+        if (String(key) === key) {
+            key = key.toLowerCase();
+        }
+        const value = this.lookup_table[key];
 
         if (!value) {
             return this.default_value;
@@ -16,7 +20,7 @@ export abstract class LookupTable<LookupValueType extends string | number | symb
     }
 
     public perform_reverse_lookup(key?: LookupValueType) {
-        const reverse_lookup_table: Record<LookupValueType, string> = {} as Record<LookupValueType, string>;
+        const reverse_lookup_table: Record<LookupValueType, RecordKey> = {} as Record<LookupValueType, RecordKey>;
         for (const [key, obj] of Object.entries(this.lookup_table)) {
             reverse_lookup_table[obj] = key;
         }

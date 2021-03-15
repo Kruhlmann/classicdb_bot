@@ -5,6 +5,6 @@ export class FlavorTextStringFactory extends ItemStringFactory {
         if (this.item.flavor_text === "") {
             return "";
         }
-        return `*${this.item.flavor_text}*`;
+        return `───\n*${this.item.flavor_text}*`;
     }
 }

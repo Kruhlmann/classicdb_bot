@@ -1,6 +1,7 @@
-export function capitalize_string(target: string): string {
-    if (target === "") {
+export function capitalize_string<SerializeableType>(target: SerializeableType): string {
+    const target_str = `${target}`;
+    if (target_str === "") {
         return "";
     }
-    return target[0].toUpperCase() + target.substr(1);
+    return target_str[0].toUpperCase() + target_str.substr(1);
 }

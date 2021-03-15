@@ -31,7 +31,7 @@ export class ClassRestrictionStringFactory extends ItemStringFactory {
     private get_item_class_restriction_string_repr(): string[] {
         const lookup_table = new ClassLookupTable();
         return this.item.class_restrictions.map((cls) => {
-            return lookup_table.perform_reverse_lookup(cls);
+            return `${lookup_table.perform_reverse_lookup(cls)}`;
         });
     }
 }

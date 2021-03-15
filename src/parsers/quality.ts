@@ -11,7 +11,32 @@ export enum ItemQuality {
     EPIC,
     LEGENDARY,
     ARTIFACT,
-    BLIZZARD,
+    HEIRLOOM,
+}
+
+export enum ItemQualityColor {
+    POOR = "#9d9d9d",
+    COMMON = "#ffffff",
+    UNCOMMON = "#1eff00",
+    RARE = "#0070dd",
+    EPIC = "#a335ee",
+    LEGENDARY = "#ff8000",
+    ARTIFACT = "#e6cc80",
+    HEIRLOOM = "#00ccff",
+}
+
+export class ItemQualityColorLookupTable extends LookupTable<ItemQualityColor> {
+    protected readonly lookup_table = {
+        [ItemQuality.POOR]: ItemQualityColor.POOR,
+        [ItemQuality.COMMON]: ItemQualityColor.COMMON,
+        [ItemQuality.UNCOMMON]: ItemQualityColor.UNCOMMON,
+        [ItemQuality.RARE]: ItemQualityColor.RARE,
+        [ItemQuality.EPIC]: ItemQualityColor.EPIC,
+        [ItemQuality.LEGENDARY]: ItemQualityColor.LEGENDARY,
+        [ItemQuality.ARTIFACT]: ItemQualityColor.ARTIFACT,
+        [ItemQuality.HEIRLOOM]: ItemQualityColor.HEIRLOOM,
+    };
+    protected readonly default_value: ItemQualityColor.POOR;
 }
 
 class CSSClassQualityLookupTable extends LookupTable<ItemQuality> {
@@ -23,7 +48,7 @@ class CSSClassQualityLookupTable extends LookupTable<ItemQuality> {
         q4: ItemQuality.EPIC,
         q5: ItemQuality.LEGENDARY,
         q6: ItemQuality.ARTIFACT,
-        q7: ItemQuality.BLIZZARD,
+        q7: ItemQuality.HEIRLOOM,
     };
     protected readonly default_value: ItemQuality.POOR;
 }

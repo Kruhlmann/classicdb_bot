@@ -14,6 +14,7 @@ import { FlavorTextStringFactory } from "./string_factories/flavor_text";
 import { ReputationRequirementStringFactory } from "./string_factories/reputation";
 import { SkillRequirementStringFactory } from "./string_factories/skill";
 import { PVPRankRequirementStringFactory } from "./string_factories/rank";
+import { ItemQualityColorLookupTable } from "../parsers/quality";
 
 class RichEmbedDescriptionFactory {
     public build_richembed_description_from_item(item: Item): string {
@@ -85,9 +86,10 @@ export class RichEmbedFactory {
 
     public make_richembed_from_item(item: Item): RichEmbed {
         const description = new RichEmbedDescriptionFactory().build_richembed_description_from_item(item);
+        const color = new ItemQualityColorLookupTable().perform_lookup(item.quality);
         return new RichEmbed()
             .setTitle(item.name)
-            .setColor("#ffffff")
+            .setColor(color)
             .setDescription(description)
             .setAuthor("ClassicDB Bot", this.favicon_path, this.discord_invite_url)
             .setThumbnail(item.thumbnail)

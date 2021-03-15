@@ -7,6 +7,7 @@ import { Class } from "../parsers/class";
 import { ReputationRequirement } from "../parsers/reputation";
 import { SkillRequirement } from "../parsers/skill";
 import { PVPRank } from "../parsers/rank";
+import { ItemQuality } from "../parsers/quality";
 
 export class Item {
     public readonly armor: number;
@@ -19,7 +20,7 @@ export class Item {
     public readonly flavor_text: string;
     public readonly level_requirement: number;
     public readonly name: string;
-    public readonly quality: string;
+    public readonly quality: ItemQuality;
     public readonly quest: string | boolean;
     public readonly slot: Slot;
     public readonly type: Type;
@@ -42,7 +43,7 @@ export class Item {
         flavor_text: string,
         level_requirement: number,
         name: string,
-        quality: string,
+        quality: ItemQuality,
         quest: string | boolean,
         slot: Slot,
         type: Type,
