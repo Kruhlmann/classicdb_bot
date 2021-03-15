@@ -185,4 +185,8 @@ export const item_page_sources = {
         classicdb: "",
         tbcdb: fs.readFileSync("res/test/tbcdb_scryers_bloodgem.html").toString(),
     },
+    heavy_mageweave_bandage: {
+        classicdb: fs.readFileSync("res/test/classicdb_heavy_mageweave_bandage.html").toString(),
+        tbcdb: fs.readFileSync("res/test/tbcdb_heavy_mageweave_bandage.html").toString(),
+    },
 };

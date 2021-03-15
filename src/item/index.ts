@@ -5,6 +5,7 @@ import { ItemBinding } from "../parsers/binding";
 import { AttributeStat } from "../parsers/attributes";
 import { Class } from "../parsers/class";
 import { ReputationRequirement } from "../parsers/reputation";
+import { SkillRequirement } from "../parsers/skill";
 
 export class Item {
     public readonly armor: number;
@@ -24,7 +25,8 @@ export class Item {
     public readonly thumbnail: string;
     public readonly uniquely_equipped: boolean;
     public readonly damage: WeaponDamage;
-    public readonly reputation: ReputationRequirement;
+    public readonly reputation_requirement: ReputationRequirement;
+    public readonly skill_requirement: SkillRequirement;
     public readonly url: string;
 
     public constructor(
@@ -45,7 +47,8 @@ export class Item {
         thumbnail: string,
         uniquely_equipped: boolean,
         damage: WeaponDamage,
-        reputation: ReputationRequirement,
+        reputation_requirement: ReputationRequirement,
+        skill_requirement: SkillRequirement,
         url: string
     ) {
         this.armor = armor;
@@ -65,7 +68,8 @@ export class Item {
         this.thumbnail = thumbnail;
         this.uniquely_equipped = uniquely_equipped;
         this.damage = damage;
-        this.reputation = reputation;
+        this.reputation_requirement = reputation_requirement;
+        this.skill_requirement = skill_requirement;
         this.url = url;
     }
 }
