@@ -97,10 +97,6 @@ export const item_page_sources = {
         classicdb: fs.readFileSync("res/test/classicdb_stylish_shirt.html").toString(),
         tbcdb: fs.readFileSync("res/test/tbcdb_stylish_shirt.html").toString(),
     },
-    arathor_tabard: {
-        classicdb: fs.readFileSync("res/test/classicdb_arathor_tabard.html").toString(),
-        tbcdb: fs.readFileSync("res/test/tbcdb_arathor_tabard.html").toString(),
-    },
     cryptstalker_wristguards: {
         classicdb: fs.readFileSync("res/test/classicdb_cryptstalker_wristguards.html").toString(),
         tbcdb: fs.readFileSync("res/test/tbcdb_cryptstalker_wristguards.html").toString(),
@@ -180,5 +176,13 @@ export const item_page_sources = {
     jagged_arrow: {
         classicdb: fs.readFileSync("res/test/classicdb_jagged_arrow.html").toString(),
         tbcdb: fs.readFileSync("res/test/tbcdb_jagged_arrow.html").toString(),
+    },
+    arathor_battle_tabard: {
+        classicdb: fs.readFileSync("res/test/classicdb_arathor_battle_tabard.html").toString(),
+        tbcdb: fs.readFileSync("res/test/tbcdb_arathor_battle_tabard.html").toString(),
+    },
+    scryers_bloodgem: {
+        classicdb: "",
+        tbcdb: fs.readFileSync("res/test/tbcdb_scryers_bloodgem.html").toString(),
     },
 };

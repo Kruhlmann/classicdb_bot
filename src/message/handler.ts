@@ -14,8 +14,8 @@ export class MessageHandler {
     private readonly tbc_item_factory: ItemFactory;
 
     public constructor() {
-        this.classic_wowhead = new ClassicDB("https://tbcdb.com");
-        this.tbc_wowhead = new TBCDB("https://classicdb.ch");
+        this.classic_wowhead = new ClassicDB("https://classicdb.ch");
+        this.tbc_wowhead = new TBCDB("https://tbcdb.com");
         this.classic_item_factory = new ItemFactory(Expansion.CLASSIC);
         this.tbc_item_factory = new ItemFactory(Expansion.CLASSIC);
     }
@@ -39,7 +39,11 @@ export class MessageHandler {
 
     private async act_on_item_query(item_query: ItemQuery, message: Message): Promise<void> {
         const item = await this.item_query_to_item(item_query);
-        const richembed_factory = new RichEmbedFactory("", "", "");
+        const richembed_factory = new RichEmbedFactory(
+            "https://images-ext-1.discordapp.net/external/s8uTI5co6Kys0_gnCCuzQOPsc5cAkoqivBFSpH5wnv8/https/orig08.deviantart.net/65e3/f/2014/207/e/2/official_wow_icon_by_benashvili-d7sd1ab.png",
+            "https://discord.gg/mRUEPnp",
+            "https://images-ext-2.discordapp.net/external/qwilFmqqSub3IKzUz47jRtBSMIR2RQVA8tjqxRHfavk/https/discordapp.com/assets/28174a34e77bb5e5310ced9f95cb480b.png"
+        );
         const richembed = richembed_factory.make_richembed_from_item(item);
         message.channel.send(richembed);
     }

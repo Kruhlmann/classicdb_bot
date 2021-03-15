@@ -1,11 +1,10 @@
-import { AttributeStat, AttributeParser } from "../parsers/attributes";
-import { ItemBinding, BindingParser } from "../parsers/binding";
+import { AttributeParser } from "../parsers/attributes";
+import { BindingParser } from "../parsers/binding";
 import { Expansion } from "../expansion";
-import { Slot, Type, SlotTypeParser } from "../parsers/slot_type";
-import { WeaponDamage, WeaponDamageParser } from "../parsers/weapon_damage";
+import { SlotTypeParser } from "../parsers/slot_type";
+import { WeaponDamageParser } from "../parsers/weapon_damage";
 import { ArmorValueParser } from "../parsers/armor";
 import { BlockValueParser } from "../parsers/block_value";
-import { ClassicDBClassParser, TBCDBClassParser } from "../parsers/class";
 import { DurabilityParser } from "../parsers/durability";
 import { FlavorTextParser } from "../parsers/flavor_text";
 import { LevelRequirementParser } from "../parsers/level";
@@ -15,6 +14,8 @@ import { ClassicDBBeginsQuestParser, TBCDBBeginsQuestParser } from "../parsers/q
 import { ClassicDBThumbnailParser, TBCDBThumbnailParser } from "../parsers/thumbnail";
 import { UniqueParser } from "../parsers/unique";
 import { Item } from ".";
+import { ReputationRequirementParser } from "../parsers/reputation";
+import { ClassicDBClassParser, TBCDBClassParser } from "../parsers/class";
 
 export class ItemFactory {
     private readonly expansion: Expansion;
@@ -40,6 +41,7 @@ export class ItemFactory {
         const expansion = Expansion.CLASSIC;
         const flavor_text = new FlavorTextParser(page_source).parse();
         const level_requirement = new LevelRequirementParser(page_source).parse();
+        const reputation_requirement = new ReputationRequirementParser(page_source).parse();
         const name = new ClassicDBNameParser(page_source).parse();
         const quality = new QualityParser(page_source).parse();
         const quest = new ClassicDBBeginsQuestParser(page_source).parse();
@@ -68,13 +70,13 @@ export class ItemFactory {
             thumbnail,
             uniquely_equipped,
             damage,
+            reputation_requirement,
             page_url
         );
     }
 
     private from_tbcdb_page_source(page_source: string, page_url: string): Item {
         const armor = new ArmorValueParser(page_source).parse();
-        console.log(armor);
         const attributes = new AttributeParser(page_source).parse();
         const binding = new BindingParser(page_source).parse();
         const block_value = new BlockValueParser(page_source).parse();
@@ -83,6 +85,7 @@ export class ItemFactory {
         const expansion = Expansion.CLASSIC;
         const flavor_text = new FlavorTextParser(page_source).parse();
         const level_requirement = new LevelRequirementParser(page_source).parse();
+        const reputation_requirement = new ReputationRequirementParser(page_source).parse();
         const name = new TBCDBNameParser(page_source).parse();
         const quality = new QualityParser(page_source).parse();
         const quest = new TBCDBBeginsQuestParser(page_source).parse();
@@ -111,6 +114,7 @@ export class ItemFactory {
             thumbnail,
             uniquely_equipped,
             damage,
+            reputation_requirement,
             page_url
         );
     }

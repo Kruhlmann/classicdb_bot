@@ -3,13 +3,15 @@ import { Type, Slot } from "../parsers/slot_type";
 import { Expansion } from "../expansion";
 import { ItemBinding } from "../parsers/binding";
 import { AttributeStat } from "../parsers/attributes";
+import { Class } from "../parsers/class";
+import { ReputationRequirement } from "../parsers/reputation";
 
 export class Item {
     public readonly armor: number;
     public readonly attributes: AttributeStat[];
     public readonly binding: ItemBinding;
     public readonly block_value: number;
-    public readonly class_restrictions: string[];
+    public readonly class_restrictions: Class[];
     public readonly durability: number;
     public readonly expansion: Expansion;
     public readonly flavor_text: string;
@@ -22,6 +24,7 @@ export class Item {
     public readonly thumbnail: string;
     public readonly uniquely_equipped: boolean;
     public readonly damage: WeaponDamage;
+    public readonly reputation: ReputationRequirement;
     public readonly url: string;
 
     public constructor(
@@ -29,7 +32,7 @@ export class Item {
         attributes: AttributeStat[],
         binding: ItemBinding,
         block_value: number,
-        class_restrictions: string[],
+        class_restrictions: Class[],
         durability: number,
         expansion: Expansion,
         flavor_text: string,
@@ -42,6 +45,7 @@ export class Item {
         thumbnail: string,
         uniquely_equipped: boolean,
         damage: WeaponDamage,
+        reputation: ReputationRequirement,
         url: string
     ) {
         this.armor = armor;
@@ -61,6 +65,7 @@ export class Item {
         this.thumbnail = thumbnail;
         this.uniquely_equipped = uniquely_equipped;
         this.damage = damage;
+        this.reputation = reputation;
         this.url = url;
     }
 }

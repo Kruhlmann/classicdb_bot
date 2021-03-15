@@ -66,7 +66,7 @@ describe("Slot type parser", () => {
             });
 
             it("parses tabard from classicdb.ch item page source", async () => {
-                const parser = new SlotTypeParser(item_page_sources.arathor_tabard.classicdb);
+                const parser = new SlotTypeParser(item_page_sources.arathor_battle_tabard.classicdb);
                 const result = parser.parse();
                 expect(result.slot).toBe(Slot.TABARD);
             });
@@ -342,7 +342,7 @@ describe("Slot type parser", () => {
             });
 
             it("parses tabard from tbcdb.com item page source", async () => {
-                const parser = new SlotTypeParser(item_page_sources.arathor_tabard.tbcdb);
+                const parser = new SlotTypeParser(item_page_sources.arathor_battle_tabard.tbcdb);
                 const result = parser.parse();
                 expect(result.slot).toBe(Slot.TABARD);
             });

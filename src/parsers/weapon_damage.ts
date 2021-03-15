@@ -6,16 +6,26 @@ import { DamageType, DamageTypeLookupTable } from "./damage_type";
 export type WeaponDamageRange = {
     low: number;
     high: number;
-    type: DamageType | string;
+    type: DamageType;
 };
 
 export type WeaponDamage = {
     dps: number;
     damage_ranges: WeaponDamageRange[];
+    speed: number;
 };
 
 class WeaponDamagePerSecondParser extends MonoRegexHTMLTooltipBodyParser<number> {
     protected readonly pattern = /\((.*?) damage per second\)/;
+    protected readonly default_value = -1;
+
+    protected postformat(parse_result: string[]): number {
+        return parseFloat(parse_result[1]);
+    }
+}
+
+class WeaponSpeedParser extends MonoRegexHTMLTooltipBodyParser<number> {
+    protected readonly pattern = /Speed ([0-9]\.[0-9][0-9])/;
     protected readonly default_value = -1;
 
     protected postformat(parse_result: string[]): number {
@@ -59,13 +69,16 @@ export class WeaponDamageParser extends HTMLParser<WeaponDamage> {
         const dps_parser = new WeaponDamagePerSecondParser(this.page_html_source);
         const physical_damage_parser = new WeaponPhysicalDamageRangeParser(this.page_html_source);
         const magic_damage_parser = new WeaponMagicDamageRangeParser(this.page_html_source);
+        const speed_parser = new WeaponSpeedParser(this.page_html_source);
 
         const physical_damage_range = physical_damage_parser.parse();
         const magic_damage_ranges = magic_damage_parser.parse();
+        const weapon_speed = speed_parser.parse();
 
         return {
             dps: dps_parser.parse(),
             damage_ranges: [physical_damage_range, ...magic_damage_ranges],
+            speed: weapon_speed,
         };
     }
 }

@@ -1,5 +1,5 @@
 /// <reference types="jest" />
-import { ItemQueryExtractor, ItemQueryType } from "../../src/bot/query_extractor";
+import { ItemQueryExtractor, ItemQueryType } from "../../src/message/query_extractor";
 import { Expansion } from "../../src/expansion";
 
 describe("Query extractor", () => {

@@ -2,7 +2,7 @@
 import { DurabilityParser } from "../../src/parsers/durability";
 import { item_page_sources } from "../resources";
 
-describe("Level requirement parser", () => {
+describe("Durability parser", () => {
     describe("ClassicDB", () => {
         it("parses durability value from classicdb.ch item page source", async () => {
             const parser = new DurabilityParser(item_page_sources.skullflame_shield.classicdb);
