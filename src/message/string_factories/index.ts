@@ -1,9 +1,7 @@
-import { Item } from "../../item";
+export abstract class ItemPropertyStringFactory<PropertyContainer> {
+    protected readonly item: PropertyContainer;
 
-export abstract class ItemStringFactory {
-    protected readonly item: Item;
-
-    public constructor(item: Item) {
+    public constructor(item: PropertyContainer) {
         this.item = item;
     }
 

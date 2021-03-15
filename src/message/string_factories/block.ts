@@ -1,6 +1,6 @@
-import { ItemStringFactory } from ".";
+import { ItemPropertyStringFactory } from ".";
 
-export class BlockValueStringFactory extends ItemStringFactory {
+export class BlockValueStringFactory extends ItemPropertyStringFactory<{ block_value: number }> {
     public build(): string {
         if (this.item.block_value === -1) {
             return "";

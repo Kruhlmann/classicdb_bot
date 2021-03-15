@@ -1,9 +1,12 @@
-import { ItemStringFactory } from ".";
+import { ItemPropertyStringFactory } from ".";
 import { Expansion } from "../../expansion";
-import { ClassLookupTable } from "../../parsers/class";
+import { ClassLookupTable, Class } from "../../parsers/class";
 import { capitalize_string } from "../../string";
 
-export class ClassRestrictionStringFactory extends ItemStringFactory {
+export class ClassRestrictionStringFactory extends ItemPropertyStringFactory<{
+    expansion: Expansion;
+    class_restrictions: Class[];
+}> {
     public build(): string {
         const class_links = this.make_class_links();
         if (class_links.length === 0) {

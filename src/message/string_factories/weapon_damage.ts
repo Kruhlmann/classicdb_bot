@@ -1,8 +1,9 @@
-import { ItemStringFactory } from ".";
+import { ItemPropertyStringFactory } from ".";
 import { DamageType, DamageTypeLookupTable } from "../../parsers/damage_type";
 import { capitalize_string } from "../../string";
+import { WeaponDamage } from "../../parsers/weapon_damage";
 
-export class DamageStringFactory extends ItemStringFactory {
+export class DamageStringFactory extends ItemPropertyStringFactory<{ damage: WeaponDamage }> {
     public build(): string {
         if (this.item.damage.dps === -1) {
             return "";

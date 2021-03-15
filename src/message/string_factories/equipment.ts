@@ -1,8 +1,8 @@
 import { Slot, SlotLookupTable, Type, TypeLookupTable } from "../../parsers/slot_type";
 import { capitalize_string } from "../../string";
-import { ItemStringFactory } from ".";
+import { ItemPropertyStringFactory } from ".";
 
-export class EquipmentStringFactory extends ItemStringFactory {
+export class EquipmentStringFactory extends ItemPropertyStringFactory<{ slot: Slot; type: Type }> {
     public build(): string {
         if (this.item.slot !== Slot.NONE && this.item.type !== Type.NONE) {
             const slot = new SlotLookupTable().perform_reverse_lookup(this.item.slot);

@@ -1,8 +1,8 @@
-import { ItemStringFactory } from ".";
+import { ItemPropertyStringFactory } from ".";
 import { AttributeStat, AttributeLookupTable } from "../../parsers/attributes";
 import { capitalize_string } from "../../string";
 
-export class AttributeStringFactory extends ItemStringFactory {
+export class AttributeStringFactory extends ItemPropertyStringFactory<{ attributes: AttributeStat[] }> {
     public build(): string {
         const result = [];
         for (const attribute of this.item.attributes) {

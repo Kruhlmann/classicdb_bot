@@ -1,8 +1,8 @@
-import { ItemStringFactory } from ".";
+import { ItemPropertyStringFactory } from ".";
 import { capitalize_string } from "../../string";
 import { PVPRank, PVPRankLookupTable } from "../../parsers/rank";
 
-export class PVPRankRequirementStringFactory extends ItemStringFactory {
+export class PVPRankRequirementStringFactory extends ItemPropertyStringFactory<{ rank_requirement: PVPRank }> {
     public build(): string {
         if (this.item.rank_requirement === PVPRank.NONE) {
             return "";

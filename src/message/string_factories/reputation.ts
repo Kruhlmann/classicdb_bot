@@ -1,8 +1,10 @@
-import { ItemStringFactory } from ".";
-import { ReputationState, ReputationStateLookupTable } from "../../parsers/reputation";
+import { ItemPropertyStringFactory } from ".";
+import { ReputationState, ReputationStateLookupTable, ReputationRequirement } from "../../parsers/reputation";
 import { capitalize_string } from "../../string";
 
-export class ReputationRequirementStringFactory extends ItemStringFactory {
+export class ReputationRequirementStringFactory extends ItemPropertyStringFactory<{
+    reputation_requirement: ReputationRequirement;
+}> {
     public build(): string {
         if (this.item.reputation_requirement.state === ReputationState.NONE) {
             return "";

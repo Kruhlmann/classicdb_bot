@@ -1,7 +1,7 @@
 import { ItemBinding } from "../../parsers/binding";
-import { ItemStringFactory } from ".";
+import { ItemPropertyStringFactory } from ".";
 
-export class ItemBindingStringFactory extends ItemStringFactory {
+export class ItemBindingStringFactory extends ItemPropertyStringFactory<{ binding: ItemBinding }> {
     public build(): string {
         if (this.item.binding === ItemBinding.NONE) {
             return "";

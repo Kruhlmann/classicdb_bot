@@ -3,7 +3,7 @@ import { RichEmbed } from "discord.js";
 import { EquipmentStringFactory } from "./string_factories/equipment";
 import { ItemBindingStringFactory } from "./string_factories/binding";
 import { UniqueStringFactory } from "./string_factories/unique";
-import { DamageStringFactory } from "./string_factories/damage";
+import { DamageStringFactory } from "./string_factories/weapon_damage";
 import { AttributeStringFactory } from "./string_factories/attributes";
 import { ArmorStringFactory } from "./string_factories/armor";
 import { DurabilityStringFactory } from "./string_factories/durability";
