@@ -13,6 +13,7 @@ import { BlockValueStringFactory } from "./string_factories/block";
 import { FlavorTextStringFactory } from "./string_factories/flavor_text";
 import { ReputationRequirementStringFactory } from "./string_factories/reputation";
 import { SkillRequirementStringFactory } from "./string_factories/skill";
+import { PVPRankRequirementStringFactory } from "./string_factories/rank";
 
 class RichEmbedDescriptionFactory {
     public build_richembed_description_from_item(item: Item): string {
@@ -26,6 +27,7 @@ class RichEmbedDescriptionFactory {
         const durability_str = new DurabilityStringFactory(item).build();
         const class_restriction_str = new ClassRestrictionStringFactory(item).build();
         const level_requirement_str = new LevelRequirementStringFactory(item).build();
+        const rank_requirement_str = new PVPRankRequirementStringFactory(item).build();
         const skill_requirement_str = new SkillRequirementStringFactory(item).build();
         const reputation_requirement_str = new ReputationRequirementStringFactory(item).build();
         const flavor_text_str = new FlavorTextStringFactory(item).build();
@@ -59,6 +61,7 @@ class RichEmbedDescriptionFactory {
             durability_str,
             class_restriction_str,
             level_requirement_str,
+            rank_requirement_str,
             skill_requirement_str,
             reputation_requirement_str,
             flavor_text_str,

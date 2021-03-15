@@ -17,6 +17,7 @@ import { Item } from ".";
 import { ReputationRequirementParser } from "../parsers/reputation";
 import { ClassicDBClassParser, TBCDBClassParser } from "../parsers/class";
 import { SkillRequirementParser } from "../parsers/skill";
+import { PVPRankRequirementParser } from "../parsers/rank";
 
 export class ItemFactory {
     private readonly expansion: Expansion;
@@ -42,6 +43,7 @@ export class ItemFactory {
         const expansion = Expansion.CLASSIC;
         const flavor_text = new FlavorTextParser(page_source).parse();
         const level_requirement = new LevelRequirementParser(page_source).parse();
+        const rank_requirement = new PVPRankRequirementParser(page_source).parse();
         const skill_requirement = new SkillRequirementParser(page_source).parse();
         const reputation_requirement = new ReputationRequirementParser(page_source).parse();
         const name = new ClassicDBNameParser(page_source).parse();
@@ -74,6 +76,7 @@ export class ItemFactory {
             damage,
             reputation_requirement,
             skill_requirement,
+            rank_requirement,
             page_url
         );
     }
@@ -88,6 +91,7 @@ export class ItemFactory {
         const expansion = Expansion.CLASSIC;
         const flavor_text = new FlavorTextParser(page_source).parse();
         const level_requirement = new LevelRequirementParser(page_source).parse();
+        const rank_requirement = new PVPRankRequirementParser(page_source).parse();
         const skill_requirement = new SkillRequirementParser(page_source).parse();
         const reputation_requirement = new ReputationRequirementParser(page_source).parse();
         const name = new TBCDBNameParser(page_source).parse();
@@ -120,6 +124,7 @@ export class ItemFactory {
             damage,
             reputation_requirement,
             skill_requirement,
+            rank_requirement,
             page_url
         );
     }

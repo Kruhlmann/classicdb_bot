@@ -189,4 +189,8 @@ export const item_page_sources = {
         classicdb: fs.readFileSync("res/test/classicdb_heavy_mageweave_bandage.html").toString(),
         tbcdb: fs.readFileSync("res/test/tbcdb_heavy_mageweave_bandage.html").toString(),
     },
+    reins_of_the_black_war_tiger: {
+        classicdb: fs.readFileSync("res/test/classicdb_reins_of_the_black_war_tiger.html").toString(),
+        tbcdb: fs.readFileSync("res/test/tbcdb_reins_of_the_black_war_tiger.html").toString(),
+    },
 };

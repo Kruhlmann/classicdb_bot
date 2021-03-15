@@ -6,6 +6,7 @@ import { AttributeStat } from "../parsers/attributes";
 import { Class } from "../parsers/class";
 import { ReputationRequirement } from "../parsers/reputation";
 import { SkillRequirement } from "../parsers/skill";
+import { PVPRank } from "../parsers/rank";
 
 export class Item {
     public readonly armor: number;
@@ -27,6 +28,7 @@ export class Item {
     public readonly damage: WeaponDamage;
     public readonly reputation_requirement: ReputationRequirement;
     public readonly skill_requirement: SkillRequirement;
+    public readonly rank_requirement: PVPRank;
     public readonly url: string;
 
     public constructor(
@@ -49,6 +51,7 @@ export class Item {
         damage: WeaponDamage,
         reputation_requirement: ReputationRequirement,
         skill_requirement: SkillRequirement,
+        rank_requirement: PVPRank,
         url: string
     ) {
         this.armor = armor;
@@ -70,6 +73,7 @@ export class Item {
         this.damage = damage;
         this.reputation_requirement = reputation_requirement;
         this.skill_requirement = skill_requirement;
+        this.rank_requirement = rank_requirement;
         this.url = url;
     }
 }
