@@ -17,7 +17,7 @@ export class DamageStringFactory extends ItemStringFactory {
         const phys_low = this.item.damage.damage_ranges[0].low;
         const phys_high = this.item.damage.damage_ranges[0].high;
         const dps_string = `(**${this.item.damage.dps}** damage per second)`;
-        const swing_damage_string = `damage every ${this.item.damage.speed.toFixed(2)} seconds`;
+        const swing_damage_string = `damage every **${this.item.damage.speed.toFixed(2)}** seconds`;
         result += `**+${phys_low} - ${phys_high}** ${swing_damage_string} ${dps_string}`;
         return result;
     }
