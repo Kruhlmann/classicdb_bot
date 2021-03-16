@@ -1,12 +1,20 @@
 import { Client } from "discord.js";
 
-import { ClassicDBBot } from ".";
+import { IClassicDBBot } from ".";
 import { Message } from "../message";
-import { ItemQueryProcessor } from "../item/processor";
-import { Expansion } from "../expansion";
-import { MessageHandler } from "../message/handler";
+import { MessageHandler, IMessageHandler } from "../message/handler";
 
-class MessageRelevancyEvaluater {
+export interface IDiscordEventHandler {
+    register_on_ready_event_handler(): void;
+    register_on_message_event_handler(): void;
+}
+
+export interface IMessageRelevancyEvaluater {
+    discord_api_client: Client;
+    is_message_relevant(message?: Message): boolean;
+}
+
+class MessageRelevancyEvaluater implements IMessageRelevancyEvaluater {
     public readonly discord_api_client: Client;
 
     public constructor(discord_api_client: Client) {
@@ -22,14 +30,14 @@ class MessageRelevancyEvaluater {
     }
 }
 
-export class DiscordEventHandler {
+export class DiscordEventHandler implements IDiscordEventHandler {
     private readonly DISCORD_READY_EVENT_NAME = "ready";
     private readonly DISCORD_MESSAGE_EVENT_NAME = "message";
-    private readonly bot: ClassicDBBot;
-    private readonly message_handler: MessageHandler;
-    private readonly message_relevancy_evaluator: MessageRelevancyEvaluater;
+    private readonly bot: IClassicDBBot;
+    private readonly message_handler: IMessageHandler;
+    private readonly message_relevancy_evaluator: IMessageRelevancyEvaluater;
 
-    public constructor(bot: ClassicDBBot) {
+    public constructor(bot: IClassicDBBot) {
         this.bot = bot;
         this.message_relevancy_evaluator = new MessageRelevancyEvaluater(bot.discord_api_client);
         this.message_handler = new MessageHandler();

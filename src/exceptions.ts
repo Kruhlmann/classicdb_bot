@@ -1,1 +1,1 @@
-export class BotAlreadyStartedError extends Error {}
+export class AlreadyStartedError extends Error {}

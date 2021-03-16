@@ -1,5 +1,10 @@
 type RecordKey = string | number;
 
+export interface ILookupTable<LookupValueType extends RecordKey> {
+    perform_lookup(key?: RecordKey): LookupValueType;
+    perform_reverse_lookup(key?: LookupValueType): RecordKey;
+}
+
 export abstract class LookupTable<LookupValueType extends RecordKey> {
     protected abstract lookup_table: Record<string, LookupValueType>;
     protected abstract default_value: LookupValueType;
@@ -19,7 +24,7 @@ export abstract class LookupTable<LookupValueType extends RecordKey> {
         return value;
     }
 
-    public perform_reverse_lookup(key?: LookupValueType) {
+    public perform_reverse_lookup(key?: LookupValueType): RecordKey {
         const reverse_lookup_table: Record<LookupValueType, RecordKey> = {} as Record<LookupValueType, RecordKey>;
         for (const [key, obj] of Object.entries(this.lookup_table)) {
             reverse_lookup_table[obj] = key;

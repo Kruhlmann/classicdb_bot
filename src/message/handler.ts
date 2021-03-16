@@ -3,13 +3,18 @@ import { ItemQuery } from "./query_extractor";
 import { Expansion } from "../expansion";
 import { ItemQueryProcessor } from "../item/processor";
 import { Item } from "../item";
-import { RichEmbedFactory } from "./richembed_factory";
+import { RichEmbedFactory, IRichEmbedFactory } from "./richembed_factory";
 import { ClassicDB, IWowHead, TBCDB } from "../wowhead";
 
-export class MessageHandler {
+export interface IMessageHandler {
+    item_query_to_item(item_query: ItemQuery): Promise<Item>;
+    act_on_message(message: Message): Promise<void[]>;
+}
+
+export class MessageHandler implements IMessageHandler {
     private readonly classic_wowhead: IWowHead;
     private readonly tbc_wowhead: IWowHead;
-    private readonly richembed_factory: RichEmbedFactory;
+    private readonly richembed_factory: IRichEmbedFactory;
 
     public constructor() {
         this.classic_wowhead = new ClassicDB("https://classicdb.ch");
