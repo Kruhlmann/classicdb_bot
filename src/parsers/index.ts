@@ -1,6 +1,10 @@
 import * as cheerio from "cheerio";
 
-export abstract class HTMLParser<ParserResultType> {
+export interface IParseable<ParserResultType> {
+    parse(): ParserResultType;
+}
+
+export abstract class HTMLParser<ParserResultType> implements IParseable<ParserResultType> {
     protected readonly page_html_source: string;
 
     public constructor(page_html_source: string) {

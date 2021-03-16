@@ -1,6 +1,6 @@
 import { IWowHeadPageSourceResolver, WowHeadItemPageSourceResolver, PageSourceContext } from "./item_query_resolver";
 import { Item } from "../item";
-import { ItemFactory } from "../item/factory";
+import { ItemFactory, IItemFactory } from "../item/factory";
 import { Expansion } from "../expansion";
 
 export interface IWowHead {
@@ -9,7 +9,7 @@ export interface IWowHead {
 
 export abstract class WowHead implements IWowHead {
     protected readonly page_source_resolver: IWowHeadPageSourceResolver;
-    protected readonly item_factory: ItemFactory;
+    protected readonly item_factory: IItemFactory;
 
     public constructor(base_path: string, expansion: Expansion) {
         this.page_source_resolver = new WowHeadItemPageSourceResolver(base_path);

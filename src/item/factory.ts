@@ -19,7 +19,11 @@ import { ClassicDBClassParser, TBCDBClassParser } from "../parsers/class";
 import { SkillRequirementParser } from "../parsers/skill";
 import { PVPRankRequirementParser } from "../parsers/rank";
 
-export class ItemFactory {
+export interface IItemFactory {
+    from_page_source(page_source: string, page_url: string): Item;
+}
+
+export class ItemFactory implements IItemFactory {
     private readonly expansion: Expansion;
 
     public constructor(expansion: Expansion) {
