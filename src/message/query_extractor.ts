@@ -1,4 +1,5 @@
 import { Expansion, ExpansionLookupTable } from "../expansion";
+import { ILookupTable } from "../lookup_table";
 
 export enum ItemQueryType {
     NONE,
@@ -49,11 +50,12 @@ abstract class QueryExtractor {
 export class ItemQueryExtractor extends QueryExtractor {
     protected readonly pattern = /\[(.*?)\](\((.*?)\))?/g;
     protected readonly default_expansion: Expansion;
-    private lookup_table = new ExpansionLookupTable();
+    private lookup_table: ILookupTable<Expansion>;
 
     public constructor(default_expansion: Expansion) {
         super();
         this.default_expansion = default_expansion;
+        this.lookup_table = new ExpansionLookupTable();
     }
 
     public postformat(match: string[]): ItemQuery {

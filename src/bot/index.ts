@@ -11,7 +11,7 @@ export interface IClassicDBBot {
     start(): Promise<void>;
 }
 
-abstract class Startable {
+abstract class Startable implements IStartable {
     protected has_started = false;
 
     public async start(): Promise<void> {
@@ -22,7 +22,7 @@ abstract class Startable {
     }
 }
 
-export class ClassicDBBot extends Startable {
+export class ClassicDBBot extends Startable implements IClassicDBBot {
     private readonly token: string;
     private readonly discord_event_handler: IDiscordEventHandler;
     public readonly discord_api_client: Client;
