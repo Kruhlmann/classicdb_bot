@@ -4,6 +4,7 @@ import { IClassicDBBot } from ".";
 import { MessageHandler, IMessageHandler } from "../message/handler";
 import { IMessageRelevancyEvaluater, MessageRelevancyEvaluater } from "../message/relevancy_evaluator";
 import { MessageFactory, IMessageFactory } from "../message/factory";
+import { IExternalItemStorage } from "../external_item_storage";
 
 export interface IDiscordEventHandler {
     register_on_ready_event_handler(): void;
@@ -18,10 +19,10 @@ export class DiscordEventHandler implements IDiscordEventHandler {
     private readonly message_relevancy_evaluator: IMessageRelevancyEvaluater;
     private readonly message_factory: IMessageFactory;
 
-    public constructor(bot: IClassicDBBot) {
+    public constructor(bot: IClassicDBBot, external_item_storage: IExternalItemStorage) {
         this.bot = bot;
         this.message_relevancy_evaluator = new MessageRelevancyEvaluater(bot.discord_api_client);
-        this.message_handler = new MessageHandler();
+        this.message_handler = new MessageHandler(external_item_storage);
         this.message_factory = new MessageFactory();
     }
 

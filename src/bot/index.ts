@@ -1,6 +1,7 @@
 import { Client } from "discord.js";
 import { AlreadyStartedError } from "../exceptions";
 import { DiscordEventHandler, IDiscordEventHandler } from "./event_handler";
+import { IExternalItemStorage } from "../external_item_storage";
 
 export interface IStartable {
     start(): Promise<void>;
@@ -27,11 +28,11 @@ export class ClassicDBBot extends Startable implements IClassicDBBot {
     private readonly discord_event_handler: IDiscordEventHandler;
     public readonly discord_api_client: Client;
 
-    public constructor(token: string) {
+    public constructor(token: string, external_item_storage?: IExternalItemStorage) {
         super();
         this.token = token;
         this.discord_api_client = new Client();
-        this.discord_event_handler = new DiscordEventHandler(this);
+        this.discord_event_handler = new DiscordEventHandler(this, external_item_storage);
     }
 
     public async start(): Promise<void> {
