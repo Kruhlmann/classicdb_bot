@@ -77,4 +77,8 @@ export class Item {
         this.rank_requirement = rank_requirement;
         this.url = url;
     }
+
+    public async resolve_effects(): Promise<void> {
+        return;
+    }
 }
