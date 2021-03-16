@@ -9,6 +9,32 @@ import { SkillRequirement } from "../parsers/skill";
 import { PVPRank } from "../parsers/rank";
 import { ItemQuality } from "../parsers/quality";
 
+export interface IItem {
+    armor: number;
+    attributes: AttributeStat[];
+    binding: ItemBinding;
+    block_value: number;
+    class_restrictions: Class[];
+    durability: number;
+    expansion: Expansion;
+    flavor_text: string;
+    level_requirement: number;
+    name: string;
+    quality: ItemQuality;
+    quest: string | boolean;
+    slot: Slot;
+    type: Type;
+    thumbnail: string;
+    uniquely_equipped: boolean;
+    damage: WeaponDamage;
+    reputation_requirement: ReputationRequirement;
+    skill_requirement: SkillRequirement;
+    rank_requirement: PVPRank;
+    url: string;
+
+    resolve_effects(): Promise<void>;
+}
+
 export class Item {
     public readonly armor: number;
     public readonly attributes: AttributeStat[];

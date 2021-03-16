@@ -13,14 +13,14 @@ import { QualityParser } from "../parsers/quality";
 import { ClassicDBBeginsQuestParser, TBCDBBeginsQuestParser } from "../parsers/quest";
 import { ClassicDBThumbnailParser, TBCDBThumbnailParser } from "../parsers/thumbnail";
 import { UniqueParser } from "../parsers/unique";
-import { Item } from ".";
+import { Item, IItem } from ".";
 import { ReputationRequirementParser } from "../parsers/reputation";
 import { ClassicDBClassParser, TBCDBClassParser } from "../parsers/class";
 import { SkillRequirementParser } from "../parsers/skill";
 import { PVPRankRequirementParser } from "../parsers/rank";
 
 export interface IItemFactory {
-    from_page_source(page_source: string, page_url: string): Item;
+    from_page_source(page_source: string, page_url: string): IItem;
 }
 
 export class ItemFactory implements IItemFactory {
@@ -30,14 +30,14 @@ export class ItemFactory implements IItemFactory {
         this.expansion = expansion;
     }
 
-    public from_page_source(page_source: string, page_url: string): Item {
+    public from_page_source(page_source: string, page_url: string): IItem {
         if (this.expansion === Expansion.TBC) {
             return this.from_tbcdb_page_source(page_source, page_url);
         }
         return this.from_classicdb_page_source(page_source, page_url);
     }
 
-    private from_classicdb_page_source(page_source: string, page_url: string): Item {
+    private from_classicdb_page_source(page_source: string, page_url: string): IItem {
         const armor = new ArmorValueParser(page_source).parse();
         const attributes = new AttributeParser(page_source).parse();
         const binding = new BindingParser(page_source).parse();
@@ -85,7 +85,7 @@ export class ItemFactory implements IItemFactory {
         );
     }
 
-    private from_tbcdb_page_source(page_source: string, page_url: string): Item {
+    private from_tbcdb_page_source(page_source: string, page_url: string): IItem {
         const armor = new ArmorValueParser(page_source).parse();
         const attributes = new AttributeParser(page_source).parse();
         const binding = new BindingParser(page_source).parse();

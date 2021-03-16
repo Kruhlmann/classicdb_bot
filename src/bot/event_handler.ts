@@ -1,33 +1,13 @@
-import { Client } from "discord.js";
+import { Client, Message as DiscordAPIMessage } from "discord.js";
 
 import { IClassicDBBot } from ".";
-import { Message, IMessageFactory, MessageFactory } from "../message";
 import { MessageHandler, IMessageHandler } from "../message/handler";
+import { IMessageRelevancyEvaluater, MessageRelevancyEvaluater } from "../message/relevancy_evaluator";
+import { MessageFactory, IMessageFactory } from "../message/factory";
 
 export interface IDiscordEventHandler {
     register_on_ready_event_handler(): void;
     register_on_message_event_handler(): void;
-}
-
-export interface IMessageRelevancyEvaluater {
-    discord_api_client: Client;
-    is_message_relevant(message?: Message): boolean;
-}
-
-class MessageRelevancyEvaluater implements IMessageRelevancyEvaluater {
-    public readonly discord_api_client: Client;
-
-    public constructor(discord_api_client: Client) {
-        this.discord_api_client = discord_api_client;
-    }
-
-    public is_message_relevant(message?: Message): boolean {
-        if (!message) {
-            return false;
-        }
-        const is_bot_message = message.author.id === this.discord_api_client.user.id;
-        return !message.is_direct_message && !message.is_empty && !is_bot_message;
-    }
 }
 
 export class DiscordEventHandler implements IDiscordEventHandler {
@@ -52,8 +32,8 @@ export class DiscordEventHandler implements IDiscordEventHandler {
     }
 
     public register_on_message_event_handler(): void {
-        this.bot.discord_api_client.on(this.DISCORD_MESSAGE_EVENT_NAME, (discord_message) => {
-            const message = this.message_factory.make_message_from_discord_api_message(
+        this.bot.discord_api_client.on(this.DISCORD_MESSAGE_EVENT_NAME, (discord_message: DiscordAPIMessage) => {
+            const message = this.message_factory.make_from_discord_api_message(
                 discord_message,
                 this.bot.discord_api_client
             );
