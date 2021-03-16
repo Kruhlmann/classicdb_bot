@@ -1,6 +1,6 @@
-import { OpenAPIResponse, ClassicDB, TBCDB } from "../src/wowhead";
-import { MessageHandler } from "../src/message/handler";
-import { Expansion } from "../src/expansion";
+import { OpenAPIResponse, ClassicDB, TBCDB } from "../../src/wowhead";
+import { MessageHandler } from "../../src/message/handler";
+import { Expansion } from "../../src/expansion";
 const thunderfury_query_response_classicdb: OpenAPIResponse = [
     "thunderfury",
     ["Thunderfury, Blessed Blade of the Windseeker (Item)", "Rise, Thunderfury! (Quest)"],
