@@ -17,7 +17,7 @@ import { SlotTypeParser } from "../parsers/slot_type";
 import { ClassicDBThumbnailParser, TBCDBThumbnailParser } from "../parsers/thumbnail";
 import { UniqueParser } from "../parsers/unique";
 import { WeaponDamageParser } from "../parsers/weapon_damage";
-import { ClassicDBSpellFactory } from "../spell/factory";
+import { ClassicDBSpellFactory, TBCDBSpellFactory } from "../spell/factory";
 import { IItem, Item } from ".";
 
 export interface IItemFactory {
@@ -110,7 +110,7 @@ export class ItemFactory implements IItemFactory {
         const thumbnail = new TBCDBThumbnailParser(page_source).parse();
         const uniquely_equipped = new UniqueParser(page_source).parse();
         const damage = new WeaponDamageParser(page_source).parse();
-        const spells = await new ClassicDBSpellFactory().from_item_page_source(page_source);
+        const spells = await new TBCDBSpellFactory().from_item_page_source(page_source);
 
         return new Item(
             armor,

@@ -5,8 +5,8 @@ export class RangeStringFactory extends GameObjectPropertyStringFactory<{ range:
         if (this.game_object.range === -1) {
             return "";
         } else if (this.game_object.range === 0) {
-            return "Melee Range\n";
+            return "**Melee Range**";
         }
-        return `${this.game_object.range} yd range\n`;
+        return `**${this.game_object.range} yd range**`;
     }
 }

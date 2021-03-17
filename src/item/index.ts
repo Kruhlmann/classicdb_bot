@@ -33,6 +33,8 @@ export interface IItem {
     rank_requirement: PVPRank;
     url: string;
     spells: ISpell[];
+    simple_spells: ISpell[];
+    complex_spells: ISpell[];
 }
 
 export class Item {
@@ -105,5 +107,13 @@ export class Item {
         this.rank_requirement = rank_requirement;
         this.url = url;
         this.spells = spells;
+    }
+
+    public get simple_spells(): ISpell[] {
+        return this.spells.filter((spell) => spell.is_simple);
+    }
+
+    public get complex_spells(): ISpell[] {
+        return this.spells.filter((spell) => !spell.is_simple);
     }
 }

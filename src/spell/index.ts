@@ -1,7 +1,7 @@
 export interface ISpell {
     id: number;
     name: string;
-    flavor_text: string;
+    description: string;
     url: string;
     thumbnail_url: string;
     trigger: string;
@@ -14,7 +14,7 @@ abstract class Spell implements ISpell {
     protected abstract readonly SIMPLE_SPELL_THUMBNAIL_URL: string;
     public readonly id: number;
     public readonly name: string;
-    public readonly flavor_text: string;
+    public readonly description: string;
     public readonly url: string;
     public readonly thumbnail_url: string;
     public readonly trigger: string;
@@ -33,7 +33,7 @@ abstract class Spell implements ISpell {
     ) {
         this.id = id;
         this.name = name;
-        this.flavor_text = description;
+        this.description = description;
         this.url = url;
         this.thumbnail_url = thumbnail_url;
         this.trigger = trigger;
