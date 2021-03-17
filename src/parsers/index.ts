@@ -25,6 +25,17 @@ export abstract class HTMLTooltipBodyParser<ParserResultType> extends HTMLParser
     }
 }
 
+export abstract class HTMLEffectTooltipBodyParser<ParserResultType> extends HTMLParser<ParserResultType> {
+    protected readonly tooltip_table_html: string;
+    protected readonly $: cheerio.Root;
+
+    public constructor(page_html_source: string) {
+        super(page_html_source);
+        this.$ = cheerio.load(this.page_html_source);
+        this.tooltip_table_html = this.$("div.tooltip table tr td table:nth-child(2) tr td").html() || "";
+    }
+}
+
 export abstract class MonoRegexHTMLTooltipBodyParser<ParserResultType> extends HTMLTooltipBodyParser<ParserResultType> {
     protected abstract readonly pattern: RegExp;
     protected abstract readonly default_value: ParserResultType;
@@ -41,6 +52,32 @@ export abstract class MonoRegexHTMLTooltipBodyParser<ParserResultType> extends H
 }
 
 export abstract class MultiRegexHTMLTooltipBodyParser<ParserResultType> extends HTMLTooltipBodyParser<
+    ParserResultType[]
+> {
+    protected abstract readonly pattern: RegExp;
+
+    public parse(): ParserResultType[] {
+        const results: ParserResultType[] = [];
+
+        let match;
+        do {
+            match = this.pattern.exec(this.tooltip_table_html);
+            if (!match) {
+                break;
+            }
+            const result = this.postformat(match);
+            if (result) {
+                results.push(result);
+            }
+        } while (match);
+
+        return results;
+    }
+
+    protected abstract postformat(parse_result: string[]): ParserResultType | undefined;
+}
+
+export abstract class MultiRegexHTMLEffectTooltipBodyParser<ParserResultType> extends HTMLEffectTooltipBodyParser<
     ParserResultType[]
 > {
     protected abstract readonly pattern: RegExp;

@@ -5,7 +5,7 @@
     "scripts": {
         "start": "yarn build && node dist/index.js",
         "test": "jest --verbose --config jest.config.js",
-        "coverage": "nyc npm run test",
+        "coverage": "nyc --reporter=lcov yarn run test",
         "build": "tsc",
         "watch": "tsc -w",
         "dev": "tsc-watch --onSuccess 'node dist/index.js'",
@@ -24,6 +24,7 @@
     "devDependencies": {
         "@istanbuljs/nyc-config-typescript": "^0.1.3",
         "@types/cheerio": "^0.22.24",
+        "@types/jest": "^26.0.20",
         "@types/request": "^2.48.5",
         "@types/request-promise": "^4.1.43",
         "@types/sequelize": "^4.28.9",
@@ -31,6 +32,7 @@
         "@typescript-eslint/eslint-plugin": "^1.11.0",
         "@typescript-eslint/parser": "^1.11.0",
         "eslint": "^6.0.1",
+        "nyc": "^15.1.0",
         "source-map-support": "^0.5.12",
         "tsc-watch": "^4.2.9",
         "typescript": "^3.4.5",
@@ -38,7 +40,6 @@
     },
     "dependencies": {
         "@sentry/node": "^4.6.1",
-        "@types/jest": "^26.0.20",
         "bufferutil": "^3.0.3",
         "cheerio": "^1.0.0-rc.2",
         "discord.js": "^11.4.2",

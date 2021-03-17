@@ -1,5 +1,9 @@
 import * as fs from "fs";
 
+export const simple_spell_thumbnail_url = {
+    classicdb: "https://classicdb.ch/images/icons/large/trade_engineering.jpg",
+    tbcdb: "https://tbcdb.com/images/icons/large/temp.jpg",
+};
 export const item_page_sources = {
     audacity: {
         classicdb: fs.readFileSync("res/test/classicdb_alexs_ring_of_audacity_item_page.html").toString(),

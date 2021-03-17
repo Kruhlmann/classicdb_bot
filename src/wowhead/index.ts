@@ -1,4 +1,4 @@
-import { IWowHeadPageSourceResolver, WowHeadItemPageSourceResolver, PageSourceContext } from "./item_query_resolver";
+import { IWowHeadPageSourceResolver, WowHeadItemPageSourceResolver } from "./item_query_resolver";
 import { Item } from "../item";
 import { ItemFactory, IItemFactory } from "../item/factory";
 import { Expansion } from "../expansion";

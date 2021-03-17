@@ -41,7 +41,7 @@ export class AttributeLookupTable extends LookupTable<Attribute> {
 export class AttributeParser extends MultiRegexHTMLTooltipBodyParser<AttributeStat> {
     protected readonly pattern = /([+|-][0-9]+) (Agility|Strength|Intellect|Spirit|Stamina|(?:Fire|Frost|Arcane|Nature|Shadow) Resistance)/g;
 
-    protected postformat(parse_result: string[]): AttributeStat | undefined {
+    protected postformat(parse_result: string[]): AttributeStat {
         const attribute_value = parseInt(parse_result[1]);
         const attribute_type = parse_result[2];
 
