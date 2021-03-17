@@ -1,10 +1,10 @@
-import { ItemPropertyStringFactory } from ".";
+import { GameObjectPropertyStringFactory } from ".";
 
-export class DurabilityStringFactory extends ItemPropertyStringFactory<{ durability: number }> {
+export class DurabilityStringFactory extends GameObjectPropertyStringFactory<{ durability: number }> {
     public build(): string {
-        if (this.item.durability === -1) {
+        if (this.game_object.durability === -1) {
             return "";
         }
-        return `Durability: ${this.item.durability}/${this.item.durability}`;
+        return `Durability: ${this.game_object.durability}/${this.game_object.durability}`;
     }
 }

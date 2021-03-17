@@ -17,10 +17,11 @@ import { SlotTypeParser } from "../parsers/slot_type";
 import { ClassicDBThumbnailParser, TBCDBThumbnailParser } from "../parsers/thumbnail";
 import { UniqueParser } from "../parsers/unique";
 import { WeaponDamageParser } from "../parsers/weapon_damage";
+import { ClassicDBSpellFactory } from "../spell/factory";
 import { IItem, Item } from ".";
 
 export interface IItemFactory {
-    from_page_source(page_source: string, page_url: string): IItem;
+    from_page_source(page_source: string, page_url: string): Promise<IItem>;
 }
 
 export class ItemFactory implements IItemFactory {
@@ -30,14 +31,14 @@ export class ItemFactory implements IItemFactory {
         this.expansion = expansion;
     }
 
-    public from_page_source(page_source: string, page_url: string): IItem {
+    public async from_page_source(page_source: string, page_url: string): Promise<IItem> {
         if (this.expansion === Expansion.TBC) {
             return this.from_tbcdb_page_source(page_source, page_url);
         }
         return this.from_classicdb_page_source(page_source, page_url);
     }
 
-    private from_classicdb_page_source(page_source: string, page_url: string): IItem {
+    private async from_classicdb_page_source(page_source: string, page_url: string): Promise<IItem> {
         const armor = new ArmorValueParser(page_source).parse();
         const attributes = new AttributeParser(page_source).parse();
         const binding = new BindingParser(page_source).parse();
@@ -59,6 +60,7 @@ export class ItemFactory implements IItemFactory {
         const thumbnail = new ClassicDBThumbnailParser(page_source).parse();
         const uniquely_equipped = new UniqueParser(page_source).parse();
         const damage = new WeaponDamageParser(page_source).parse();
+        const spells = await new ClassicDBSpellFactory().from_item_page_source(page_source);
 
         return new Item(
             armor,
@@ -82,10 +84,11 @@ export class ItemFactory implements IItemFactory {
             skill_requirement,
             rank_requirement,
             page_url,
+            spells,
         );
     }
 
-    private from_tbcdb_page_source(page_source: string, page_url: string): IItem {
+    private async from_tbcdb_page_source(page_source: string, page_url: string): Promise<IItem> {
         const armor = new ArmorValueParser(page_source).parse();
         const attributes = new AttributeParser(page_source).parse();
         const binding = new BindingParser(page_source).parse();
@@ -107,6 +110,7 @@ export class ItemFactory implements IItemFactory {
         const thumbnail = new TBCDBThumbnailParser(page_source).parse();
         const uniquely_equipped = new UniqueParser(page_source).parse();
         const damage = new WeaponDamageParser(page_source).parse();
+        const spells = await new ClassicDBSpellFactory().from_item_page_source(page_source);
 
         return new Item(
             armor,
@@ -130,6 +134,7 @@ export class ItemFactory implements IItemFactory {
             skill_requirement,
             rank_requirement,
             page_url,
+            spells,
         );
     }
 }

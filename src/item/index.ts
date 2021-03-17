@@ -8,6 +8,7 @@ import { ReputationRequirement } from "../parsers/reputation";
 import { SkillRequirement } from "../parsers/skill";
 import { Slot, Type } from "../parsers/slot_type";
 import { WeaponDamage } from "../parsers/weapon_damage";
+import { ISpell } from "../spell";
 
 export interface IItem {
     armor: number;
@@ -31,8 +32,7 @@ export interface IItem {
     skill_requirement: SkillRequirement;
     rank_requirement: PVPRank;
     url: string;
-
-    resolve_effects(): Promise<void>;
+    spells: ISpell[];
 }
 
 export class Item {
@@ -57,6 +57,7 @@ export class Item {
     public readonly skill_requirement: SkillRequirement;
     public readonly rank_requirement: PVPRank;
     public readonly url: string;
+    public readonly spells: ISpell[];
 
     public constructor(
         armor: number,
@@ -80,6 +81,7 @@ export class Item {
         skill_requirement: SkillRequirement,
         rank_requirement: PVPRank,
         url: string,
+        spells: ISpell[],
     ) {
         this.armor = armor;
         this.attributes = attributes;
@@ -102,9 +104,6 @@ export class Item {
         this.skill_requirement = skill_requirement;
         this.rank_requirement = rank_requirement;
         this.url = url;
-    }
-
-    public async resolve_effects(): Promise<void> {
-        return;
+        this.spells = spells;
     }
 }

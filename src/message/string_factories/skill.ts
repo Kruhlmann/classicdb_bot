@@ -1,13 +1,15 @@
 import { Skill, SkillLookupTable, SkillRequirement } from "../../parsers/skill";
 import { capitalize_string } from "../../string";
-import { ItemPropertyStringFactory } from ".";
+import { GameObjectPropertyStringFactory } from ".";
 
-export class SkillRequirementStringFactory extends ItemPropertyStringFactory<{ skill_requirement: SkillRequirement }> {
+export class SkillRequirementStringFactory extends GameObjectPropertyStringFactory<{
+    skill_requirement: SkillRequirement;
+}> {
     public build(): string {
-        if (this.item.skill_requirement.skill === Skill.NONE) {
+        if (this.game_object.skill_requirement.skill === Skill.NONE) {
             return "";
         }
-        const skill_string = new SkillLookupTable().perform_reverse_lookup(this.item.skill_requirement.skill);
-        return `Requires ${capitalize_string(skill_string)} (${this.item.skill_requirement.value})`;
+        const skill_string = new SkillLookupTable().perform_reverse_lookup(this.game_object.skill_requirement.skill);
+        return `Requires ${capitalize_string(skill_string)} (${this.game_object.skill_requirement.value})`;
     }
 }

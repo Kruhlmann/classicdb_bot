@@ -1,8 +1,8 @@
-import { ItemPropertyStringFactory } from ".";
+import { GameObjectPropertyStringFactory } from ".";
 
-export class UniqueStringFactory extends ItemPropertyStringFactory<{ uniquely_equipped: boolean }> {
+export class UniqueStringFactory extends GameObjectPropertyStringFactory<{ uniquely_equipped: boolean }> {
     public build(): string {
-        if (this.item.uniquely_equipped) {
+        if (this.game_object.uniquely_equipped) {
             return "Unique";
         }
         return "";

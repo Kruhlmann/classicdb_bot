@@ -1,10 +1,10 @@
-import { ItemPropertyStringFactory } from ".";
+import { GameObjectPropertyStringFactory } from ".";
 
-export class ArmorStringFactory extends ItemPropertyStringFactory<{ armor: number }> {
+export class ArmorStringFactory extends GameObjectPropertyStringFactory<{ armor: number }> {
     public build(): string {
-        if (this.item.armor === -1) {
+        if (this.game_object.armor === -1) {
             return "";
         }
-        return `${this.item.armor} Armor`;
+        return `${this.game_object.armor} Armor`;
     }
 }

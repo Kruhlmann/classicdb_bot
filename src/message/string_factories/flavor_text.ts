@@ -1,10 +1,10 @@
-import { ItemPropertyStringFactory } from ".";
+import { GameObjectPropertyStringFactory } from ".";
 
-export class FlavorTextStringFactory extends ItemPropertyStringFactory<{ flavor_text: string }> {
+export class FlavorTextStringFactory extends GameObjectPropertyStringFactory<{ flavor_text: string }> {
     public build(): string {
-        if (this.item.flavor_text === "") {
+        if (this.game_object.flavor_text === "") {
             return "";
         }
-        return `───\n*${this.item.flavor_text}*`;
+        return `───\n*${this.game_object.flavor_text}*`;
     }
 }

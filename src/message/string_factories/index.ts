@@ -1,8 +1,8 @@
-export abstract class ItemPropertyStringFactory<PropertyContainer> {
-    protected readonly item: PropertyContainer;
+export abstract class GameObjectPropertyStringFactory<PropertyContainer> {
+    protected readonly game_object: PropertyContainer;
 
-    public constructor(item: PropertyContainer) {
-        this.item = item;
+    public constructor(game_object: PropertyContainer) {
+        this.game_object = game_object;
     }
 
     public abstract build(): string;
