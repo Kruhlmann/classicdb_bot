@@ -1,10 +1,11 @@
-import { ClassicDBItem } from "./item";
+import { Sequelize } from "sequelize";
+
 import { ClassicDBDiscordServer } from "./discord_server";
+import { ClassicDBDiscordServerConfiguration } from "./discord_server_configuration";
 import { ClassicDBDiscordServerUser } from "./discord_user";
 import { ClassicDBExpansion } from "./expansion";
+import { ClassicDBItem } from "./item";
 import { ClassicDBItemQuery } from "./item_query";
-import { Sequelize } from "sequelize";
-import { ClassicDBDiscordServerConfiguration } from "./discord_server_configuration";
 
 export class ModelInitializer {
     private static readonly models = [

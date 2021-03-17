@@ -1,7 +1,10 @@
-import { MonoRegexHTMLTooltipBodyParser } from ".";
 import { LookupTable } from "../lookup_table";
+import { MonoRegexHTMLTooltipBodyParser } from ".";
 
-export type SkillRequirement = { skill: Skill; value: number };
+export interface SkillRequirement {
+    skill: Skill;
+    value: number;
+}
 
 export enum Skill {
     NONE,
@@ -47,12 +50,12 @@ export class SkillLookupTable extends LookupTable<Skill> {
 }
 
 export class SkillRequirementParser extends MonoRegexHTMLTooltipBodyParser<SkillRequirement> {
-    protected readonly pattern = /Requires ([a-zA-Z ]+) \(([0-9]+)\)/;
+    protected readonly pattern = /Requires ([ A-Za-z]+) \((\d+)\)/;
     protected readonly default_value = { skill: Skill.NONE, value: -1 };
 
     protected postformat(parse_result: string[]): SkillRequirement {
         const skill = new SkillLookupTable().perform_lookup(parse_result[1]);
-        const value = parseInt(parse_result[2]);
+        const value = Number.parseInt(parse_result[2]);
         return { skill, value };
     }
 }

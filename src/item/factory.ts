@@ -1,23 +1,23 @@
+import { Expansion } from "../expansion";
+import { ArmorValueParser } from "../parsers/armor";
 import { AttributeParser } from "../parsers/attributes";
 import { BindingParser } from "../parsers/binding";
-import { Expansion } from "../expansion";
-import { SlotTypeParser } from "../parsers/slot_type";
-import { WeaponDamageParser } from "../parsers/weapon_damage";
-import { ArmorValueParser } from "../parsers/armor";
 import { BlockValueParser } from "../parsers/block_value";
+import { ClassicDBClassParser, TBCDBClassParser } from "../parsers/class";
 import { DurabilityParser } from "../parsers/durability";
 import { FlavorTextParser } from "../parsers/flavor_text";
 import { LevelRequirementParser } from "../parsers/level";
 import { ClassicDBNameParser, TBCDBNameParser } from "../parsers/name";
 import { QualityParser } from "../parsers/quality";
 import { ClassicDBBeginsQuestParser, TBCDBBeginsQuestParser } from "../parsers/quest";
+import { PVPRankRequirementParser } from "../parsers/rank";
+import { ReputationRequirementParser } from "../parsers/reputation";
+import { SkillRequirementParser } from "../parsers/skill";
+import { SlotTypeParser } from "../parsers/slot_type";
 import { ClassicDBThumbnailParser, TBCDBThumbnailParser } from "../parsers/thumbnail";
 import { UniqueParser } from "../parsers/unique";
-import { Item, IItem } from ".";
-import { ReputationRequirementParser } from "../parsers/reputation";
-import { ClassicDBClassParser, TBCDBClassParser } from "../parsers/class";
-import { SkillRequirementParser } from "../parsers/skill";
-import { PVPRankRequirementParser } from "../parsers/rank";
+import { WeaponDamageParser } from "../parsers/weapon_damage";
+import { IItem, Item } from ".";
 
 export interface IItemFactory {
     from_page_source(page_source: string, page_url: string): IItem;
@@ -81,7 +81,7 @@ export class ItemFactory implements IItemFactory {
             reputation_requirement,
             skill_requirement,
             rank_requirement,
-            page_url
+            page_url,
         );
     }
 
@@ -129,7 +129,7 @@ export class ItemFactory implements IItemFactory {
             reputation_requirement,
             skill_requirement,
             rank_requirement,
-            page_url
+            page_url,
         );
     }
 }

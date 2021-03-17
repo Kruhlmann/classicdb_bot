@@ -1,55 +1,53 @@
-import * as cheerio from "cheerio";
-
-import { MonoRegexHTMLTooltipBodyParser, HTMLParser, MultiRegexHTMLTooltipBodyParser } from ".";
+import { HTMLParser, MonoRegexHTMLTooltipBodyParser, MultiRegexHTMLTooltipBodyParser } from ".";
 import { DamageType, DamageTypeLookupTable } from "./damage_type";
 
-export type WeaponDamageRange = {
+export interface WeaponDamageRange {
     low: number;
     high: number;
     type: DamageType;
-};
+}
 
-export type WeaponDamage = {
+export interface WeaponDamage {
     dps: number;
     damage_ranges: WeaponDamageRange[];
     speed: number;
-};
+}
 
 class WeaponDamagePerSecondParser extends MonoRegexHTMLTooltipBodyParser<number> {
     protected readonly pattern = /\((.*?) damage per second\)/;
     protected readonly default_value = -1;
 
     protected postformat(parse_result: string[]): number {
-        return parseFloat(parse_result[1]);
+        return Number.parseFloat(parse_result[1]);
     }
 }
 
 class WeaponSpeedParser extends MonoRegexHTMLTooltipBodyParser<number> {
-    protected readonly pattern = /Speed ([0-9]\.[0-9][0-9])/;
+    protected readonly pattern = /Speed (\d\.\d\d)/;
     protected readonly default_value = -1;
 
     protected postformat(parse_result: string[]): number {
-        return parseFloat(parse_result[1]);
+        return Number.parseFloat(parse_result[1]);
     }
 }
 
 class WeaponPhysicalDamageRangeParser extends MonoRegexHTMLTooltipBodyParser<WeaponDamageRange> {
-    protected readonly pattern = /([0-9]+) - ([0-9]+)\s+Damage/;
+    protected readonly pattern = /(\d+) - (\d+)\s+Damage/;
     protected readonly default_value = { low: -1, high: -1, type: DamageType.NONE };
 
     protected postformat(parse_result: string[]): WeaponDamageRange {
         const bottom_end_string = parse_result[1];
         const top_end_string = parse_result[2];
         return {
-            low: parseInt(bottom_end_string),
-            high: parseInt(top_end_string),
+            low: Number.parseInt(bottom_end_string),
+            high: Number.parseInt(top_end_string),
             type: DamageType.PHYSICAL,
         };
     }
 }
 
 class WeaponMagicDamageRangeParser extends MultiRegexHTMLTooltipBodyParser<WeaponDamageRange> {
-    protected readonly pattern = /\+([0-9]+) - ([0-9]+) (.*?) Damage/g;
+    protected readonly pattern = /\+(\d+) - (\d+) (.*?) Damage/g;
 
     protected postformat(parse_result: string[]): WeaponDamageRange | undefined {
         const bottom_end_string = parse_result[1];
@@ -57,8 +55,8 @@ class WeaponMagicDamageRangeParser extends MultiRegexHTMLTooltipBodyParser<Weapo
         const damage_type = parse_result[3];
 
         return {
-            low: parseInt(bottom_end_string),
-            high: parseInt(top_end_string),
+            low: Number.parseInt(bottom_end_string),
+            high: Number.parseInt(top_end_string),
             type: new DamageTypeLookupTable().perform_lookup(damage_type),
         };
     }

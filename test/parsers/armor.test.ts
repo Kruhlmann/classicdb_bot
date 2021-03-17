@@ -1,6 +1,6 @@
 /// <reference types="jest" />
-import { item_page_sources } from "../resources";
 import { ArmorValueParser } from "../../src/parsers/armor";
+import { item_page_sources } from "../resources";
 
 describe("Armor parser", () => {
     describe("ClassicDB", () => {

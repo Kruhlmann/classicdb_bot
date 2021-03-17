@@ -1,6 +1,6 @@
 /// <reference types="jest" />
+import { ClassicDBBeginsQuestParser, IsPartOfQuestParser, TBCDBBeginsQuestParser } from "../../src/parsers/quest";
 import { item_page_sources } from "../resources";
-import { IsPartOfQuestParser, ClassicDBBeginsQuestParser, TBCDBBeginsQuestParser } from "../../src/parsers/quest";
 
 describe("Quest parser", () => {
     describe("ClassicDB", () => {

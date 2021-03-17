@@ -1,7 +1,8 @@
 import { Client } from "discord.js";
+
 import { AlreadyStartedError } from "../exceptions";
-import { DiscordEventHandler, IDiscordEventHandler } from "./event_handler";
 import { IExternalItemStorage } from "../external_item_storage";
+import { DiscordEventHandler, IDiscordEventHandler } from "./event_handler";
 
 export interface IStartable {
     start(): Promise<void>;

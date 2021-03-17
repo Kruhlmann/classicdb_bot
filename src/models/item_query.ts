@@ -1,8 +1,9 @@
-import { DataTypes, Sequelize, Model } from "sequelize";
-import { ClassicDBItem } from "./item";
-import { ClassicDBExpansion } from "./expansion";
+import { DataTypes, Model, Sequelize } from "sequelize";
+
+import { ClassicDBDiscordServer } from "./discord_server";
 import { ClassicDBDiscordServerUser } from "./discord_user";
-import { ClassicDBDiscordServer as ClassicDBDiscordUser } from "./discord_server";
+import { ClassicDBExpansion } from "./expansion";
+import { ClassicDBItem } from "./item";
 
 export class ClassicDBItemQuery extends Model {
     public static initialize(sequelize: Sequelize): void {
@@ -15,12 +16,13 @@ export class ClassicDBItemQuery extends Model {
                 },
                 request_count: { type: DataTypes.INTEGER },
             },
-            { sequelize, modelName: "item_query", underscored: true, createdAt: "created_at", updatedAt: "updated_at" }
+            { sequelize, modelName: "item_query", underscored: true, createdAt: "created_at", updatedAt: "updated_at" },
         );
     }
 
     public static create_associations(): void {
-        ClassicDBItemQuery.belongsTo(ClassicDBDiscordUser, { foreignKey: { name: "discord_user_id" } });
+        ClassicDBItemQuery.belongsTo(ClassicDBDiscordServer, { foreignKey: { name: "discord_server_id" } });
+        ClassicDBItemQuery.belongsTo(ClassicDBDiscordServerUser, { foreignKey: { name: "discord_user_id" } });
         ClassicDBItemQuery.belongsTo(ClassicDBExpansion, { foreignKey: { name: "expansion_id" } });
         ClassicDBItemQuery.belongsTo(ClassicDBItem, { foreignKey: { name: "item_id" } });
     }

@@ -1,6 +1,6 @@
 /// <reference types="jest" />
+import { Slot, SlotTypeParser, Type } from "../../src/parsers/slot_type";
 import { item_page_sources } from "../resources";
-import { SlotTypeParser, Slot, Type } from "../../src/parsers/slot_type";
 
 describe("Slot type parser", () => {
     describe("ClassicDB", () => {

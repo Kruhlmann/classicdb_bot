@@ -7,7 +7,7 @@ export class IsPartOfQuestParser extends HTMLTooltipBodyParser<boolean> {
 }
 
 abstract class BeginsQuestParser extends MonoRegexHTMLTooltipBodyParser<string> {
-    protected readonly pattern = /<a.*?href="\?quest=([0-9]+)">This Item Begins a Quest<\/a>/;
+    protected readonly pattern = /<a.*?href="\?quest=(\d+)">This Item Begins a Quest<\/a>/;
     protected readonly default_value = "";
 }
 

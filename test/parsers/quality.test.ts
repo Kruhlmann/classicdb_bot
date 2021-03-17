@@ -1,5 +1,5 @@
 /// <reference types="jest" />
-import { QualityParser, ItemQuality } from "../../src/parsers/quality";
+import { ItemQuality, QualityParser } from "../../src/parsers/quality";
 import { item_page_sources } from "../resources";
 
 describe("Quality parser", () => {

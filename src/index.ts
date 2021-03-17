@@ -1,7 +1,7 @@
-import { ModelInitializer } from "./models";
-import { PostgresDatabaseConnection } from "./database";
 import { ClassicDBBot } from "./bot";
+import { PostgresDatabaseConnection } from "./database";
 import { PostgreSQLExternalItemStorage } from "./external_item_storage";
+import { ModelInitializer } from "./models";
 
 async function main(): Promise<void> {
     const item_storage = new PostgreSQLExternalItemStorage("postgres", "postgres", "classicdb");

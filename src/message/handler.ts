@@ -1,11 +1,11 @@
+import { Expansion } from "../expansion";
+import { IExternalItemStorage } from "../external_item_storage";
+import { Item } from "../item";
+import { ItemQueryProcessor } from "../item/processor";
+import { ClassicDB, IWowHead, TBCDB } from "../wowhead";
 import { Message } from ".";
 import { ItemQuery } from "./query_extractor";
-import { Expansion } from "../expansion";
-import { ItemQueryProcessor } from "../item/processor";
-import { Item } from "../item";
-import { RichEmbedFactory, IRichEmbedFactory } from "./richembed_factory";
-import { ClassicDB, IWowHead, TBCDB } from "../wowhead";
-import { IExternalItemStorage } from "../external_item_storage";
+import { IRichEmbedFactory, RichEmbedFactory } from "./richembed_factory";
 
 export interface IMessageHandler {
     item_query_to_item(item_query: ItemQuery): Promise<Item>;
@@ -24,7 +24,7 @@ export class MessageHandler implements IMessageHandler {
         this.richembed_factory = new RichEmbedFactory(
             "https://images-ext-1.discordapp.net/external/s8uTI5co6Kys0_gnCCuzQOPsc5cAkoqivBFSpH5wnv8/https/orig08.deviantart.net/65e3/f/2014/207/e/2/official_wow_icon_by_benashvili-d7sd1ab.png",
             "https://discord.gg/mRUEPnp",
-            "https://images-ext-2.discordapp.net/external/qwilFmqqSub3IKzUz47jRtBSMIR2RQVA8tjqxRHfavk/https/discordapp.com/assets/28174a34e77bb5e5310ced9f95cb480b.png"
+            "https://images-ext-2.discordapp.net/external/qwilFmqqSub3IKzUz47jRtBSMIR2RQVA8tjqxRHfavk/https/discordapp.com/assets/28174a34e77bb5e5310ced9f95cb480b.png",
         );
         this.external_item_storage = external_item_storage;
     }

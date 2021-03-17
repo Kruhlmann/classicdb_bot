@@ -1,6 +1,6 @@
 /// <reference types="jest" />
-import { ItemQueryExtractor, ItemQueryType } from "../../src/message/query_extractor";
 import { Expansion } from "../../src/expansion";
+import { ItemQueryExtractor, ItemQueryType } from "../../src/message/query_extractor";
 
 describe("Query extractor", () => {
     it("extacts item id query", () => {

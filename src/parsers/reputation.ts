@@ -1,7 +1,10 @@
-import { MonoRegexHTMLTooltipBodyParser } from ".";
 import { LookupTable } from "../lookup_table";
+import { MonoRegexHTMLTooltipBodyParser } from ".";
 
-export type ReputationRequirement = { name: string; state: ReputationState };
+export interface ReputationRequirement {
+    name: string;
+    state: ReputationState;
+}
 
 export enum ReputationState {
     NONE,
@@ -33,7 +36,7 @@ export class ReputationStateLookupTable extends LookupTable<ReputationState> {
 }
 
 export class ReputationRequirementParser extends MonoRegexHTMLTooltipBodyParser<ReputationRequirement> {
-    protected readonly pattern = /Requires (?:<a href=".*?">)?([a-zA-Z0-9 ]+)(?:<\/a>)? - (Paragon|Exalted|Revered|Honored|Friendly|Neutral|Unfriendly|Hostile|Hated)/;
+    protected readonly pattern = /Requires (?:<a href=".*?">)?([\d A-Za-z]+)(?:<\/a>)? - (Paragon|Exalted|Revered|Honored|Friendly|Neutral|Unfriendly|Hostile|Hated)/;
     protected readonly default_value = { name: "", state: ReputationState.NONE };
 
     protected postformat(parse_result: string[]): ReputationRequirement {

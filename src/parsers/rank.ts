@@ -1,5 +1,5 @@
-import { MonoRegexHTMLTooltipBodyParser } from ".";
 import { LookupTable } from "../lookup_table";
+import { MonoRegexHTMLTooltipBodyParser } from ".";
 
 export enum PVPRank {
     NONE,
@@ -67,7 +67,7 @@ export class PVPRankLookupTable extends LookupTable<PVPRank> {
 }
 
 export class PVPRankRequirementParser extends MonoRegexHTMLTooltipBodyParser<PVPRank> {
-    protected readonly pattern = /Requires (Private|Scout|Corporal|Grunt|Sergeant|Sergeant|Master Sergeant|Senior Sergeant|Sergeant Major|First Sergeant|Knight|Stone Guard|Knight-Lieutenant|Blood Guard|Knight-Captain|Legionnaire|Knight-Champion|Centurion|Lieutenant Commander|Champion|Commander|Lieutenant General|Marshal|General|Field Marshal|Warlord|Grand Marshal|High Warlord)/;
+    protected readonly pattern = /Requires (Private|Scout|Corporal|Grunt|Sergeant|Master Sergeant|Senior Sergeant|Sergeant Major|First Sergeant|Knight|Stone Guard|Knight-Lieutenant|Blood Guard|Knight-Captain|Legionnaire|Knight-Champion|Centurion|Lieutenant Commander|Champion|Commander|Lieutenant General|Marshal|General|Field Marshal|Warlord|Grand Marshal|High Warlord)/;
     protected readonly default_value = PVPRank.NONE;
 
     protected postformat(parse_result: string[]): PVPRank {

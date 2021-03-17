@@ -1,7 +1,7 @@
-import { ItemPropertyStringFactory } from ".";
 import { Expansion } from "../../expansion";
-import { ClassLookupTable, Class } from "../../parsers/class";
+import { Class, ClassLookupTable } from "../../parsers/class";
 import { capitalize_string } from "../../string";
+import { ItemPropertyStringFactory } from ".";
 
 export class ClassRestrictionStringFactory extends ItemPropertyStringFactory<{
     expansion: Expansion;
@@ -13,21 +13,21 @@ export class ClassRestrictionStringFactory extends ItemPropertyStringFactory<{
             return "";
         }
 
-        const class_links_str = class_links.join(" ");
-        return `Classes: ${class_links_str}`;
+        const class_links_string = class_links.join(" ");
+        return `Classes: ${class_links_string}`;
     }
 
     private make_class_links(): string[] {
         const class_restriction_strings = this.get_item_class_restriction_string_repr();
         if (this.item.expansion === Expansion.CLASSIC) {
-            return class_restriction_strings.map((cls_str) => {
-                const capitalized = capitalize_string(cls_str);
-                return `[${capitalized}](https://classic.wowhead.com/${cls_str})`;
+            return class_restriction_strings.map((cls_string) => {
+                const capitalized = capitalize_string(cls_string);
+                return `[${capitalized}](https://classic.wowhead.com/${cls_string})`;
             });
         }
-        return class_restriction_strings.map((cls_str) => {
-            const capitalized = capitalize_string(cls_str);
-            return `[${capitalized}](https://tbc.wowhead.com/${cls_str})`;
+        return class_restriction_strings.map((cls_string) => {
+            const capitalized = capitalize_string(cls_string);
+            return `[${capitalized}](https://tbc.wowhead.com/${cls_string})`;
         });
     }
 

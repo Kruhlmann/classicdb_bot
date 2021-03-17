@@ -25,9 +25,10 @@ export abstract class LookupTable<LookupValueType extends RecordKey> {
     }
 
     public perform_reverse_lookup(key?: LookupValueType): RecordKey {
+        // eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
         const reverse_lookup_table: Record<LookupValueType, RecordKey> = {} as Record<LookupValueType, RecordKey>;
-        for (const [key, obj] of Object.entries(this.lookup_table)) {
-            reverse_lookup_table[obj] = key;
+        for (const [key, object] of Object.entries(this.lookup_table)) {
+            reverse_lookup_table[object] = key;
         }
         const value = reverse_lookup_table[key];
 

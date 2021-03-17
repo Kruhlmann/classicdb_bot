@@ -1,6 +1,6 @@
 /// <reference types="jest" />
-import { item_page_sources } from "../resources";
 import { Attribute, AttributeParser } from "../../src/parsers/attributes";
+import { item_page_sources } from "../resources";
 
 const thorium_armor_parse_result = [
     { type: Attribute.FIRE_RESISTANCE, value: 8 },

@@ -1,5 +1,5 @@
 /// <reference types="jest" />
-import { PVPRankRequirementParser, PVPRank } from "../../src/parsers/rank";
+import { PVPRank, PVPRankRequirementParser } from "../../src/parsers/rank";
 import { item_page_sources } from "../resources";
 
 describe("PVP rank requirement parser", () => {

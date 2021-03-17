@@ -1,13 +1,13 @@
-import { WeaponDamage } from "../parsers/weapon_damage";
-import { Type, Slot } from "../parsers/slot_type";
 import { Expansion } from "../expansion";
-import { ItemBinding } from "../parsers/binding";
 import { AttributeStat } from "../parsers/attributes";
+import { ItemBinding } from "../parsers/binding";
 import { Class } from "../parsers/class";
+import { ItemQuality } from "../parsers/quality";
+import { PVPRank } from "../parsers/rank";
 import { ReputationRequirement } from "../parsers/reputation";
 import { SkillRequirement } from "../parsers/skill";
-import { PVPRank } from "../parsers/rank";
-import { ItemQuality } from "../parsers/quality";
+import { Slot, Type } from "../parsers/slot_type";
+import { WeaponDamage } from "../parsers/weapon_damage";
 
 export interface IItem {
     armor: number;
@@ -79,7 +79,7 @@ export class Item {
         reputation_requirement: ReputationRequirement,
         skill_requirement: SkillRequirement,
         rank_requirement: PVPRank,
-        url: string
+        url: string,
     ) {
         this.armor = armor;
         this.attributes = attributes;

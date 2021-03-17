@@ -1,5 +1,5 @@
 /// <reference types="jest" />
-import { SkillRequirementParser, Skill } from "../../src/parsers/skill";
+import { Skill, SkillRequirementParser } from "../../src/parsers/skill";
 import { item_page_sources } from "../resources";
 
 describe("Skill requirement parser", () => {

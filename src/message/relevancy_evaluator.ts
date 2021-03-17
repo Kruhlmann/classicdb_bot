@@ -1,5 +1,6 @@
-import { IMessage } from ".";
 import { Client } from "discord.js";
+
+import { IMessage } from ".";
 
 export interface IMessageRelevancyEvaluater {
     discord_api_client: Client;

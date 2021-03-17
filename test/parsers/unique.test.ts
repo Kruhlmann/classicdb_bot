@@ -1,6 +1,6 @@
 /// <reference types="jest" />
-import { item_page_sources } from "../resources";
 import { UniqueParser } from "../../src/parsers/unique";
+import { item_page_sources } from "../resources";
 
 describe("Unique parser", () => {
     describe("ClassicDB", () => {

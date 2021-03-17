@@ -1,21 +1,22 @@
-import { Item } from "../item";
 import { RichEmbed } from "discord.js";
-import { EquipmentStringFactory } from "./string_factories/equipment";
-import { ItemBindingStringFactory } from "./string_factories/binding";
-import { UniqueStringFactory } from "./string_factories/unique";
-import { DamageStringFactory } from "./string_factories/weapon_damage";
-import { AttributeStringFactory } from "./string_factories/attributes";
+
+import { Item } from "../item";
+import { ILookupTable } from "../lookup_table";
+import { ItemQualityColorLookupTable } from "../parsers/quality";
 import { ArmorStringFactory } from "./string_factories/armor";
-import { DurabilityStringFactory } from "./string_factories/durability";
-import { ClassRestrictionStringFactory } from "./string_factories/class";
-import { LevelRequirementStringFactory } from "./string_factories/level";
+import { AttributeStringFactory } from "./string_factories/attributes";
+import { ItemBindingStringFactory } from "./string_factories/binding";
 import { BlockValueStringFactory } from "./string_factories/block";
+import { ClassRestrictionStringFactory } from "./string_factories/class";
+import { DurabilityStringFactory } from "./string_factories/durability";
+import { EquipmentStringFactory } from "./string_factories/equipment";
 import { FlavorTextStringFactory } from "./string_factories/flavor_text";
+import { LevelRequirementStringFactory } from "./string_factories/level";
+import { PVPRankRequirementStringFactory } from "./string_factories/rank";
 import { ReputationRequirementStringFactory } from "./string_factories/reputation";
 import { SkillRequirementStringFactory } from "./string_factories/skill";
-import { PVPRankRequirementStringFactory } from "./string_factories/rank";
-import { ItemQualityColorLookupTable } from "../parsers/quality";
-import { ILookupTable } from "../lookup_table";
+import { UniqueStringFactory } from "./string_factories/unique";
+import { DamageStringFactory } from "./string_factories/weapon_damage";
 
 export interface IRichEmbedDescriptionFactory {
     build_richembed_description_from_item(item: Item): string;
@@ -27,20 +28,20 @@ export interface IRichEmbedFactory {
 
 class RichEmbedDescriptionFactory {
     public build_richembed_description_from_item(item: Item): string {
-        const binding_str = new ItemBindingStringFactory(item).build();
-        const unique_str = new UniqueStringFactory(item).build();
-        const equipment_str = new EquipmentStringFactory(item).build();
-        const damage_str = new DamageStringFactory(item).build();
-        const armor_str = new ArmorStringFactory(item).build();
-        const block_str = new BlockValueStringFactory(item).build();
-        const attribute_str = new AttributeStringFactory(item).build();
-        const durability_str = new DurabilityStringFactory(item).build();
-        const class_restriction_str = new ClassRestrictionStringFactory(item).build();
-        const level_requirement_str = new LevelRequirementStringFactory(item).build();
-        const rank_requirement_str = new PVPRankRequirementStringFactory(item).build();
-        const skill_requirement_str = new SkillRequirementStringFactory(item).build();
-        const reputation_requirement_str = new ReputationRequirementStringFactory(item).build();
-        const flavor_text_str = new FlavorTextStringFactory(item).build();
+        const binding_string = new ItemBindingStringFactory(item).build();
+        const unique_string = new UniqueStringFactory(item).build();
+        const equipment_string = new EquipmentStringFactory(item).build();
+        const damage_string = new DamageStringFactory(item).build();
+        const armor_string = new ArmorStringFactory(item).build();
+        const block_string = new BlockValueStringFactory(item).build();
+        const attribute_string = new AttributeStringFactory(item).build();
+        const durability_string = new DurabilityStringFactory(item).build();
+        const class_restriction_string = new ClassRestrictionStringFactory(item).build();
+        const level_requirement_string = new LevelRequirementStringFactory(item).build();
+        const rank_requirement_string = new PVPRankRequirementStringFactory(item).build();
+        const skill_requirement_string = new SkillRequirementStringFactory(item).build();
+        const reputation_requirement_string = new ReputationRequirementStringFactory(item).build();
+        const flavor_text_string = new FlavorTextStringFactory(item).build();
         //const dmg_formatted = format_damage(item);
         //const stats_formatted = format_stats(item);
         //const durability_formatted = format_durability(item);
@@ -61,20 +62,20 @@ class RichEmbedDescriptionFactory {
         //+ `${level_requirement_formatted}`
         //+ `${effects_short_formatted}`.trim();
         return [
-            binding_str,
-            unique_str,
-            equipment_str,
-            damage_str,
-            armor_str,
-            block_str,
-            attribute_str,
-            durability_str,
-            class_restriction_str,
-            level_requirement_str,
-            rank_requirement_str,
-            skill_requirement_str,
-            reputation_requirement_str,
-            flavor_text_str,
+            binding_string,
+            unique_string,
+            equipment_string,
+            damage_string,
+            armor_string,
+            block_string,
+            attribute_string,
+            durability_string,
+            class_restriction_string,
+            level_requirement_string,
+            rank_requirement_string,
+            skill_requirement_string,
+            reputation_requirement_string,
+            flavor_text_string,
         ]
             .filter((line) => line !== "")
             .join("\n");

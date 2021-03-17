@@ -1,6 +1,6 @@
-import { Message } from "../message";
 import { Expansion } from "../expansion";
-import { ItemQueryExtractor, ItemQuery } from "../message/query_extractor";
+import { Message } from "../message";
+import { ItemQuery, ItemQueryExtractor } from "../message/query_extractor";
 
 export class ItemQueryProcessor {
     public static get_all_item_queries_from_message(message: Message, default_expansion: Expansion): ItemQuery[] {

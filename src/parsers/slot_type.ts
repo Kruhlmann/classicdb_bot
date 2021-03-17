@@ -1,5 +1,5 @@
-import { MonoRegexHTMLTooltipBodyParser } from ".";
 import { LookupTable } from "../lookup_table";
+import { MonoRegexHTMLTooltipBodyParser } from ".";
 
 export enum Slot {
     NONE,
@@ -53,10 +53,10 @@ export enum Type {
     ARROW,
 }
 
-export type SlotType = {
+export interface SlotType {
     slot: Slot;
     type: Type;
-};
+}
 
 export class SlotLookupTable extends LookupTable<Slot> {
     protected lookup_table: Record<string, Slot> = {

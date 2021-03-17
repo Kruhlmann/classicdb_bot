@@ -1,6 +1,6 @@
 /// <reference types="jest" />
-import { item_page_sources } from "../resources";
 import { BindingParser, ItemBinding } from "../../src/parsers/binding";
+import { item_page_sources } from "../resources";
 
 describe("Binding parser", () => {
     describe("ClassicDB", () => {

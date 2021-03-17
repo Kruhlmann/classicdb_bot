@@ -1,7 +1,7 @@
-import { ItemPropertyStringFactory } from ".";
 import { DamageType, DamageTypeLookupTable } from "../../parsers/damage_type";
-import { capitalize_string } from "../../string";
 import { WeaponDamage } from "../../parsers/weapon_damage";
+import { capitalize_string } from "../../string";
+import { ItemPropertyStringFactory } from ".";
 
 export class DamageStringFactory extends ItemPropertyStringFactory<{ damage: WeaponDamage }> {
     public build(): string {
@@ -30,7 +30,7 @@ export class DamageStringFactory extends ItemPropertyStringFactory<{ damage: Wea
             }
             const damage_type_string = new DamageTypeLookupTable().perform_reverse_lookup(damage_range.type);
             result += `\n**${damage_range.low} - ${damage_range.high}** ${capitalize_string(
-                damage_type_string
+                damage_type_string,
             )} Damage`;
         }
         return result;

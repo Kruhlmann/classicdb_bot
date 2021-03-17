@@ -1,5 +1,5 @@
-import { Item } from "./item";
 import { IPostgresDatabaseConnection, PostgresDatabaseConnection } from "./database";
+import { Item } from "./item";
 
 export interface IExternalItemStorage {
     store_item(item: Item): Promise<void>;

@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize, Model } from "sequelize";
+import { DataTypes, Model, Sequelize } from "sequelize";
 
 export class ClassicDBDiscordServer extends Model {
     public static initialize(sequelize: Sequelize): void {
@@ -18,7 +18,7 @@ export class ClassicDBDiscordServer extends Model {
                 underscored: true,
                 createdAt: "created_at",
                 updatedAt: "updated_at",
-            }
+            },
         );
     }
 

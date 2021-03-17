@@ -1,6 +1,6 @@
 /// <reference types="jest" />
-import { item_page_sources } from "../resources";
 import { FlavorTextParser } from "../../src/parsers/flavor_text";
+import { item_page_sources } from "../resources";
 
 describe("Flavor text parser", () => {
     describe("ClassicDB", () => {

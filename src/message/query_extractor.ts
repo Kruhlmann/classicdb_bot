@@ -7,11 +7,11 @@ export enum ItemQueryType {
     NAME,
 }
 
-export type ItemQuery = {
+export interface ItemQuery {
     query: string;
     expansion: Expansion;
     type: ItemQueryType;
-};
+}
 
 abstract class QueryExtractor {
     protected abstract readonly pattern: RegExp;
@@ -38,7 +38,7 @@ abstract class QueryExtractor {
         if (query === "") {
             return ItemQueryType.NONE;
         }
-        if (query.match(/[0-9]+/)) {
+        if (/\d+/.test(query)) {
             return ItemQueryType.ID;
         }
         return ItemQueryType.NAME;
@@ -48,7 +48,7 @@ abstract class QueryExtractor {
 }
 
 export class ItemQueryExtractor extends QueryExtractor {
-    protected readonly pattern = /\[(.*?)\](\((.*?)\))?/g;
+    protected readonly pattern = /\[(.*?)](\((.*?)\))?/g;
     protected readonly default_expansion: Expansion;
     private lookup_table: ILookupTable<Expansion>;
 

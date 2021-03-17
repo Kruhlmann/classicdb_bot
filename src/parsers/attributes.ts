@@ -1,7 +1,5 @@
-import * as cheerio from "cheerio";
-
-import { HTMLTooltipBodyParser, MultiRegexHTMLTooltipBodyParser } from ".";
 import { LookupTable } from "../lookup_table";
+import { MultiRegexHTMLTooltipBodyParser } from ".";
 
 export enum Attribute {
     NONE,
@@ -17,10 +15,10 @@ export enum Attribute {
     SHADOW_RESISTANCE,
 }
 
-export type AttributeStat = {
+export interface AttributeStat {
     type: Attribute;
     value: number;
-};
+}
 
 export class AttributeLookupTable extends LookupTable<Attribute> {
     protected lookup_table: Record<string, Attribute> = {
@@ -39,10 +37,10 @@ export class AttributeLookupTable extends LookupTable<Attribute> {
 }
 
 export class AttributeParser extends MultiRegexHTMLTooltipBodyParser<AttributeStat> {
-    protected readonly pattern = /([+|-][0-9]+) (Agility|Strength|Intellect|Spirit|Stamina|(?:Fire|Frost|Arcane|Nature|Shadow) Resistance)/g;
+    protected readonly pattern = /([+|-]\d+) (Agility|Strength|Intellect|Spirit|Stamina|(?:Fire|Frost|Arcane|Nature|Shadow) Resistance)/g;
 
     protected postformat(parse_result: string[]): AttributeStat {
-        const attribute_value = parseInt(parse_result[1]);
+        const attribute_value = Number.parseInt(parse_result[1]);
         const attribute_type = parse_result[2];
 
         return {

@@ -1,4 +1,4 @@
-import { User, TextChannel, GroupDMChannel, DMChannel } from "discord.js";
+import { DMChannel, GroupDMChannel, TextChannel, User } from "discord.js";
 
 export interface IMessage {
     is_direct_message: boolean;
@@ -22,7 +22,7 @@ export class Message implements IMessage {
         content: string,
         author: User,
         channel: TextChannel | GroupDMChannel | DMChannel,
-        is_own_message: boolean
+        is_own_message: boolean,
     ) {
         this.is_direct_message = is_direct_message;
         this.content = content;

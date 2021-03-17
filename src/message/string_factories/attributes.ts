@@ -1,6 +1,6 @@
-import { ItemPropertyStringFactory } from ".";
-import { AttributeStat, AttributeLookupTable } from "../../parsers/attributes";
+import { AttributeLookupTable, AttributeStat } from "../../parsers/attributes";
 import { capitalize_string } from "../../string";
+import { ItemPropertyStringFactory } from ".";
 
 export class AttributeStringFactory extends ItemPropertyStringFactory<{ attributes: AttributeStat[] }> {
     public build(): string {

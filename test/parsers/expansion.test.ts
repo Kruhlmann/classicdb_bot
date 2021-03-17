@@ -1,6 +1,6 @@
 /// <reference types="jest" />
 
-import { ExpansionLookupTable, Expansion } from "../../src/expansion";
+import { Expansion, ExpansionLookupTable } from "../../src/expansion";
 
 describe("Expansion", () => {
     it("Performs case-insensitive classic lookup", () => {

@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize, Model } from "sequelize";
+import { DataTypes, Model, Sequelize } from "sequelize";
 
 export class ClassicDBExpansion extends Model {
     public static initialize(sequelize: Sequelize): void {
@@ -12,7 +12,7 @@ export class ClassicDBExpansion extends Model {
                 prefix: { type: DataTypes.STRING, allowNull: false },
                 name: { type: DataTypes.STRING, allowNull: false },
             },
-            { sequelize, modelName: "expansion", underscored: true, createdAt: "created_at", updatedAt: "updated_at" }
+            { sequelize, modelName: "expansion", underscored: true, createdAt: "created_at", updatedAt: "updated_at" },
         );
     }
 

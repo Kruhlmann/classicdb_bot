@@ -1,4 +1,4 @@
-import { DataTypes, Sequelize, Model } from "sequelize";
+import { DataTypes, Model, Sequelize } from "sequelize";
 
 export class ClassicDBItem extends Model {
     public static initialize(sequelize: Sequelize): void {
@@ -12,7 +12,7 @@ export class ClassicDBItem extends Model {
                 name: { type: DataTypes.STRING, allowNull: false },
                 wow_id: { type: DataTypes.INTEGER, allowNull: false },
             },
-            { sequelize, modelName: "item", underscored: true, createdAt: "created_at", updatedAt: "updated_at" }
+            { sequelize, modelName: "item", underscored: true, createdAt: "created_at", updatedAt: "updated_at" },
         );
     }
 

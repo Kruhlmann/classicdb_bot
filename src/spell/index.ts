@@ -23,7 +23,7 @@ abstract class Spell implements ISpell {
         description: string,
         url: string,
         thumbnail_url: string,
-        trigger: string
+        trigger: string,
     ) {
         this.id = id;
         this.name = name;

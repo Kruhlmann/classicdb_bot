@@ -1,4 +1,5 @@
-import { Message as DiscordAPIMessage, Client } from "discord.js";
+import { Client, Message as DiscordAPIMessage } from "discord.js";
+
 import { IMessage, Message } from ".";
 
 interface ICodeMarkdownRemover {
@@ -10,7 +11,7 @@ export interface IMessageFactory {
 }
 
 class CodeMarkdownRemover implements ICodeMarkdownRemover {
-    private readonly SINGLE_CODE_MARKDOWN_REGEX = /`{1}[^`]+`{1}/g;
+    private readonly SINGLE_CODE_MARKDOWN_REGEX = /`[^`]+`/g;
     private readonly MULTI_CODE_MARKDOWN_REGEX = /`{3}[^`]+`{3}/g;
 
     public remove_markdown_code_content(content: string): string {

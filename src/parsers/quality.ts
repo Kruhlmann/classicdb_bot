@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 
-import { HTMLParser } from ".";
 import { LookupTable } from "../lookup_table";
+import { HTMLParser } from ".";
 
 export enum ItemQuality {
     POOR,

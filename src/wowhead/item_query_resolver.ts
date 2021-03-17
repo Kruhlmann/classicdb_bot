@@ -1,10 +1,11 @@
 import * as request from "request-promise";
-import { OpenAPIResponseItemQueryIDParser, IOpenAPIResponseParser } from "./openapi";
 
-export type PageSourceContext = {
+import { IOpenAPIResponseParser, OpenAPIResponseItemQueryIDParser } from "./openapi";
+
+export interface PageSourceContext {
     page_source: string;
     page_url: string;
-};
+}
 
 export interface IWowHeadPageSourceResolver {
     get_page_source_from_query(item_query: string): Promise<PageSourceContext>;

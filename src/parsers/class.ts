@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 
-import { HTMLParser } from ".";
 import { LookupTable } from "../lookup_table";
+import { HTMLParser } from ".";
 
 export enum Class {
     NONE,
@@ -41,7 +41,7 @@ export class ClassicDBClassParser extends HTMLParser<Class[]> {
             classes.push(element.text());
         });
         const class_lookup_table = new ClassLookupTable();
-        return classes.map((cls_str) => class_lookup_table.perform_lookup(cls_str));
+        return classes.map((cls_string) => class_lookup_table.perform_lookup(cls_string));
     }
 }
 
@@ -58,6 +58,6 @@ export class TBCDBClassParser extends HTMLParser<Class[]> {
             return class_name.trim();
         });
         const class_lookup_table = new ClassLookupTable();
-        return trimmed_classes.map((cls_str) => class_lookup_table.perform_lookup(cls_str));
+        return trimmed_classes.map((cls_string) => class_lookup_table.perform_lookup(cls_string));
     }
 }

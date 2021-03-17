@@ -1,7 +1,7 @@
 /// <reference types="jest" />
-import { item_page_sources } from "../resources";
-import { WeaponDamageParser } from "../../src/parsers/weapon_damage";
 import { DamageType } from "../../src/parsers/damage_type";
+import { WeaponDamageParser } from "../../src/parsers/weapon_damage";
+import { item_page_sources } from "../resources";
 
 const empty_weapon_damage_parse_result = {
     dps: -1,
