@@ -2,6 +2,7 @@ import { Client } from "discord.js";
 
 import { AlreadyStartedError } from "../exceptions";
 import { IExternalItemStorage } from "../external_item_storage";
+import { ILoggable } from "../logging";
 import { DiscordEventHandler, IDiscordEventHandler } from "./event_handler";
 
 export interface IStartable {
@@ -29,11 +30,11 @@ export class ClassicDBBot extends Startable implements IClassicDBBot {
     private readonly discord_event_handler: IDiscordEventHandler;
     public readonly discord_api_client: Client;
 
-    public constructor(token: string, external_item_storage?: IExternalItemStorage) {
+    public constructor(token: string, logger: ILoggable, external_item_storage?: IExternalItemStorage) {
         super();
         this.token = token;
         this.discord_api_client = new Client();
-        this.discord_event_handler = new DiscordEventHandler(this, external_item_storage);
+        this.discord_event_handler = new DiscordEventHandler(this, logger, external_item_storage);
     }
 
     public async start(): Promise<void> {

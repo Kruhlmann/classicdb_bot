@@ -31,6 +31,6 @@ export class MessageFactory {
         const is_direct_message = message.guild === undefined;
         const content = this.code_markdown_remover.remove_markdown_code_content(message.content);
         const is_own_message = message.author.id === client.user.id;
-        return new Message(is_direct_message, content, message.author, message.channel, is_own_message);
+        return new Message(is_direct_message, content, message.author, message.channel, is_own_message, message);
     }
 }

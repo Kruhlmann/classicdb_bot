@@ -1,6 +1,7 @@
 import { Message as DiscordAPIMessage } from "discord.js";
 
 import { IExternalItemStorage } from "../external_item_storage";
+import { ILoggable } from "../logging";
 import { IMessageFactory, MessageFactory } from "../message/factory";
 import { IMessageHandler, MessageHandler } from "../message/handler";
 import { IMessageRelevancyEvaluater, MessageRelevancyEvaluater } from "../message/relevancy_evaluator";
@@ -14,21 +15,24 @@ export interface IDiscordEventHandler {
 export class DiscordEventHandler implements IDiscordEventHandler {
     private readonly DISCORD_READY_EVENT_NAME = "ready";
     private readonly DISCORD_MESSAGE_EVENT_NAME = "message";
+
     private readonly bot: IClassicDBBot;
+    private readonly logger: ILoggable;
     private readonly message_handler: IMessageHandler;
     private readonly message_relevancy_evaluator: IMessageRelevancyEvaluater;
     private readonly message_factory: IMessageFactory;
 
-    public constructor(bot: IClassicDBBot, external_item_storage: IExternalItemStorage) {
+    public constructor(bot: IClassicDBBot, logger: ILoggable, external_item_storage: IExternalItemStorage) {
         this.bot = bot;
+        this.logger = logger;
         this.message_relevancy_evaluator = new MessageRelevancyEvaluater(bot.discord_api_client);
-        this.message_handler = new MessageHandler(external_item_storage);
+        this.message_handler = new MessageHandler(external_item_storage, logger);
         this.message_factory = new MessageFactory();
     }
 
     public register_on_ready_event_handler(): void {
         this.bot.discord_api_client.on(this.DISCORD_READY_EVENT_NAME, () => {
-            console.log("Discord API client ready");
+            this.logger.debug("Discord API connection established");
         });
     }
 

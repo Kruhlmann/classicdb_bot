@@ -1,0 +1,40 @@
+SRC=src
+TST=test
+DIST=dist
+ENTRYPOINT=$(DIST)/$(SRC)/index.js
+
+TS_SOURCES=$(wildcard $(SRC)/*.ts)
+JS_SOURCES=$(patsubst %.ts, %.js, $(TS_SOURCES))
+JS_ARTIFACTS_DIRTY=$(addprefix $(DIST)/, $(JS_SOURCES))
+JS_ARTIFACTS=$(filter-out $(ENTRYPOINT), $(JS_ARTIFACTS_DIRTY))
+
+
+$(DIST):
+	mkdir $(DIST)
+
+$(ENTRYPOINT): $(JS_ARTIFACTS) node_modules
+	yarn tsc
+
+node_modules: package.json yarn.lock
+	yarn install
+
+build: $(ENTRYPOINT) Makefile
+
+run: build
+	node $(ENTRYPOINT)
+
+lint:
+	yarn eslint $(SRC)/**/*.ts $(TST)/**/*.ts
+
+fix:
+	yarn eslint $(SRC)/**/*.ts $(TST)/**/*.ts --fix
+
+dev:
+	tsc-watch --onSuccess "node $(ENTRYPOINT)"
+test:
+	yarn jest --verbose --config jest.config.js
+
+coverage:
+	yarn nyc --reporter=lcov make test
+
+.PHONY: dev test coverage run

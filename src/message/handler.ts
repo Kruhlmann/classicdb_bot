@@ -1,7 +1,11 @@
+import { Guild } from "discord.js";
+
 import { Expansion } from "../expansion";
 import { IExternalItemStorage } from "../external_item_storage";
 import { Item } from "../item";
 import { ItemQueryProcessor } from "../item/processor";
+import { ILoggable } from "../logging";
+import { DiscordGuild } from "../models/discord_guild";
 import { ClassicDB, IWowHead, TBCDB } from "../wowhead";
 import { Message } from ".";
 import { ItemQuery } from "./query_extractor";
@@ -23,8 +27,9 @@ export class MessageHandler implements IMessageHandler {
     private readonly richembed_item_factory: IRichEmbedItemFactory;
     private readonly richembed_spell_factory: IRichEmbedSpellFactory;
     private readonly external_item_storage?: IExternalItemStorage;
+    private readonly logger: ILoggable;
 
-    public constructor(external_item_storage: IExternalItemStorage) {
+    public constructor(external_item_storage: IExternalItemStorage, logger: ILoggable) {
         this.classic_wowhead = new ClassicDB("https://classicdb.ch");
         this.tbc_wowhead = new TBCDB("https://tbcdb.com");
         this.richembed_item_factory = new RichEmbedItemFactory(
@@ -34,6 +39,7 @@ export class MessageHandler implements IMessageHandler {
         );
         this.richembed_spell_factory = new RichEmbedSpellFactory();
         this.external_item_storage = external_item_storage;
+        this.logger = logger;
     }
 
     private get_all_item_queries_from_message(message: Message): ItemQuery[] {
@@ -58,10 +64,27 @@ export class MessageHandler implements IMessageHandler {
     }
 
     public async act_on_message(message: Message): Promise<void[]> {
+        await this.update_discord_guild(message.original_message.guild);
         const item_queries = this.get_all_item_queries_from_message(message);
         const action_promises = item_queries.map((item_query) => {
             return this.act_on_item_query(item_query, message);
         });
         return Promise.all(action_promises);
+    }
+
+    private async update_discord_guild(guild: Guild): Promise<void> {
+        return DiscordGuild.count({ where: { guild_id: guild.id } })
+            .then(async (count) => {
+                if (count > 0) {
+                    return;
+                }
+                await DiscordGuild.create({ guild_id: guild.id }).catch((error) => {
+                    this.logger.error(`Unable to create guild model ${error}`);
+                });
+                this.logger.log(`Registered new guild: ${guild.name} (${guild.id})`);
+            })
+            .catch((error) => {
+                this.logger.error(`Unable to select from guilds model ${error}`);
+            });
     }
 }

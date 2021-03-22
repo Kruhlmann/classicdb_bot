@@ -2,16 +2,6 @@
     "name": "classicdb_bot",
     "version": "1.5.0",
     "description": "A discord bot, which makes it easy to link items from the WoW Classic database on classicdb.ch",
-    "scripts": {
-        "start": "yarn build && node dist/index.js",
-        "test": "jest --verbose --config jest.config.js",
-        "coverage": "nyc --reporter=lcov yarn run test",
-        "lint": "eslint src/**/*.ts test/**/*.ts",
-        "fix": "eslint src/**/*.ts test/**/*.ts --fix",
-        "build": "tsc",
-        "watch": "tsc -w",
-        "dev": "tsc-watch --onSuccess 'node dist/index.js'"
-    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/Kruhlmann/classicdb_bot.git"
