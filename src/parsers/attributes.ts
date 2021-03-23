@@ -40,7 +40,7 @@ export class AttributeParser extends MultiRegexHTMLTooltipBodyParser<AttributeSt
     protected readonly pattern = /([+|-]\d+) (Agility|Strength|Intellect|Spirit|Stamina|(?:Fire|Frost|Arcane|Nature|Shadow) Resistance)/g;
 
     protected postformat(parse_result: string[]): AttributeStat {
-        const attribute_value = Number.parseInt(parse_result[1]);
+        const attribute_value = Number.parseInt(parse_result[1], 10);
         const attribute_type = parse_result[2];
 
         return {

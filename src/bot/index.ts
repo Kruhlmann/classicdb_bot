@@ -30,7 +30,7 @@ export class ClassicDBBot extends Startable implements IClassicDBBot {
     private readonly discord_event_handler: IDiscordEventHandler;
     public readonly discord_api_client: Client;
 
-    public constructor(token: string, logger: ILoggable, external_item_storage?: IExternalItemStorage) {
+    public constructor(token: string, logger: ILoggable, external_item_storage: IExternalItemStorage) {
         super();
         this.token = token;
         this.discord_api_client = new Client();

@@ -39,8 +39,8 @@ class WeaponPhysicalDamageRangeParser extends MonoRegexHTMLTooltipBodyParser<Wea
         const bottom_end_string = parse_result[1];
         const top_end_string = parse_result[2];
         return {
-            low: Number.parseInt(bottom_end_string),
-            high: Number.parseInt(top_end_string),
+            low: Number.parseInt(bottom_end_string, 10),
+            high: Number.parseInt(top_end_string, 10),
             type: DamageType.PHYSICAL,
         };
     }
@@ -55,8 +55,8 @@ class WeaponMagicDamageRangeParser extends MultiRegexHTMLTooltipBodyParser<Weapo
         const damage_type = parse_result[3];
 
         return {
-            low: Number.parseInt(bottom_end_string),
-            high: Number.parseInt(top_end_string),
+            low: Number.parseInt(bottom_end_string, 10),
+            high: Number.parseInt(top_end_string, 10),
             type: new DamageTypeLookupTable().perform_lookup(damage_type),
         };
     }

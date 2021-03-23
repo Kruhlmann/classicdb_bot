@@ -5,6 +5,6 @@ export class ArmorValueParser extends MonoRegexHTMLTooltipBodyParser<number> {
     protected readonly default_value = -1;
 
     protected postformat(parse_result: string[]): number {
-        return Number.parseInt(parse_result[1]);
+        return Number.parseInt(parse_result[1], 10);
     }
 }

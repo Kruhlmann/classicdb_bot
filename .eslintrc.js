@@ -19,6 +19,8 @@ module.exports = {
     rules: {
         indent: ["warn", 4, { SwitchCase: 1 }],
         quotes: ["warn", "double"],
+        radix: "error",
+        complexity: ["error", 2],
         "node/no-unpublished-import": "off",
         "@typescript-eslint/camelcase": "off",
         "@typescript-eslint/no-unused-vars": [2, { args: "none" }],

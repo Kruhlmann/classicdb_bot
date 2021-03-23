@@ -31,7 +31,7 @@ export class ClassicDBPreResolvedSpellParser extends PreResolvedSpellParser {
 
     protected postformat(parse_result: string[]): IPreResolvedSpellData {
         const trigger = parse_result[1];
-        const id = Number.parseInt(parse_result[2]);
+        const id = Number.parseInt(parse_result[2], 10);
         const description = parse_result[3];
 
         return { id, trigger, description };
@@ -57,7 +57,7 @@ export class TBCDBPreResolvedSpellParser extends PreResolvedSpellParser {
 
     private postformat_complex_spell(parse_result: string[]): IPreResolvedSpellData {
         const trigger = parse_result[1];
-        const id = Number.parseInt(parse_result[2]);
+        const id = Number.parseInt(parse_result[2], 10);
         const description = parse_result[3];
 
         return { id, trigger, description };
@@ -91,7 +91,7 @@ abstract class SpellResolver implements ISpellResolver {
 }
 
 export class ClassicDBSpellResolver extends SpellResolver {
-    protected readonly base_url = "https://classicdb.ch";
+    protected readonly base_url = "https://vanillawowdb.com";
     protected readonly expansion = Expansion.CLASSIC;
 }
 

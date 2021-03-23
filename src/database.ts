@@ -9,6 +9,6 @@ export class PostgresDatabaseConnection {
 
     public constructor(username: string, password: string, database_name: string, host: string, port: number) {
         const connection_string = `postgres://${username}:${password}@${host}:${port}/${database_name}`;
-        this.database = new Sequelize(connection_string);
+        this.database = new Sequelize(connection_string, { logging: false });
     }
 }

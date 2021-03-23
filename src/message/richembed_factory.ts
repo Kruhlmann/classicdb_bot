@@ -1,6 +1,6 @@
 import { RichEmbed } from "discord.js";
 
-import { IItem, Item } from "../item";
+import { IItem } from "../item";
 import { ILookupTable } from "../lookup_table";
 import { ItemQuality, ItemQualityColorLookupTable } from "../parsers/quality";
 import { ISpell } from "../spell";

@@ -62,16 +62,26 @@ export abstract class MultiRegexHTMLTooltipBodyParser<ParserResultType> extends 
         let match;
         do {
             match = this.pattern.exec(this.tooltip_table_html);
-            if (!match) {
-                break;
-            }
-            const result = this.postformat(match);
-            if (result) {
-                results.push(result);
-            }
+            this.push_postformatted_match_to_results_if_exists(match, results);
         } while (match);
 
         return results;
+    }
+
+    protected push_postformatted_match_to_results_if_exists(
+        match: string[] | undefined,
+        results: ParserResultType[],
+    ): void {
+        if (match) {
+            this.push_postformatted_match_to_results(match, results);
+        }
+    }
+
+    protected push_postformatted_match_to_results(match: string[], results: ParserResultType[]): void {
+        const result = this.postformat(match);
+        if (result) {
+            results.push(result);
+        }
     }
 
     protected abstract postformat(parse_result: string[]): ParserResultType | undefined;
@@ -88,16 +98,26 @@ export abstract class MultiRegexHTMLEffectTooltipBodyParser<ParserResultType> ex
         let match;
         do {
             match = this.pattern.exec(this.tooltip_table_html);
-            if (!match) {
-                break;
-            }
-            const result = this.postformat(match);
-            if (result) {
-                results.push(result);
-            }
+            this.push_postformatted_match_to_results_if_exists(match, results);
         } while (match);
 
         return results;
+    }
+
+    protected push_postformatted_match_to_results_if_exists(
+        match: string[] | undefined,
+        results: ParserResultType[],
+    ): void {
+        if (match) {
+            this.push_postformatted_match_to_results(match, results);
+        }
+    }
+
+    protected push_postformatted_match_to_results(match: string[], results: ParserResultType[]): void {
+        const result = this.postformat(match);
+        if (result) {
+            results.push(result);
+        }
     }
 
     protected abstract postformat(parse_result: string[]): ParserResultType | undefined;

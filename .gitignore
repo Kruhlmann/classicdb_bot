@@ -16,4 +16,3 @@ logs/*
 aliases.json
 img/*
 !img/.gitkeep
-requests_per_minute

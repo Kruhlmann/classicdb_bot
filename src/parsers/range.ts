@@ -8,6 +8,6 @@ export class RangeParser extends MonoRegexHTMLTooltipBodyParser<number> {
         if (parse_result[1] === "Melee") {
             return 0;
         }
-        return Number.parseInt(parse_result[1]);
+        return Number.parseInt(parse_result[1], 10);
     }
 }

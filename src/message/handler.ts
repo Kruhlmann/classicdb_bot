@@ -5,7 +5,7 @@ import { IExternalItemStorage } from "../external_item_storage";
 import { Item } from "../item";
 import { ItemQueryProcessor } from "../item/processor";
 import { ILoggable } from "../logging";
-import { DiscordGuild } from "../models/discord_guild";
+import { DiscordGuildModel } from "../models/discord_guild";
 import { ClassicDB, IWowHead, TBCDB } from "../wowhead";
 import { Message } from ".";
 import { ItemQuery } from "./query_extractor";
@@ -26,11 +26,11 @@ export class MessageHandler implements IMessageHandler {
     private readonly tbc_wowhead: IWowHead;
     private readonly richembed_item_factory: IRichEmbedItemFactory;
     private readonly richembed_spell_factory: IRichEmbedSpellFactory;
-    private readonly external_item_storage?: IExternalItemStorage;
+    private readonly external_item_storage: IExternalItemStorage;
     private readonly logger: ILoggable;
 
     public constructor(external_item_storage: IExternalItemStorage, logger: ILoggable) {
-        this.classic_wowhead = new ClassicDB("https://classicdb.ch");
+        this.classic_wowhead = new ClassicDB("https://vanillawowdb.com");
         this.tbc_wowhead = new TBCDB("https://tbcdb.com");
         this.richembed_item_factory = new RichEmbedItemFactory(
             "https://images-ext-1.discordapp.net/external/s8uTI5co6Kys0_gnCCuzQOPsc5cAkoqivBFSpH5wnv8/https/orig08.deviantart.net/65e3/f/2014/207/e/2/official_wow_icon_by_benashvili-d7sd1ab.png",
@@ -54,9 +54,14 @@ export class MessageHandler implements IMessageHandler {
     }
 
     private async act_on_item_query(item_query: ItemQuery, message: Message): Promise<void> {
+        console.log(1);
         const item = await this.item_query_to_item(item_query);
+        console.log(2);
+        //await this.external_item_storage.store_item(item);
         const item_richembed = this.richembed_item_factory.make_richembed_from_item(item);
+        console.log(3);
         const spell_richembeds = this.richembed_spell_factory.make_richembeds_from_item(item);
+        console.log(4);
         for (const richembed of [item_richembed, ...spell_richembeds]) {
             message.channel.send(richembed);
         }
@@ -64,27 +69,20 @@ export class MessageHandler implements IMessageHandler {
     }
 
     public async act_on_message(message: Message): Promise<void[]> {
-        await this.update_discord_guild(message.original_message.guild);
+        //await this.update_discord_guild(message.original_message.guild);
         const item_queries = this.get_all_item_queries_from_message(message);
         const action_promises = item_queries.map((item_query) => {
             return this.act_on_item_query(item_query, message);
         });
+
         return Promise.all(action_promises);
     }
 
     private async update_discord_guild(guild: Guild): Promise<void> {
-        return DiscordGuild.count({ where: { guild_id: guild.id } })
-            .then(async (count) => {
-                if (count > 0) {
-                    return;
-                }
-                await DiscordGuild.create({ guild_id: guild.id }).catch((error) => {
-                    this.logger.error(`Unable to create guild model ${error}`);
-                });
-                this.logger.log(`Registered new guild: ${guild.name} (${guild.id})`);
-            })
-            .catch((error) => {
-                this.logger.error(`Unable to select from guilds model ${error}`);
-            });
+        const number_of_guilds_with_id = await DiscordGuildModel.count({ where: { guild_id: guild.id } });
+        if (number_of_guilds_with_id === 0) {
+            await DiscordGuildModel.create({ guild_id: guild.id });
+            this.logger.log(`Registered new guild: ${guild.name} (${guild.id})`);
+        }
     }
 }

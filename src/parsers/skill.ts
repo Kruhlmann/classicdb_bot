@@ -55,7 +55,7 @@ export class SkillRequirementParser extends MonoRegexHTMLTooltipBodyParser<Skill
 
     protected postformat(parse_result: string[]): SkillRequirement {
         const skill = new SkillLookupTable().perform_lookup(parse_result[1]);
-        const value = Number.parseInt(parse_result[2]);
+        const value = Number.parseInt(parse_result[2], 10);
         return { skill, value };
     }
 }
