@@ -2,21 +2,19 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 
 import { default_model_options } from ".";
 
-export class DiscordGuildModel extends Model {
-    public id: string;
-
+export class ExpansionModel extends Model {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static async initialize(sequelize: Sequelize): Promise<Model<any, any>> {
-        return DiscordGuildModel.init(
+        return ExpansionModel.init(
             {
                 id: {
                     type: DataTypes.UUID,
                     defaultValue: DataTypes.UUIDV4,
                     primaryKey: true,
                 },
-                guild_id: { type: DataTypes.STRING, unique: true },
+                string_identifier: { type: DataTypes.STRING, unique: true },
             },
-            { sequelize, modelName: "discord_guild", ...default_model_options },
+            { sequelize, modelName: "expansion", ...default_model_options },
         );
     }
 

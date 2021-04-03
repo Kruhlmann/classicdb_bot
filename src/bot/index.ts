@@ -28,11 +28,13 @@ abstract class Startable implements IStartable {
 export class ClassicDBBot extends Startable implements IClassicDBBot {
     private readonly token: string;
     private readonly discord_event_handler: IDiscordEventHandler;
+    private readonly logger: ILoggable;
     public readonly discord_api_client: Client;
 
     public constructor(token: string, logger: ILoggable, external_item_storage: IExternalItemStorage) {
         super();
         this.token = token;
+        this.logger = logger;
         this.discord_api_client = new Client();
         this.discord_event_handler = new DiscordEventHandler(this, logger, external_item_storage);
     }
@@ -41,6 +43,9 @@ export class ClassicDBBot extends Startable implements IClassicDBBot {
         super.start();
         this.discord_event_handler.register_on_ready_event_handler();
         this.discord_event_handler.register_on_message_event_handler();
-        this.discord_api_client.login(this.token);
+        this.discord_api_client.login(this.token).catch((error) => {
+            this.logger.debug(error);
+            this.logger.error("Authentication against the discord API failed.");
+        });
     }
 }

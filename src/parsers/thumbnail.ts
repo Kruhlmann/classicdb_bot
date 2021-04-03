@@ -17,7 +17,7 @@ abstract class ThumbnailParser extends HTMLParser<string> {
 
 export class ClassicDBThumbnailParser extends ThumbnailParser {
     protected item_thumbnail_id_to_url(item_thumbnail_id: string): string {
-        return `https://classicdb.ch/images/icons/large/${item_thumbnail_id}.jpg`;
+        return `https://vanillawowdb.com/images/icons/large/${item_thumbnail_id}.jpg`;
     }
 }
 

@@ -14,7 +14,7 @@
         "moduleResolution": "node",
         "experimentalDecorators": true,
         "allowJs": true,
-        "target": "es5"
+        "target": "es6"
     },
     "include": [
         "src/**/*.ts"

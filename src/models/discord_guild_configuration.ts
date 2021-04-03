@@ -2,28 +2,26 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 
 import { default_model_options } from ".";
 import { DiscordGuildModel } from "./discord_guild";
-import { ItemModel } from "./item";
 
-export class ItemQueryModel extends Model {
+export class DiscordGuildConfigurationModel extends Model {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static async initialize(sequelize: Sequelize): Promise<Model<any, any>> {
-        return ItemQueryModel.init(
+        return DiscordGuildConfigurationModel.init(
             {
                 id: {
                     type: DataTypes.UUID,
                     defaultValue: DataTypes.UUIDV4,
                     primaryKey: true,
                 },
-                guild_id: { type: DataTypes.STRING, unique: true },
+                memes_enabled: { type: DataTypes.BOOLEAN, defaultValue: false },
             },
-            { sequelize, modelName: "item_query", ...default_model_options },
+            { sequelize, modelName: "discord_guild_configuration", ...default_model_options },
         );
     }
 
     public static async associate(): Promise<void> {
         await Promise.all([
-            //ItemQueryModel.belongsTo(DiscordGuildModel, { foreignKey: "guild_id" }),
-            //ItemQueryModel.hasOne(ItemModel, { foreignKey: "item_id" }),
+            DiscordGuildConfigurationModel.belongsTo(DiscordGuildModel, { foreignKey: "discord_guild_id" }),
         ]);
     }
 }

@@ -5,11 +5,9 @@ import {
     IExternalItemStorage,
     PersistentPostgreSQLExternalItemStorage,
     TemporalPostgreSQLExternalItemStorage,
-    TemporalJSONExternalItemStorage,
 } from "./external_item_storage";
 import { IGlobalErrorReporter, SentryGlobalErrorReporter } from "./global_error_reporter";
 import { ILoggable, ISODatePreformatter, SynchronousFileOutputLogger } from "./logging";
-import { DiscordGuildModel } from "./models/discord_guild";
 
 abstract class Main {
     protected readonly bot: IClassicDBBot;
@@ -22,7 +20,7 @@ abstract class Main {
         this.bot = new ClassicDBBot(process.env["CLASSICDB_BOT_TOKEN"], this.logger, this.external_item_storage);
     }
 
-    public abstract async main(): Promise<void>;
+    public abstract main(): Promise<void>;
 }
 
 class ProductionMain extends Main {
@@ -50,26 +48,21 @@ class ProductionMain extends Main {
 }
 
 class DevelopmentMain extends Main {
-    private readonly error_reporter: IGlobalErrorReporter;
-
     public constructor() {
         const log_path = new ClassicDBBotArgumentParser().parse().log_file;
         const preformatter = new ISODatePreformatter();
         const logger = new SynchronousFileOutputLogger(log_path, preformatter, true);
-        //const external_item_storage = new TemporalPostgreSQLExternalItemStorage(
-        //logger,
-        //"postgres",
-        //"postgres",
-        //"classicdb_bot_dev",
-        //);
-        const external_item_storage = new TemporalJSONExternalItemStorage("items.json");
+        const external_item_storage = new TemporalPostgreSQLExternalItemStorage(
+            logger,
+            "postgres",
+            "postgres",
+            "classicdb_bot_dev",
+        );
         super(logger, external_item_storage);
-        this.error_reporter = new SentryGlobalErrorReporter(process.env["SENTRY_DNS"], 1);
     }
 
     public async main() {
         this.logger.log(`Starting classicdb bot v${version} in development mode`);
-        this.error_reporter.initialize();
         await this.external_item_storage.initialize();
         await this.bot.start();
     }

@@ -116,14 +116,18 @@ export abstract class OutputDeviceLogger implements ILoggable {
     }
 
     protected get_caller_filename(): string {
-        const raw_stack = new Error("-").stack;
-        // 3rd item in the call stack is the one just outside this call.
-        const latest_stack_call = raw_stack.split(/ at/)[3];
-        // Grab contents of parenthesis.
-        const filename_path = /\((.*?)\)/.exec(latest_stack_call)[1];
-        // Grab filename from full file path.
-        const filename = filename_path.split("/").slice(-1)[0];
-        return filename;
+        try {
+            const raw_stack = new Error("-").stack;
+            // 3rd item in the call stack is the one just outside this call.
+            const latest_stack_call = raw_stack.split(/ at/)[3];
+            // Grab contents of parenthesis.
+            const filename_path = /\((.*?)\)/.exec(latest_stack_call)[1];
+            // Grab filename from full file path.
+            const filename = filename_path.split("/").slice(-1)[0];
+            return filename;
+        } catch {
+            return "unknown_file";
+        }
     }
 }
 

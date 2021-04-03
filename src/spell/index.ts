@@ -47,7 +47,7 @@ abstract class Spell implements ISpell {
 }
 
 export class ClassicDBSpell extends Spell {
-    protected readonly SIMPLE_SPELL_THUMBNAIL_URL = "https://classicdb.ch/images/icons/large/trade_engineering.jpg";
+    protected readonly SIMPLE_SPELL_THUMBNAIL_URL = "https://vanillawowdb.com/images/icons/large/trade_engineering.jpg";
 }
 
 export class TBCDBSpell extends Spell {

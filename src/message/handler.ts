@@ -6,6 +6,8 @@ import { Item } from "../item";
 import { ItemQueryProcessor } from "../item/processor";
 import { ILoggable } from "../logging";
 import { DiscordGuildModel } from "../models/discord_guild";
+import { DiscordGuildConfigurationModel } from "../models/discord_guild_configuration";
+import { timeout_after } from "../timeout";
 import { ClassicDB, IWowHead, TBCDB } from "../wowhead";
 import { Message } from ".";
 import { ItemQuery } from "./query_extractor";
@@ -54,14 +56,10 @@ export class MessageHandler implements IMessageHandler {
     }
 
     private async act_on_item_query(item_query: ItemQuery, message: Message): Promise<void> {
-        console.log(1);
         const item = await this.item_query_to_item(item_query);
-        console.log(2);
-        //await this.external_item_storage.store_item(item);
+        await this.external_item_storage.store_item(item);
         const item_richembed = this.richembed_item_factory.make_richembed_from_item(item);
-        console.log(3);
         const spell_richembeds = this.richembed_spell_factory.make_richembeds_from_item(item);
-        console.log(4);
         for (const richembed of [item_richembed, ...spell_richembeds]) {
             message.channel.send(richembed);
         }
@@ -69,7 +67,7 @@ export class MessageHandler implements IMessageHandler {
     }
 
     public async act_on_message(message: Message): Promise<void[]> {
-        //await this.update_discord_guild(message.original_message.guild);
+        this.update_discord_guild(message.original_message.guild);
         const item_queries = this.get_all_item_queries_from_message(message);
         const action_promises = item_queries.map((item_query) => {
             return this.act_on_item_query(item_query, message);
@@ -78,11 +76,39 @@ export class MessageHandler implements IMessageHandler {
         return Promise.all(action_promises);
     }
 
+    @timeout_after(2000)
     private async update_discord_guild(guild: Guild): Promise<void> {
+        try {
+            await this.create_discord_guild_if_missing(guild);
+            await this.create_discord_guild_configuration_if_missing(guild);
+        } catch (error) {
+            this.logger.debug(error);
+            this.logger.error("Unable to update guild");
+        }
+    }
+
+    private async create_discord_guild_if_missing(guild: Guild): Promise<void> {
         const number_of_guilds_with_id = await DiscordGuildModel.count({ where: { guild_id: guild.id } });
         if (number_of_guilds_with_id === 0) {
-            await DiscordGuildModel.create({ guild_id: guild.id });
-            this.logger.log(`Registered new guild: ${guild.name} (${guild.id})`);
+            await this.create_discord_guild(guild);
         }
+    }
+
+    private async create_discord_guild_configuration_if_missing(guild: Guild): Promise<void> {
+        const number_of_guilds_configs_for_guild = await DiscordGuildConfigurationModel.count();
+        if (number_of_guilds_configs_for_guild === 0) {
+            await this.create_discord_guild_configuration(guild);
+        }
+    }
+
+    private async create_discord_guild_configuration(guild: Guild): Promise<void> {
+        const assoc_model = await DiscordGuildModel.findOne({ where: { guild_id: guild.id } });
+        await DiscordGuildConfigurationModel.create({ discord_guild_id: assoc_model.id });
+        this.logger.log(`Registered new guild config for: ${guild.name} (${guild.id})`);
+    }
+
+    private async create_discord_guild(guild: Guild) {
+        await DiscordGuildModel.create({ guild_id: guild.id });
+        this.logger.log(`Registered new guild: ${guild.name} (${guild.id})`);
     }
 }
