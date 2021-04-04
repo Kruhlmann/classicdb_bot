@@ -1,4 +1,5 @@
 import { Expansion, ExpansionLookupTable } from "../expansion";
+import { AttributeStatModel } from "../models/attributes";
 import { ItemModel } from "../models/item";
 import { AttributeStat } from "../parsers/attributes";
 import { ItemBinding } from "../parsers/binding";
@@ -90,7 +91,8 @@ export class Item {
         url: string,
         spells: ISpell[],
     ) {
-        (this.id = id), (this.armor = armor);
+        this.id = id;
+        this.armor = armor;
         this.attributes = attributes;
         this.binding = binding;
         this.block_value = block_value;
@@ -125,10 +127,11 @@ export class Item {
     public static from_model(model: ItemModel): IItem {
         const expansion_string = model.expansion.string_identifier;
         const expansion = new ExpansionLookupTable().perform_lookup(expansion_string);
+        const attributes = model.attributes.map((model) => AttributeStatModel.to_attribute_stat(model));
         return new Item(
             model.item_id,
             model.armor,
-            [],
+            attributes,
             ItemBinding.NONE,
             model.block_value,
             [],

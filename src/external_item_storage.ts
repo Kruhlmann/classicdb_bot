@@ -7,6 +7,7 @@ import { IItem, Item } from "./item";
 import { ILoggable } from "./logging";
 import { ItemQuery, ItemQueryType } from "./message/query_extractor";
 import { DatabaseModelBuilder } from "./models";
+import { AttributeStatModel } from "./models/attributes";
 import { DiscordGuildModel } from "./models/discord_guild";
 import { DiscordGuildConfigurationModel } from "./models/discord_guild_configuration";
 import { ExpansionModel } from "./models/expansion";
@@ -31,6 +32,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         DiscordGuildConfigurationModel,
         ItemModel,
         ItemQueryModel,
+        AttributeStatModel,
     ];
 
     public constructor(
@@ -59,7 +61,13 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             where: {
                 item_id: id,
             },
-            include: [ExpansionModel],
+            include: [
+                ExpansionModel,
+                {
+                    model: AttributeStatModel,
+                    as: "attributes",
+                },
+            ],
         });
         if (!item_model) {
             return;
@@ -72,7 +80,13 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             where: {
                 name: { [Op.like]: "%" + name_partial + "%" },
             },
-            include: [ExpansionModel],
+            include: [
+                ExpansionModel,
+                {
+                    model: AttributeStatModel,
+                    as: "attributes",
+                },
+            ],
         });
         if (!item_model) {
             return;
@@ -106,19 +120,31 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
     private async store_missing_item(item: IItem) {
         const expansion_string = new ExpansionLookupTable().perform_reverse_lookup(item.expansion);
         const expansion = await ExpansionModel.findOne({ where: { string_identifier: expansion_string } });
-        await ItemModel.create({
-            item_id: item.id,
-            armor: item.armor,
-            block_value: item.block_value,
-            durability: item.durability,
-            flavor_text: item.flavor_text,
-            level_requirement: item.level_requirement,
-            name: item.name,
-            thumbnail: item.thumbnail,
-            uniquely_equipped: item.uniquely_equipped,
-            url: item.url,
-            expansion_id: expansion.id,
-        });
+        await ItemModel.create(
+            {
+                item_id: item.id,
+                armor: item.armor,
+                attributes: [
+                    { type: "agility", value: 4 },
+                    { type: "fire resistance", value: 14 },
+                ],
+                block_value: item.block_value,
+                durability: item.durability,
+                flavor_text: item.flavor_text,
+                level_requirement: item.level_requirement,
+                name: item.name,
+                thumbnail: item.thumbnail,
+                uniquely_equipped: item.uniquely_equipped,
+                url: item.url,
+                expansion_id: expansion.id,
+            },
+            {
+                include: {
+                    model: AttributeStatModel,
+                    as: "attributes",
+                },
+            },
+        );
     }
 
     public async lookup(key: string): Promise<IItem | void> {

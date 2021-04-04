@@ -1,6 +1,7 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 import { default_model_options } from ".";
+import { AttributeStatModel } from "./attributes";
 import { ExpansionModel } from "./expansion";
 
 export class ItemModel extends Model {
@@ -15,6 +16,7 @@ export class ItemModel extends Model {
     public uniquely_equipped: boolean;
     public url: string;
     public expansion: ExpansionModel;
+    public attributes: AttributeStatModel[];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static async initialize(sequelize: Sequelize): Promise<Model<any, any>> {
@@ -41,6 +43,9 @@ export class ItemModel extends Model {
     }
 
     public static async associate(): Promise<void> {
-        await Promise.all([ItemModel.belongsTo(ExpansionModel, { foreignKey: "expansion_id" })]);
+        await Promise.all([
+            ItemModel.belongsTo(ExpansionModel, { foreignKey: "expansion_id" }),
+            ItemModel.hasMany(AttributeStatModel, { as: "attributes", foreignKey: "item_id" }),
+        ]);
     }
 }
