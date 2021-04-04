@@ -33,7 +33,7 @@ export class MessageHandler implements IMessageHandler {
     private readonly logger: ILoggable;
 
     public constructor(external_item_storage: IExternalItemStorage, logger: ILoggable) {
-        this.classic_wowhead = new ClassicDB("https://vanillawowdb.com");
+        this.classic_wowhead = new ClassicDB("https://classicdb.ch");
         this.tbc_wowhead = new TBCDB("https://tbcdb.com");
         this.richembed_item_factory = new RichEmbedItemFactory(
             "https://images-ext-1.discordapp.net/external/s8uTI5co6Kys0_gnCCuzQOPsc5cAkoqivBFSpH5wnv8/https/orig08.deviantart.net/65e3/f/2014/207/e/2/official_wow_icon_by_benashvili-d7sd1ab.png",

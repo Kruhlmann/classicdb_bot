@@ -24,12 +24,20 @@ export interface ISpellResolver {
 
 abstract class PreResolvedSpellParser extends MultiRegexHTMLEffectTooltipBodyParser<IPreResolvedSpellData> {
     protected readonly default_value = { id: -1, trigger: "", description: "" };
+
+    protected is_spell_itemset_related(parse_result: string[]): boolean {
+        return parse_result[1].startsWith("<a");
+    }
 }
 
 export class ClassicDBPreResolvedSpellParser extends PreResolvedSpellParser {
     protected readonly pattern = /(?:<span(?: .*?=".*?")?>){1,2}(.*?): (?:<\/span>)?<a href="\?spel{2}=(\d+)"(?: .*?=".*?")?>(.*?)<\/a><\/span>/g;
 
-    protected postformat(parse_result: string[]): IPreResolvedSpellData {
+    protected postformat(parse_result: string[]): IPreResolvedSpellData | undefined {
+        if (this.is_spell_itemset_related(parse_result)) {
+            return;
+        }
+
         const trigger = parse_result[1];
         const id = Number.parseInt(parse_result[2], 10);
         const description = parse_result[3];
@@ -41,7 +49,14 @@ export class ClassicDBPreResolvedSpellParser extends PreResolvedSpellParser {
 export class TBCDBPreResolvedSpellParser extends PreResolvedSpellParser {
     protected readonly pattern = /<span(?: .*?=".*?")?>(.*?): (?:(?:<a href="\?spell=(\d+)"(?: .*?=".*?")?>(.*?)<\/a>)|(.*?))<\/span>/g;
 
-    protected postformat(parse_result: string[]): IPreResolvedSpellData {
+    protected postformat(parse_result: string[]): IPreResolvedSpellData | undefined {
+        if (this.is_spell_itemset_related(parse_result)) {
+            return;
+        }
+        return this.postformat_non_itemset_spell(parse_result);
+    }
+
+    private postformat_non_itemset_spell(parse_result: string[]): IPreResolvedSpellData {
         if (parse_result[2] === undefined) {
             return this.postformat_simple_spell(parse_result);
         }
@@ -91,7 +106,7 @@ abstract class SpellResolver implements ISpellResolver {
 }
 
 export class ClassicDBSpellResolver extends SpellResolver {
-    protected readonly base_url = "https://vanillawowdb.com";
+    protected readonly base_url = "https://classicdb.ch";
     protected readonly expansion = Expansion.CLASSIC;
 }
 
