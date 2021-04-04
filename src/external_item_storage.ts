@@ -14,6 +14,7 @@ import { ExpansionModel } from "./models/expansion";
 import { ItemModel } from "./models/item";
 import { ItemQueryModel } from "./models/item_query";
 import { timeout_after } from "./timeout";
+import { AttributeLookupTable } from "./parsers/attributes";
 
 export interface IExternalItemStorage {
     lookup(key: string): Promise<IItem | void>;
@@ -120,14 +121,16 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
     private async store_missing_item(item: IItem) {
         const expansion_string = new ExpansionLookupTable().perform_reverse_lookup(item.expansion);
         const expansion = await ExpansionModel.findOne({ where: { string_identifier: expansion_string } });
+        const attribute_lookup_table = new AttributeLookupTable();
+        const database_attributes = item.attributes.map((attribute) => {
+            const string_type = attribute_lookup_table.perform_reverse_lookup(attribute.type);
+            return { type: string_type, value: attribute.value };
+        });
         await ItemModel.create(
             {
                 item_id: item.id,
                 armor: item.armor,
-                attributes: [
-                    { type: "agility", value: 4 },
-                    { type: "fire resistance", value: 14 },
-                ],
+                attributes: database_attributes,
                 block_value: item.block_value,
                 durability: item.durability,
                 flavor_text: item.flavor_text,
