@@ -1,9 +1,9 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
+import { Expansion, ExpansionLookupTable } from "../expansion";
 import { default_model_options } from ".";
 import { DiscordGuildConfigurationModel } from "./discord_guild_configuration";
 import { ExpansionModel } from "./expansion";
-import { ExpansionLookupTable, Expansion } from "../expansion";
 
 export class DiscordGuildModel extends Model {
     public id: string;

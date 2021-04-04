@@ -1,16 +1,19 @@
-import { Expansion } from "../expansion";
+import { Expansion, ExpansionLookupTable } from "../expansion";
+import { ItemModel } from "../models/item";
 import { AttributeStat } from "../parsers/attributes";
 import { ItemBinding } from "../parsers/binding";
 import { Class } from "../parsers/class";
+import { DamageType } from "../parsers/damage_type";
 import { ItemQuality } from "../parsers/quality";
 import { PVPRank } from "../parsers/rank";
-import { ReputationRequirement } from "../parsers/reputation";
-import { SkillRequirement } from "../parsers/skill";
+import { ReputationRequirement, ReputationState } from "../parsers/reputation";
+import { Skill, SkillRequirement } from "../parsers/skill";
 import { Slot, Type } from "../parsers/slot_type";
 import { WeaponDamage } from "../parsers/weapon_damage";
 import { ISpell } from "../spell";
 
 export interface IItem {
+    id: number;
     armor: number;
     attributes: AttributeStat[];
     binding: ItemBinding;
@@ -38,6 +41,7 @@ export interface IItem {
 }
 
 export class Item {
+    public readonly id: number;
     public readonly armor: number;
     public readonly attributes: AttributeStat[];
     public readonly binding: ItemBinding;
@@ -62,6 +66,7 @@ export class Item {
     public readonly spells: ISpell[];
 
     public constructor(
+        id: number,
         armor: number,
         attributes: AttributeStat[],
         binding: ItemBinding,
@@ -85,7 +90,7 @@ export class Item {
         url: string,
         spells: ISpell[],
     ) {
-        this.armor = armor;
+        (this.id = id), (this.armor = armor);
         this.attributes = attributes;
         this.binding = binding;
         this.block_value = block_value;
@@ -115,5 +120,35 @@ export class Item {
 
     public get complex_spells(): ISpell[] {
         return this.spells.filter((spell) => !spell.is_simple);
+    }
+
+    public static from_model(model: ItemModel): IItem {
+        const expansion_string = model.expansion.string_identifier;
+        const expansion = new ExpansionLookupTable().perform_lookup(expansion_string);
+        return new Item(
+            model.item_id,
+            model.armor,
+            [],
+            ItemBinding.NONE,
+            model.block_value,
+            [],
+            model.durability,
+            expansion,
+            model.flavor_text,
+            model.level_requirement,
+            model.name,
+            ItemQuality.UNCOMMON,
+            "",
+            Slot.BACK,
+            Type.AXE,
+            model.thumbnail,
+            model.uniquely_equipped,
+            { dps: -1, damage_ranges: [], speed: -1 },
+            { name: "", state: ReputationState.NONE },
+            { skill: Skill.NONE, value: -1 },
+            PVPRank.NONE,
+            model.url,
+            [],
+        );
     }
 }

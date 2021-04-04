@@ -1,6 +1,7 @@
 import { version } from "../package.json";
 import { ClassicDBBotArgumentParser } from "./argparser";
 import { ClassicDBBot, IClassicDBBot } from "./bot";
+import { ClassicDBBotEnvironmentValidator, IEnvironmentValidator } from "./environment_validator";
 import {
     IExternalItemStorage,
     PersistentPostgreSQLExternalItemStorage,
@@ -12,12 +13,14 @@ import {
 } from "./external_item_storage_preseeder";
 import { IGlobalErrorReporter } from "./global_error_reporter";
 import { ILoggable, ISODatePreformatter, SynchronousFileOutputLogger } from "./logging";
+import { InvalidEnvironmentError } from "./exceptions";
 
 abstract class Main {
-    protected readonly bot: IClassicDBBot;
+    protected readonly logger: ILoggable;
+    protected readonly environment_validator: IEnvironmentValidator;
     protected readonly external_item_storage: IExternalItemStorage;
     protected readonly external_item_storage_preseeder: IExternalItemStoragePreseeder;
-    protected readonly logger: ILoggable;
+    protected readonly bot: IClassicDBBot;
 
     public constructor(
         logger: ILoggable,
@@ -25,9 +28,19 @@ abstract class Main {
         external_item_storage_preseeder: IExternalItemStoragePreseeder,
     ) {
         this.logger = logger;
+        this.environment_validator = new ClassicDBBotEnvironmentValidator();
         this.external_item_storage = external_item_storage;
         this.external_item_storage_preseeder = external_item_storage_preseeder;
         this.bot = new ClassicDBBot(process.env["CLASSICDB_BOT_TOKEN"], this.logger, this.external_item_storage);
+    }
+
+    protected validate_environment() {
+        try {
+            this.environment_validator.validate_environment();
+        } catch (error) {
+            this.logger.error(error);
+            process.exit(1);
+        }
     }
 
     public abstract main(): Promise<void>;
@@ -52,6 +65,7 @@ class ProductionMain extends Main {
 
     public async main() {
         this.logger.log(`Starting classicdb bot v${version} in production mode`);
+        this.validate_environment();
         this.error_reporter.initialize();
         await this.external_item_storage.initialize();
         await this.external_item_storage_preseeder.preseed();
@@ -76,6 +90,8 @@ class DevelopmentMain extends Main {
 
     public async main() {
         this.logger.log(`Starting classicdb bot v${version} in development mode`);
+        this.validate_environment();
+        this.environment_validator.validate_environment();
         await this.external_item_storage.initialize();
         await this.external_item_storage_preseeder.preseed();
         await this.bot.start();

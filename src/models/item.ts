@@ -4,7 +4,16 @@ import { default_model_options } from ".";
 import { ExpansionModel } from "./expansion";
 
 export class ItemModel extends Model {
+    public item_id: number;
+    public armor: number;
+    public block_value: number;
+    public durability: number;
+    public flavor_text: string;
+    public level_requirement: number;
     public name: string;
+    public thumbnail: string;
+    public uniquely_equipped: boolean;
+    public url: string;
     public expansion: ExpansionModel;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -16,6 +25,7 @@ export class ItemModel extends Model {
                     defaultValue: DataTypes.UUIDV4,
                     primaryKey: true,
                 },
+                item_id: { type: DataTypes.INTEGER, allowNull: false },
                 armor: { type: DataTypes.INTEGER },
                 block_value: { type: DataTypes.INTEGER },
                 durability: { type: DataTypes.INTEGER },

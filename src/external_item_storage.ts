@@ -1,9 +1,11 @@
 import * as fs from "fs";
+import { Op } from "sequelize";
 
 import { IPostgresDatabaseConnection, PostgresDatabaseConnection } from "./database";
 import { ExpansionLookupTable } from "./expansion";
-import { IItem } from "./item";
+import { IItem, Item } from "./item";
 import { ILoggable } from "./logging";
+import { ItemQuery, ItemQueryType } from "./message/query_extractor";
 import { DatabaseModelBuilder } from "./models";
 import { DiscordGuildModel } from "./models/discord_guild";
 import { DiscordGuildConfigurationModel } from "./models/discord_guild_configuration";
@@ -16,6 +18,7 @@ export interface IExternalItemStorage {
     lookup(key: string): Promise<IItem | void>;
     store_item(item: IItem): Promise<void>;
     initialize(): Promise<void>;
+    get_cached_item(item_query: ItemQuery): Promise<IItem | void>;
 }
 
 abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
@@ -51,6 +54,38 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         }
     }
 
+    private async get_cached_item_from_id(id: number): Promise<IItem | void> {
+        const item_model = await ItemModel.findOne({
+            where: {
+                item_id: id,
+            },
+        });
+        if (!item_model) {
+            return;
+        }
+        return Item.from_model(item_model);
+    }
+
+    private async get_cached_item_from_name_partial(name_partial: string): Promise<IItem | void> {
+        const item_model = await ItemModel.findOne({
+            where: {
+                name: { [Op.like]: "%" + name_partial + "%" },
+            },
+        });
+        if (!item_model) {
+            return;
+        }
+        return Item.from_model(item_model);
+    }
+
+    public async get_cached_item(item_query: ItemQuery): Promise<IItem | void> {
+        if (item_query.type === ItemQueryType.ID) {
+            const item_query_int = Number.parseInt(item_query.query, 10);
+            return this.get_cached_item_from_id(item_query_int);
+        }
+        return this.get_cached_item_from_name_partial(item_query.query);
+    }
+
     private async is_item_missing_from_external_storage(item: IItem) {
         const lookup_table = new ExpansionLookupTable();
         const item_expansion = lookup_table.perform_reverse_lookup(item.expansion);
@@ -70,6 +105,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         const expansion_string = new ExpansionLookupTable().perform_reverse_lookup(item.expansion);
         const expansion = await ExpansionModel.findOne({ where: { string_identifier: expansion_string } });
         await ItemModel.create({
+            item_id: item.id,
             armor: item.armor,
             block_value: item.block_value,
             durability: item.durability,
@@ -119,6 +155,10 @@ abstract class JSONExternalItemStorage implements IExternalItemStorage {
 
     private read_and_parse(): Record<string, IItem> {
         return JSON.parse(this.read()) as Record<string, IItem>;
+    }
+
+    public async get_cached_item(item_query: ItemQuery): Promise<IItem | void> {
+        return this.lookup(item_query.query);
     }
 
     public async lookup(item_name: string): Promise<IItem | void> {

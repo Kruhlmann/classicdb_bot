@@ -2,7 +2,7 @@ import { Guild } from "discord.js";
 
 import { Expansion } from "../expansion";
 import { IExternalItemStorage } from "../external_item_storage";
-import { Item } from "../item";
+import { IItem, Item } from "../item";
 import { ItemQueryProcessor } from "../item/processor";
 import { ILoggable } from "../logging";
 import { DiscordGuildModel } from "../models/discord_guild";
@@ -51,6 +51,12 @@ export class MessageHandler implements IMessageHandler {
     }
 
     public async item_query_to_item(item_query: ItemQuery): Promise<Item> {
+        const cached_item = await this.external_item_storage.get_cached_item(item_query);
+        console.log(cached_item);
+        return cached_item || this.build_item_from_wowhead_source(item_query);
+    }
+
+    private async build_item_from_wowhead_source(item_query: ItemQuery): Promise<IItem> {
         if (item_query.expansion === Expansion.CLASSIC) {
             return this.classic_wowhead.search(item_query.query);
         }

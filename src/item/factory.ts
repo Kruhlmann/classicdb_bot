@@ -21,7 +21,7 @@ import { ClassicDBSpellFactory, TBCDBSpellFactory } from "../spell/factory";
 import { IItem, Item } from ".";
 
 export interface IItemFactory {
-    from_page_source(page_source: string, page_url: string): Promise<IItem>;
+    from_page_source(page_source: string, page_url: string, item_id: number): Promise<IItem>;
 }
 
 export class ItemFactory implements IItemFactory {
@@ -31,14 +31,14 @@ export class ItemFactory implements IItemFactory {
         this.expansion = expansion;
     }
 
-    public async from_page_source(page_source: string, page_url: string): Promise<IItem> {
+    public async from_page_source(page_source: string, page_url: string, item_id: number): Promise<IItem> {
         if (this.expansion === Expansion.TBC) {
-            return this.from_tbcdb_page_source(page_source, page_url);
+            return this.from_tbcdb_page_source(page_source, page_url, item_id);
         }
-        return this.from_classicdb_page_source(page_source, page_url);
+        return this.from_classicdb_page_source(page_source, page_url, item_id);
     }
 
-    private async from_classicdb_page_source(page_source: string, page_url: string): Promise<IItem> {
+    private async from_classicdb_page_source(page_source: string, page_url: string, item_id: number): Promise<IItem> {
         const armor = new ArmorValueParser(page_source).parse();
         const attributes = new AttributeParser(page_source).parse();
         const binding = new BindingParser(page_source).parse();
@@ -62,6 +62,7 @@ export class ItemFactory implements IItemFactory {
         const spells = await new ClassicDBSpellFactory().from_item_page_source(page_source);
 
         return new Item(
+            item_id,
             armor,
             attributes,
             binding,
@@ -87,7 +88,7 @@ export class ItemFactory implements IItemFactory {
         );
     }
 
-    private async from_tbcdb_page_source(page_source: string, page_url: string): Promise<IItem> {
+    private async from_tbcdb_page_source(page_source: string, page_url: string, item_id: number): Promise<IItem> {
         const armor = new ArmorValueParser(page_source).parse();
         const attributes = new AttributeParser(page_source).parse();
         const binding = new BindingParser(page_source).parse();
@@ -112,6 +113,7 @@ export class ItemFactory implements IItemFactory {
         const spells = await new TBCDBSpellFactory().from_item_page_source(page_source);
 
         return new Item(
+            item_id,
             armor,
             attributes,
             binding,

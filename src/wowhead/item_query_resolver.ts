@@ -5,6 +5,7 @@ import { IOpenAPIResponseParser, OpenAPIResponseItemQueryIDParser } from "./open
 export interface PageSourceContext {
     page_source: string;
     page_url: string;
+    item_id: number;
 }
 
 export interface IWowHeadPageSourceResolver {
@@ -39,6 +40,7 @@ export class WowHeadItemPageSourceResolver implements IWowHeadPageSourceResolver
         return {
             page_source: await this.get_page_source_from_id(id),
             page_url: this.get_item_url_from_id(id),
+            item_id: id,
         };
     }
 }

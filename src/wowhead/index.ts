@@ -18,7 +18,11 @@ export abstract class WowHead implements IWowHead {
 
     public async search(query: string): Promise<Item> {
         const page_source_context = await this.page_source_resolver.get_page_source_from_query(query);
-        return this.item_factory.from_page_source(page_source_context.page_source, page_source_context.page_url);
+        return this.item_factory.from_page_source(
+            page_source_context.page_source,
+            page_source_context.page_url,
+            page_source_context.item_id,
+        );
     }
 }
 
