@@ -13,7 +13,6 @@ import {
 } from "./external_item_storage_preseeder";
 import { IGlobalErrorReporter } from "./global_error_reporter";
 import { ILoggable, ISODatePreformatter, SynchronousFileOutputLogger } from "./logging";
-import { InvalidEnvironmentError } from "./exceptions";
 
 abstract class Main {
     protected readonly logger: ILoggable;

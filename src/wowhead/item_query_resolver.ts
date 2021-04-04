@@ -30,9 +30,14 @@ export class WowHeadItemPageSourceResolver implements IWowHeadPageSourceResolver
     }
 
     private async get_item_id_from_query(query: string): Promise<number> {
-        const url = `${this.base_path}/opensearch.php?search=${query}`;
-        const results = await request({ uri: url, json: true });
-        return this.openapi_response_parser.parse(results);
+        const query_as_int = Number.parseInt(query, 10);
+        if (Number.isNaN(query_as_int)) {
+            const url = `${this.base_path}/opensearch.php?search=${query}`;
+            const results = await request({ uri: url, json: true });
+            return this.openapi_response_parser.parse(results);
+        } else {
+            return query_as_int;
+        }
     }
 
     public async get_page_source_from_query(item_query: string): Promise<PageSourceContext> {

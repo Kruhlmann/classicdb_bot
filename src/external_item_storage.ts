@@ -59,6 +59,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             where: {
                 item_id: id,
             },
+            include: [ExpansionModel],
         });
         if (!item_model) {
             return;
@@ -71,6 +72,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             where: {
                 name: { [Op.like]: "%" + name_partial + "%" },
             },
+            include: [ExpansionModel],
         });
         if (!item_model) {
             return;
@@ -96,6 +98,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             include: [ExpansionModel],
         });
         const items_with_name_and_expansion = items_with_name.filter((item) => {
+            console.log(item);
             return item.expansion.string_identifier === item_expansion;
         });
         return items_with_name_and_expansion.length === 0;
@@ -120,7 +123,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
     }
 
     public async lookup(key: string): Promise<IItem | void> {
-        return ItemModel.findByPk(key).then((item?: unknown) => {
+        return ItemModel.findByPk(key, { include: [ExpansionModel] }).then((item?: unknown) => {
             if (item) {
                 return item as IItem;
             }
