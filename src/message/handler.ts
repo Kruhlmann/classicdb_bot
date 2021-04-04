@@ -59,7 +59,6 @@ export class MessageHandler implements IMessageHandler {
 
     private async act_on_item_query(item_query: ItemQuery, message: Message): Promise<void> {
         const item = await this.item_query_to_item(item_query);
-        console.log(item.expansion);
         await this.external_item_storage.store_item(item);
         const item_richembed = this.richembed_item_factory.make_richembed_from_item(item);
         const spell_richembeds = this.richembed_spell_factory.make_richembeds_from_item(item);
