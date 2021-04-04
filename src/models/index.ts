@@ -29,6 +29,7 @@ export class DatabaseModelBuilder {
         await this.initialize_models(models);
         await this.create_model_database_associations(models);
         await this.database.sync({ force: force_override_models });
+        this.logger.debug("Models initialized");
     }
 
     private async initialize_models(models: IInitializeableDatabaseModel[]): Promise<void> {

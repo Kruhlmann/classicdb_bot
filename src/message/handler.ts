@@ -7,6 +7,7 @@ import { ItemQueryProcessor } from "../item/processor";
 import { ILoggable } from "../logging";
 import { DiscordGuildModel } from "../models/discord_guild";
 import { DiscordGuildConfigurationModel } from "../models/discord_guild_configuration";
+import { ExpansionModel } from "../models/expansion";
 import { timeout_after } from "../timeout";
 import { ClassicDB, IWowHead, TBCDB } from "../wowhead";
 import { Message } from ".";
@@ -102,8 +103,12 @@ export class MessageHandler implements IMessageHandler {
     }
 
     private async create_discord_guild_configuration(guild: Guild): Promise<void> {
-        const assoc_model = await DiscordGuildModel.findOne({ where: { guild_id: guild.id } });
-        await DiscordGuildConfigurationModel.create({ discord_guild_id: assoc_model.id });
+        const assoc_guild = await DiscordGuildModel.findOne({ where: { guild_id: guild.id } });
+        const assoc_expansion = await ExpansionModel.findOne({ where: { string_identifier: "tbc" } });
+        await DiscordGuildConfigurationModel.create({
+            discord_guild_id: assoc_guild.id,
+            default_expansion_id: assoc_expansion.id,
+        });
         this.logger.log(`Registered new guild config for: ${guild.name} (${guild.id})`);
     }
 

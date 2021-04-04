@@ -1,7 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 import { default_model_options } from ".";
-import { DiscordGuildModel } from "./discord_guild";
 import { ItemModel } from "./item";
 
 export class ItemQueryModel extends Model {

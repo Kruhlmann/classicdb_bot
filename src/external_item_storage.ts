@@ -6,6 +6,7 @@ import { ILoggable } from "./logging";
 import { DatabaseModelBuilder } from "./models";
 import { DiscordGuildModel } from "./models/discord_guild";
 import { DiscordGuildConfigurationModel } from "./models/discord_guild_configuration";
+import { ExpansionModel } from "./models/expansion";
 import { ItemModel } from "./models/item";
 import { ItemQueryModel } from "./models/item_query";
 import { timeout_after } from "./timeout";
@@ -20,7 +21,13 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
     protected readonly database_connection: IPostgresDatabaseConnection;
     protected readonly logger: ILoggable;
     protected readonly model_initializer: DatabaseModelBuilder;
-    protected readonly models = [DiscordGuildModel, DiscordGuildConfigurationModel, ItemModel, ItemQueryModel];
+    protected readonly models = [
+        ExpansionModel,
+        DiscordGuildModel,
+        DiscordGuildConfigurationModel,
+        ItemModel,
+        ItemQueryModel,
+    ];
 
     public constructor(
         logger: ILoggable,
@@ -53,13 +60,13 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
 
 export class TemporalPostgreSQLExternalItemStorage extends PostgreSQLExternalItemStorage {
     public async initialize(): Promise<void> {
-        this.model_initializer.initialize(this.models, true);
+        await this.model_initializer.initialize(this.models, true);
     }
 }
 
 export class PersistentPostgreSQLExternalItemStorage extends PostgreSQLExternalItemStorage {
     public async initialize(): Promise<void> {
-        this.model_initializer.initialize(this.models, false);
+        await this.model_initializer.initialize(this.models, false);
     }
 }
 

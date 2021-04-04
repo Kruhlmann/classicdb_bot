@@ -3,6 +3,8 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 import { default_model_options } from ".";
 
 export class ExpansionModel extends Model {
+    public id: string;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static async initialize(sequelize: Sequelize): Promise<Model<any, any>> {
         return ExpansionModel.init(
