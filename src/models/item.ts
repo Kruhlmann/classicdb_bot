@@ -2,11 +2,13 @@ import { DataTypes, Model, Sequelize } from "sequelize";
 
 import { default_model_options } from ".";
 import { AttributeStatModel } from "./attributes";
+import { ItemBindingModel } from "./binding";
 import { ExpansionModel } from "./expansion";
 
 export class ItemModel extends Model {
     public item_id: number;
     public armor: number;
+    public binding: ItemBindingModel;
     public block_value: number;
     public durability: number;
     public flavor_text: string;
@@ -46,6 +48,7 @@ export class ItemModel extends Model {
         await Promise.all([
             ItemModel.belongsTo(ExpansionModel, { foreignKey: "expansion_id" }),
             ItemModel.hasMany(AttributeStatModel, { as: "attributes", foreignKey: "item_id" }),
+            ItemModel.belongsTo(ItemBindingModel, { foreignKey: "binding_id" }),
         ]);
     }
 }

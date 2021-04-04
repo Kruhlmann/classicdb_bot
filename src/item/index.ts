@@ -2,7 +2,7 @@ import { Expansion, ExpansionLookupTable } from "../expansion";
 import { AttributeStatModel } from "../models/attributes";
 import { ItemModel } from "../models/item";
 import { AttributeStat } from "../parsers/attributes";
-import { ItemBinding } from "../parsers/binding";
+import { BindingLookupTable, ItemBinding } from "../parsers/binding";
 import { Class } from "../parsers/class";
 import { DamageType } from "../parsers/damage_type";
 import { ItemQuality } from "../parsers/quality";
@@ -125,14 +125,15 @@ export class Item {
     }
 
     public static from_model(model: ItemModel): IItem {
-        const expansion_string = model.expansion.string_identifier;
-        const expansion = new ExpansionLookupTable().perform_lookup(expansion_string);
+        const expansion = new ExpansionLookupTable().perform_lookup(model.expansion.string_identifier);
         const attributes = model.attributes.map((model) => AttributeStatModel.to_attribute_stat(model));
+        const binding = new BindingLookupTable().perform_lookup(model.binding.type);
+
         return new Item(
             model.item_id,
             model.armor,
             attributes,
-            ItemBinding.NONE,
+            binding,
             model.block_value,
             [],
             model.durability,

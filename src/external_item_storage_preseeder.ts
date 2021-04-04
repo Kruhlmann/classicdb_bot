@@ -1,4 +1,5 @@
 import { ILoggable } from "./logging";
+import { ItemBindingModel } from "./models/binding";
 import { ExpansionModel } from "./models/expansion";
 
 export interface IExternalItemStoragePreseeder {
@@ -20,7 +21,19 @@ export class PostgreSQLExternalItemStoragePreseeder implements IExternalItemStor
                     throw error;
                 })
                 .then();
-            this.logger.log(`Created missing expansion "${expansion_name}"`);
+            this.logger.log(`Created missing expansion: "${expansion_name}"`);
+        }
+    }
+
+    private async create_binding_type_if_missing(binding_name: string): Promise<void> {
+        const binding = await ItemBindingModel.findOne({ where: { type: binding_name } });
+        if (!binding) {
+            await ItemBindingModel.create({ type: binding_name })
+                .catch((error) => {
+                    throw error;
+                })
+                .then();
+            this.logger.log(`Created missing binding type: "${binding_name}"`);
         }
     }
 
@@ -34,6 +47,8 @@ export class PostgreSQLExternalItemStoragePreseeder implements IExternalItemStor
             this.create_expansion_if_missing("wod"),
             this.create_expansion_if_missing("legion"),
             this.create_expansion_if_missing("bfa"),
+            this.create_binding_type_if_missing("pickup"),
+            this.create_binding_type_if_missing("equip"),
         ]).catch((error) => {
             throw error;
         });

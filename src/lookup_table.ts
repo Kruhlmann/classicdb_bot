@@ -18,7 +18,7 @@ export abstract class LookupTable<LookupValueType extends RecordKey> {
         }
         const value = this.lookup_table[key];
 
-        if (!value) {
+        if (value === undefined) {
             return this.default_value;
         }
         return value;

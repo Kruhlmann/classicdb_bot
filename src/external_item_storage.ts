@@ -8,13 +8,15 @@ import { ILoggable } from "./logging";
 import { ItemQuery, ItemQueryType } from "./message/query_extractor";
 import { DatabaseModelBuilder } from "./models";
 import { AttributeStatModel } from "./models/attributes";
+import { ItemBindingModel } from "./models/binding";
 import { DiscordGuildModel } from "./models/discord_guild";
 import { DiscordGuildConfigurationModel } from "./models/discord_guild_configuration";
 import { ExpansionModel } from "./models/expansion";
 import { ItemModel } from "./models/item";
 import { ItemQueryModel } from "./models/item_query";
-import { timeout_after } from "./timeout";
 import { AttributeLookupTable } from "./parsers/attributes";
+import { BindingLookupTable, ItemBinding } from "./parsers/binding";
+import { timeout_after } from "./timeout";
 
 export interface IExternalItemStorage {
     lookup(key: string): Promise<IItem | void>;
@@ -34,6 +36,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         ItemModel,
         ItemQueryModel,
         AttributeStatModel,
+        ItemBindingModel,
     ];
 
     public constructor(
@@ -65,6 +68,10 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             include: [
                 ExpansionModel,
                 {
+                    model: ItemBindingModel,
+                    as: "binding",
+                },
+                {
                     model: AttributeStatModel,
                     as: "attributes",
                 },
@@ -83,6 +90,10 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             },
             include: [
                 ExpansionModel,
+                {
+                    model: ItemBindingModel,
+                    as: "binding",
+                },
                 {
                     model: AttributeStatModel,
                     as: "attributes",
@@ -126,11 +137,15 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             const string_type = attribute_lookup_table.perform_reverse_lookup(attribute.type);
             return { type: string_type, value: attribute.value };
         });
+        const binding_string = new BindingLookupTable().perform_reverse_lookup(item.binding);
+        const binding = await ItemBindingModel.findOne({ where: { type: binding_string } });
+
         await ItemModel.create(
             {
                 item_id: item.id,
                 armor: item.armor,
                 attributes: database_attributes,
+                binding_id: binding.id,
                 block_value: item.block_value,
                 durability: item.durability,
                 flavor_text: item.flavor_text,
