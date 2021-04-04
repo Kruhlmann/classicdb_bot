@@ -1,8 +1,12 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 import { default_model_options } from ".";
+import { ExpansionModel } from "./expansion";
 
 export class ItemModel extends Model {
+    public name: string;
+    public expansion: ExpansionModel;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static async initialize(sequelize: Sequelize): Promise<Model<any, any>> {
         return ItemModel.init(
@@ -26,5 +30,7 @@ export class ItemModel extends Model {
         );
     }
 
-    public static async associate(): Promise<void> {}
+    public static async associate(): Promise<void> {
+        await Promise.all([ItemModel.belongsTo(ExpansionModel, { foreignKey: "expansion_id" })]);
+    }
 }

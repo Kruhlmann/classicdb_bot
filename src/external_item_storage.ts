@@ -1,6 +1,7 @@
 import * as fs from "fs";
 
 import { IPostgresDatabaseConnection, PostgresDatabaseConnection } from "./database";
+import { ExpansionLookupTable } from "./expansion";
 import { IItem } from "./item";
 import { ILoggable } from "./logging";
 import { DatabaseModelBuilder } from "./models";
@@ -44,7 +45,42 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
 
     @timeout_after(2000)
     public async store_item(item: IItem): Promise<void> {
-        this.logger.log(item.name);
+        if (await this.is_item_missing_from_external_storage(item)) {
+            await this.store_missing_item(item);
+            this.logger.log(`Stored missing item ${item.name}`);
+        }
+    }
+
+    private async is_item_missing_from_external_storage(item: IItem) {
+        const lookup_table = new ExpansionLookupTable();
+        const item_expansion = lookup_table.perform_reverse_lookup(item.expansion);
+        const items_with_name = await ItemModel.findAll({
+            where: {
+                name: item.name,
+            },
+            include: [ExpansionModel],
+        });
+        const items_with_name_and_expansion = items_with_name.filter((item) => {
+            return item.expansion.string_identifier === item_expansion;
+        });
+        return items_with_name_and_expansion.length === 0;
+    }
+
+    private async store_missing_item(item: IItem) {
+        const expansion_string = new ExpansionLookupTable().perform_reverse_lookup(item.expansion);
+        const expansion = await ExpansionModel.findOne({ where: { string_identifier: expansion_string } });
+        await ItemModel.create({
+            armor: item.armor,
+            block_value: item.block_value,
+            durability: item.durability,
+            flavor_text: item.flavor_text,
+            level_requirement: item.level_requirement,
+            name: item.name,
+            thumbnail: item.thumbnail,
+            uniquely_equipped: item.uniquely_equipped,
+            url: item.url,
+            expansion_id: expansion.id,
+        });
     }
 
     public async lookup(key: string): Promise<IItem | void> {

@@ -45,7 +45,6 @@ export class ItemFactory implements IItemFactory {
         const block_value = new BlockValueParser(page_source).parse();
         const class_restrictions = new ClassicDBClassParser(page_source).parse();
         const durability = new DurabilityParser(page_source).parse();
-        const expansion = Expansion.CLASSIC;
         const flavor_text = new FlavorTextParser(page_source).parse();
         const level_requirement = new LevelRequirementParser(page_source).parse();
         const rank_requirement = new PVPRankRequirementParser(page_source).parse();
@@ -69,7 +68,7 @@ export class ItemFactory implements IItemFactory {
             block_value,
             class_restrictions,
             durability,
-            expansion,
+            this.expansion,
             flavor_text,
             level_requirement,
             name,
