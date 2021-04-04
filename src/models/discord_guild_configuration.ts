@@ -5,6 +5,9 @@ import { DiscordGuildModel } from "./discord_guild";
 import { ExpansionModel } from "./expansion";
 
 export class DiscordGuildConfigurationModel extends Model {
+    public id: string;
+    public expansion: ExpansionModel;
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static async initialize(sequelize: Sequelize): Promise<Model<any, any>> {
         return DiscordGuildConfigurationModel.init(

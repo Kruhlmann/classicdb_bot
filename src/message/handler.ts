@@ -45,8 +45,9 @@ export class MessageHandler implements IMessageHandler {
         this.logger = logger;
     }
 
-    private get_all_item_queries_from_message(message: Message): ItemQuery[] {
-        return ItemQueryProcessor.get_all_item_queries_from_message(message, Expansion.CLASSIC);
+    private async get_all_item_queries_from_message(message: Message): Promise<ItemQuery[]> {
+        const default_expansion = await DiscordGuildModel.get_default_expansion(message.original_message.guild.id);
+        return ItemQueryProcessor.get_all_item_queries_from_message(message, default_expansion);
     }
 
     public async item_query_to_item(item_query: ItemQuery): Promise<Item> {
@@ -68,8 +69,8 @@ export class MessageHandler implements IMessageHandler {
     }
 
     public async act_on_message(message: Message): Promise<void[]> {
-        this.update_discord_guild(message.original_message.guild);
-        const item_queries = this.get_all_item_queries_from_message(message);
+        await this.update_discord_guild(message.original_message.guild);
+        const item_queries = await this.get_all_item_queries_from_message(message);
         const action_promises = item_queries.map((item_query) => {
             return this.act_on_item_query(item_query, message);
         });
