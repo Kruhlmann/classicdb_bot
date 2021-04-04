@@ -98,7 +98,6 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             include: [ExpansionModel],
         });
         const items_with_name_and_expansion = items_with_name.filter((item) => {
-            console.log(item);
             return item.expansion.string_identifier === item_expansion;
         });
         return items_with_name_and_expansion.length === 0;
