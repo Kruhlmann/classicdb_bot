@@ -4,7 +4,7 @@ import { ItemModel } from "../models/item";
 import { AttributeStat } from "../parsers/attributes";
 import { BindingLookupTable, ItemBinding } from "../parsers/binding";
 import { Class } from "../parsers/class";
-import { ItemQuality } from "../parsers/quality";
+import { ItemQuality, ItemQualityLookupTable } from "../parsers/quality";
 import { PVPRank } from "../parsers/rank";
 import { ReputationRequirement, ReputationState } from "../parsers/reputation";
 import { Skill, SkillRequirement } from "../parsers/skill";
@@ -12,6 +12,7 @@ import { Slot, Type } from "../parsers/slot_type";
 import { WeaponDamage } from "../parsers/weapon_damage";
 import { ISpell } from "../spell";
 import { ClassModel } from "../models/class";
+import { ItemQualityModel } from "../models/quality";
 
 export interface IItem {
     id: number;
@@ -129,6 +130,7 @@ export class Item {
         const attributes = model.attributes.map((model) => AttributeStatModel.to_attribute_stat(model));
         const binding = new BindingLookupTable().perform_lookup(model.binding.type);
         const classes = model.class_restrictions.map((model) => ClassModel.to_class(model));
+        const quality = new ItemQualityLookupTable().perform_lookup(model.quality.name);
 
         return new Item(
             model.item_id,
@@ -142,7 +144,7 @@ export class Item {
             model.flavor_text,
             model.level_requirement,
             model.name,
-            ItemQuality.UNCOMMON,
+            quality,
             "",
             Slot.BACK,
             Type.AXE,

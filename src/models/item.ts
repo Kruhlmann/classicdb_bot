@@ -5,6 +5,7 @@ import { AttributeStatModel } from "./attributes";
 import { ItemBindingModel } from "./binding";
 import { ClassModel } from "./class";
 import { ExpansionModel } from "./expansion";
+import { ItemQualityModel } from "./quality";
 
 export class ItemModel extends Model {
     public item_id: number;
@@ -16,6 +17,7 @@ export class ItemModel extends Model {
     public durability: number;
     public flavor_text: string;
     public level_requirement: number;
+    public quality: ItemQualityModel;
     public name: string;
     public thumbnail: string;
     public uniquely_equipped: boolean;
@@ -52,6 +54,7 @@ export class ItemModel extends Model {
             ItemModel.hasMany(AttributeStatModel, { as: "attributes", foreignKey: "item_id" }),
             ItemModel.hasMany(ClassModel, { as: "class_restrictions", foreignKey: "item_id" }),
             ItemModel.belongsTo(ItemBindingModel, { foreignKey: "binding_id" }),
+            ItemModel.belongsTo(ItemQualityModel, { foreignKey: "quality_id" }),
         ]);
     }
 }

@@ -15,10 +15,12 @@ import { DiscordGuildConfigurationModel } from "./models/discord_guild_configura
 import { ExpansionModel } from "./models/expansion";
 import { ItemModel } from "./models/item";
 import { ItemQueryModel } from "./models/item_query";
+import { ItemQualityModel } from "./models/quality";
 import { AttributeLookupTable } from "./parsers/attributes";
 import { BindingLookupTable } from "./parsers/binding";
 import { ClassLookupTable } from "./parsers/class";
 import { timeout_after } from "./timeout";
+import { ItemQualityLookupTable } from "./parsers/quality";
 
 export interface IExternalItemStorage {
     lookup(key: string): Promise<IItem | void>;
@@ -40,6 +42,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         AttributeStatModel,
         ItemBindingModel,
         ClassModel,
+        ItemQualityModel,
     ];
 
     public constructor(
@@ -82,6 +85,10 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                     model: ClassModel,
                     as: "class_restrictions",
                 },
+                {
+                    model: ItemQualityModel,
+                    as: "quality",
+                },
             ],
         });
         if (!item_model) {
@@ -108,6 +115,10 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                 {
                     model: ClassModel,
                     as: "class_restrictions",
+                },
+                {
+                    model: ItemQualityModel,
+                    as: "quality",
                 },
             ],
         });
@@ -144,9 +155,12 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         const attribute_lookup_table = new AttributeLookupTable();
         const class_lookup_table = new ClassLookupTable();
         const expansion_lookup_table = new ExpansionLookupTable();
+        const item_quality_lookup_table = new ItemQualityLookupTable();
 
         const expansion_string = expansion_lookup_table.perform_reverse_lookup(item.expansion);
+        const quality_string = item_quality_lookup_table.perform_reverse_lookup(item.quality);
         const expansion = await ExpansionModel.findOne({ where: { string_identifier: expansion_string } });
+        const quality = await ItemQualityModel.findOne({ where: { name: quality_string } });
         const database_attributes = item.attributes.map((attribute) => {
             const string_type = attribute_lookup_table.perform_reverse_lookup(attribute.type);
             return { type: string_type, value: attribute.value };
@@ -175,6 +189,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                 uniquely_equipped: item.uniquely_equipped,
                 url: item.url,
                 expansion_id: expansion.id,
+                quality_id: quality.id,
             },
             {
                 include: [

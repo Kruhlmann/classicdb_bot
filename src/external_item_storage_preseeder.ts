@@ -1,7 +1,7 @@
 import { ILoggable } from "./logging";
 import { ItemBindingModel } from "./models/binding";
 import { ExpansionModel } from "./models/expansion";
-import { ClassModel } from "./models/class";
+import { ItemQualityModel } from "./models/quality";
 
 export interface IExternalItemStoragePreseeder {
     preseed(): Promise<void>;
@@ -38,15 +38,15 @@ export class PostgreSQLExternalItemStoragePreseeder implements IExternalItemStor
         }
     }
 
-    private async create_class_if_missing(class_name: string): Promise<void> {
-        const cls = await ClassModel.findOne({ where: { name: class_name } });
+    private async create_quality_if_missing(quality_name: string): Promise<void> {
+        const cls = await ItemQualityModel.findOne({ where: { name: quality_name } });
         if (!cls) {
-            await ClassModel.create({ name: class_name })
+            await ItemQualityModel.create({ name: quality_name })
                 .catch((error) => {
                     throw error;
                 })
                 .then();
-            this.logger.log(`Created missing player class: "${class_name}"`);
+            this.logger.log(`Created missing quality: "${quality_name}"`);
         }
     }
 
@@ -62,6 +62,14 @@ export class PostgreSQLExternalItemStoragePreseeder implements IExternalItemStor
             this.create_expansion_if_missing("bfa"),
             this.create_binding_type_if_missing("pickup"),
             this.create_binding_type_if_missing("equip"),
+            this.create_quality_if_missing("poor"),
+            this.create_quality_if_missing("common"),
+            this.create_quality_if_missing("uncommon"),
+            this.create_quality_if_missing("rare"),
+            this.create_quality_if_missing("epic"),
+            this.create_quality_if_missing("legendary"),
+            this.create_quality_if_missing("artifact"),
+            this.create_quality_if_missing("heirloom"),
         ]).catch((error) => {
             throw error;
         });

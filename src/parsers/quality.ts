@@ -25,6 +25,20 @@ export enum ItemQualityColor {
     HEIRLOOM = "#00ccff",
 }
 
+export class ItemQualityLookupTable extends LookupTable<ItemQuality> {
+    protected readonly lookup_table = {
+        poor: ItemQuality.POOR,
+        common: ItemQuality.COMMON,
+        uncommon: ItemQuality.UNCOMMON,
+        rare: ItemQuality.RARE,
+        epic: ItemQuality.EPIC,
+        legendary: ItemQuality.LEGENDARY,
+        artifact: ItemQuality.ARTIFACT,
+        heirloom: ItemQuality.HEIRLOOM,
+    };
+    protected readonly default_value: ItemQuality.POOR;
+}
+
 export class ItemQualityColorLookupTable extends LookupTable<ItemQualityColor> {
     protected readonly lookup_table = {
         [ItemQuality.POOR]: ItemQualityColor.POOR,
