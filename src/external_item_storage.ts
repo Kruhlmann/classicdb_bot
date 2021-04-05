@@ -9,13 +9,15 @@ import { ItemQuery, ItemQueryType } from "./message/query_extractor";
 import { DatabaseModelBuilder } from "./models";
 import { AttributeStatModel } from "./models/attributes";
 import { ItemBindingModel } from "./models/binding";
+import { ClassModel } from "./models/class";
 import { DiscordGuildModel } from "./models/discord_guild";
 import { DiscordGuildConfigurationModel } from "./models/discord_guild_configuration";
 import { ExpansionModel } from "./models/expansion";
 import { ItemModel } from "./models/item";
 import { ItemQueryModel } from "./models/item_query";
 import { AttributeLookupTable } from "./parsers/attributes";
-import { BindingLookupTable, ItemBinding } from "./parsers/binding";
+import { BindingLookupTable } from "./parsers/binding";
+import { ClassLookupTable } from "./parsers/class";
 import { timeout_after } from "./timeout";
 
 export interface IExternalItemStorage {
@@ -37,6 +39,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         ItemQueryModel,
         AttributeStatModel,
         ItemBindingModel,
+        ClassModel,
     ];
 
     public constructor(
@@ -75,6 +78,10 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                     model: AttributeStatModel,
                     as: "attributes",
                 },
+                {
+                    model: ClassModel,
+                    as: "class_restrictions",
+                },
             ],
         });
         if (!item_model) {
@@ -97,6 +104,10 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                 {
                     model: AttributeStatModel,
                     as: "attributes",
+                },
+                {
+                    model: ClassModel,
+                    as: "class_restrictions",
                 },
             ],
         });
@@ -130,13 +141,21 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
     }
 
     private async store_missing_item(item: IItem) {
-        const expansion_string = new ExpansionLookupTable().perform_reverse_lookup(item.expansion);
-        const expansion = await ExpansionModel.findOne({ where: { string_identifier: expansion_string } });
         const attribute_lookup_table = new AttributeLookupTable();
+        const class_lookup_table = new ClassLookupTable();
+        const expansion_lookup_table = new ExpansionLookupTable();
+
+        const expansion_string = expansion_lookup_table.perform_reverse_lookup(item.expansion);
+        const expansion = await ExpansionModel.findOne({ where: { string_identifier: expansion_string } });
         const database_attributes = item.attributes.map((attribute) => {
             const string_type = attribute_lookup_table.perform_reverse_lookup(attribute.type);
             return { type: string_type, value: attribute.value };
         });
+        const database_class_restrictions = item.class_restrictions.map((class_restriction) => {
+            const class_name = class_lookup_table.perform_reverse_lookup(class_restriction);
+            return { name: class_name };
+        });
+
         const binding_string = new BindingLookupTable().perform_reverse_lookup(item.binding);
         const binding = await ItemBindingModel.findOne({ where: { type: binding_string } });
 
@@ -145,6 +164,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                 item_id: item.id,
                 armor: item.armor,
                 attributes: database_attributes,
+                class_restrictions: database_class_restrictions,
                 binding_id: binding.id,
                 block_value: item.block_value,
                 durability: item.durability,
@@ -157,10 +177,16 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                 expansion_id: expansion.id,
             },
             {
-                include: {
-                    model: AttributeStatModel,
-                    as: "attributes",
-                },
+                include: [
+                    {
+                        model: AttributeStatModel,
+                        as: "attributes",
+                    },
+                    {
+                        model: ClassModel,
+                        as: "class_restrictions",
+                    },
+                ],
             },
         );
     }

@@ -1,6 +1,7 @@
 import { ILoggable } from "./logging";
 import { ItemBindingModel } from "./models/binding";
 import { ExpansionModel } from "./models/expansion";
+import { ClassModel } from "./models/class";
 
 export interface IExternalItemStoragePreseeder {
     preseed(): Promise<void>;
@@ -34,6 +35,18 @@ export class PostgreSQLExternalItemStoragePreseeder implements IExternalItemStor
                 })
                 .then();
             this.logger.log(`Created missing binding type: "${binding_name}"`);
+        }
+    }
+
+    private async create_class_if_missing(class_name: string): Promise<void> {
+        const cls = await ClassModel.findOne({ where: { name: class_name } });
+        if (!cls) {
+            await ClassModel.create({ name: class_name })
+                .catch((error) => {
+                    throw error;
+                })
+                .then();
+            this.logger.log(`Created missing player class: "${class_name}"`);
         }
     }
 

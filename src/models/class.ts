@@ -1,29 +1,29 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
-import { BindingLookupTable, ItemBinding } from "../parsers/binding";
+import { Class, ClassLookupTable } from "../parsers/class";
 import { default_model_options } from ".";
 
-export class ItemBindingModel extends Model {
+export class ClassModel extends Model {
     public id: number;
-    public type: string;
+    public name: string;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static async initialize(sequelize: Sequelize): Promise<Model<any, any>> {
-        return ItemBindingModel.init(
+        return ClassModel.init(
             {
                 id: {
                     type: DataTypes.UUID,
                     defaultValue: DataTypes.UUIDV4,
                     primaryKey: true,
                 },
-                type: { type: DataTypes.STRING, allowNull: false },
+                name: { type: DataTypes.STRING, allowNull: false },
             },
-            { sequelize, modelName: "binding", ...default_model_options },
+            { sequelize, modelName: "class", ...default_model_options },
         );
     }
 
-    public static to_item_binding(model: ItemBindingModel): ItemBinding {
-        return new BindingLookupTable().perform_lookup(model.type);
+    public static to_class(model: ClassModel): Class {
+        return new ClassLookupTable().perform_lookup(model.name);
     }
 
     public static async associate(): Promise<void> {

@@ -4,7 +4,6 @@ import { ItemModel } from "../models/item";
 import { AttributeStat } from "../parsers/attributes";
 import { BindingLookupTable, ItemBinding } from "../parsers/binding";
 import { Class } from "../parsers/class";
-import { DamageType } from "../parsers/damage_type";
 import { ItemQuality } from "../parsers/quality";
 import { PVPRank } from "../parsers/rank";
 import { ReputationRequirement, ReputationState } from "../parsers/reputation";
@@ -12,6 +11,7 @@ import { Skill, SkillRequirement } from "../parsers/skill";
 import { Slot, Type } from "../parsers/slot_type";
 import { WeaponDamage } from "../parsers/weapon_damage";
 import { ISpell } from "../spell";
+import { ClassModel } from "../models/class";
 
 export interface IItem {
     id: number;
@@ -128,6 +128,7 @@ export class Item {
         const expansion = new ExpansionLookupTable().perform_lookup(model.expansion.string_identifier);
         const attributes = model.attributes.map((model) => AttributeStatModel.to_attribute_stat(model));
         const binding = new BindingLookupTable().perform_lookup(model.binding.type);
+        const classes = model.class_restrictions.map((model) => ClassModel.to_class(model));
 
         return new Item(
             model.item_id,
@@ -135,7 +136,7 @@ export class Item {
             attributes,
             binding,
             model.block_value,
-            [],
+            classes,
             model.durability,
             expansion,
             model.flavor_text,
