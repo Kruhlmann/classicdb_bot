@@ -73,8 +73,6 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
     @timeout_after(2000)
     public async store_item(item: IItem): Promise<void> {
         if (await this.is_item_missing_from_external_storage(item)) {
-            console.log("Storing");
-            console.log(item.damage.damage_ranges);
             await this.store_missing_item(item);
             this.logger.log(`Stored missing item ${item.name}`);
         }
