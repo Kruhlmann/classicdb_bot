@@ -5,6 +5,7 @@ import { ExpansionModel } from "./models/expansion";
 import { ItemQualityModel } from "./models/quality";
 import { ItemSlotModel } from "./models/slot";
 import { ItemTypeModel } from "./models/type";
+import { ReputationLevelModel } from "./models/reputation_level";
 
 export interface IExternalItemStoragePreseeder {
     preseed(): Promise<void>;
@@ -89,6 +90,18 @@ export class PostgreSQLExternalItemStoragePreseeder implements IExternalItemStor
         }
     }
 
+    private async create_reputation_level_if_missing(reputation_level_name: string): Promise<void> {
+        const model = await ReputationLevelModel.findOne({ where: { name: reputation_level_name } });
+        if (!model) {
+            await ReputationLevelModel.create({ name: reputation_level_name })
+                .catch((error) => {
+                    throw error;
+                })
+                .then();
+            this.logger.log(`Created missing reputation level: "${reputation_level_name}"`);
+        }
+    }
+
     public async preseed(): Promise<void> {
         await Promise.all([
             this.create_expansion_if_missing("classic"),
@@ -165,6 +178,16 @@ export class PostgreSQLExternalItemStoragePreseeder implements IExternalItemStor
             this.create_damage_type_if_missing("nature"),
             this.create_damage_type_if_missing("shadow"),
             this.create_damage_type_if_missing("holy"),
+            this.create_reputation_level_if_missing(""),
+            this.create_reputation_level_if_missing("paragon"),
+            this.create_reputation_level_if_missing("exalted"),
+            this.create_reputation_level_if_missing("revered"),
+            this.create_reputation_level_if_missing("honored"),
+            this.create_reputation_level_if_missing("friendly"),
+            this.create_reputation_level_if_missing("neutral"),
+            this.create_reputation_level_if_missing("unfriendly"),
+            this.create_reputation_level_if_missing("hostile"),
+            this.create_reputation_level_if_missing("hated"),
         ]).catch((error) => {
             throw error;
         });

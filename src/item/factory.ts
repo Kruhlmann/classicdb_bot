@@ -50,6 +50,7 @@ export class ItemFactory implements IItemFactory {
         const rank_requirement = new PVPRankRequirementParser(page_source).parse();
         const skill_requirement = new SkillRequirementParser(page_source).parse();
         const reputation_requirement = new ReputationRequirementParser(page_source).parse();
+
         const name = new ClassicDBNameParser(page_source).parse();
         const quality = new QualityParser(page_source).parse();
         const quest = new ClassicDBBeginsQuestParser(page_source).parse();

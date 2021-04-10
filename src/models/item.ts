@@ -6,6 +6,7 @@ import { ItemBindingModel } from "./binding";
 import { ClassModel } from "./class";
 import { ExpansionModel } from "./expansion";
 import { ItemQualityModel } from "./quality";
+import { ReputationRequirementModel } from "./reputation_requirement";
 import { ItemSlotModel } from "./slot";
 import { ItemTypeModel } from "./type";
 import { WeaponDamageModel } from "./weapon_damage";
@@ -29,6 +30,7 @@ export class ItemModel extends Model {
     public item_slot: ItemSlotModel;
     public item_type: ItemTypeModel;
     public weapon_damage: WeaponDamageModel;
+    public reputation_requirement: ReputationRequirementModel;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static async initialize(sequelize: Sequelize): Promise<Model<any, any>> {
@@ -62,6 +64,7 @@ export class ItemModel extends Model {
             ItemModel.belongsTo(ItemSlotModel, { foreignKey: "slot_id" }),
             ItemModel.belongsTo(ItemTypeModel, { foreignKey: "type_id" }),
             ItemModel.belongsTo(WeaponDamageModel, { foreignKey: "weapon_damage_id" }),
+            ItemModel.belongsTo(ReputationRequirementModel, { foreignKey: "reputation_requirement_id" }),
             ItemModel.hasMany(AttributeStatModel, { as: "attributes", foreignKey: "item_id" }),
             ItemModel.hasMany(ClassModel, { as: "class_restrictions", foreignKey: "item_id" }),
         ]);

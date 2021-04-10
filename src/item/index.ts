@@ -14,6 +14,7 @@ import { Skill, SkillRequirement } from "../parsers/skill";
 import { Slot, SlotLookupTable, Type, TypeLookupTable } from "../parsers/slot_type";
 import { WeaponDamage } from "../parsers/weapon_damage";
 import { ISpell } from "../spell";
+import { ReputationRequirementModel } from "../models/reputation_requirement";
 
 export interface IItem {
     id: number;
@@ -135,6 +136,9 @@ export class Item {
         const slot = new SlotLookupTable().perform_lookup(model.item_slot.name);
         const type = new TypeLookupTable().perform_lookup(model.item_type.name);
         const weapon_damage = WeaponDamageModel.to_weapon_damage(model.weapon_damage);
+        const reputation_requirement = ReputationRequirementModel.to_reputation_requirement(
+            model.reputation_requirement,
+        );
 
         return new Item(
             model.item_id,
@@ -155,7 +159,7 @@ export class Item {
             model.thumbnail,
             model.uniquely_equipped,
             weapon_damage,
-            { name: "", state: ReputationState.NONE },
+            reputation_requirement,
             { skill: Skill.NONE, value: -1 },
             PVPRank.NONE,
             model.url,

@@ -14,9 +14,12 @@ import { DamageTypeModel } from "./models/damage_type";
 import { DiscordGuildModel } from "./models/discord_guild";
 import { DiscordGuildConfigurationModel } from "./models/discord_guild_configuration";
 import { ExpansionModel } from "./models/expansion";
+import { FactionModel } from "./models/faction";
 import { ItemModel } from "./models/item";
 import { ItemQueryModel } from "./models/item_query";
 import { ItemQualityModel } from "./models/quality";
+import { ReputationLevelModel } from "./models/reputation_level";
+import { ReputationRequirementModel as ReputationRequirementModel } from "./models/reputation_requirement";
 import { ItemSlotModel } from "./models/slot";
 import { ItemTypeModel } from "./models/type";
 import { WeaponDamageModel } from "./models/weapon_damage";
@@ -26,6 +29,7 @@ import { BindingLookupTable } from "./parsers/binding";
 import { ClassLookupTable } from "./parsers/class";
 import { DamageTypeLookupTable } from "./parsers/damage_type";
 import { ItemQualityLookupTable } from "./parsers/quality";
+import { ReputationStateLookupTable } from "./parsers/reputation";
 import { SlotLookupTable, TypeLookupTable } from "./parsers/slot_type";
 import { timeout_after } from "./timeout";
 
@@ -55,6 +59,9 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         WeaponDamageModel,
         WeaponDamageRangeModel,
         DamageTypeModel,
+        ReputationRequirementModel,
+        ReputationLevelModel,
+        FactionModel,
     ];
 
     public constructor(
@@ -100,6 +107,10 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                     ],
                 },
                 {
+                    model: ReputationRequirementModel,
+                    include: [ReputationLevelModel, FactionModel],
+                },
+                {
                     model: AttributeStatModel,
                     as: "attributes",
                 },
@@ -135,6 +146,10 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                             include: [DamageTypeModel],
                         },
                     ],
+                },
+                {
+                    model: ReputationRequirementModel,
+                    include: [ReputationLevelModel, FactionModel],
                 },
                 {
                     model: AttributeStatModel,
@@ -180,7 +195,6 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         const damage_range_promises = item.damage.damage_ranges.map(async (range) => {
             const damage_type_string = damage_type_lookup_table.perform_reverse_lookup(range.type);
             const damage_type = await DamageTypeModel.findOne({ where: { name: damage_type_string } });
-            console.log(`Sending ${damage_type.id} gotten from ${damage_type_string} ${range.type}`);
             return {
                 low: range.low,
                 high: range.high,
@@ -196,6 +210,17 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             },
             { include: WeaponDamageRangeModel },
         );
+    }
+
+    private async store_reputation_requirement_for_item(item: IItem): Promise<ReputationRequirementModel> {
+        const reputation_level_string = new ReputationStateLookupTable().perform_reverse_lookup(
+            item.reputation_requirement.state,
+        );
+        const reputation_level = await ReputationLevelModel.findOne({ where: { name: reputation_level_string } });
+        const faction = await FactionModel.findOrCreate({ where: { name: item.reputation_requirement.name } }).then(
+            ([created_or_found_faction, _]) => created_or_found_faction,
+        );
+        return ReputationRequirementModel.create({ reputation_level_id: reputation_level.id, faction_id: faction.id });
     }
 
     private async store_missing_item(item: IItem): Promise<void> {
@@ -225,6 +250,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         const binding_string = new BindingLookupTable().perform_reverse_lookup(item.binding);
         const binding = await ItemBindingModel.findOne({ where: { type: binding_string } });
         const weapon_damage = await this.store_weapon_damage_for_item(item);
+        const reputation_requirement = await this.store_reputation_requirement_for_item(item);
 
         await ItemModel.create(
             {
@@ -246,6 +272,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                 slot_id: slot.id,
                 type_id: type.id,
                 weapon_damage_id: weapon_damage.id,
+                reputation_requirement_id: reputation_requirement.id,
             },
             {
                 include: [
