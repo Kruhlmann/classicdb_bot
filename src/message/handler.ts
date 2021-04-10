@@ -52,7 +52,6 @@ export class MessageHandler implements IMessageHandler {
 
     public async item_query_to_item(item_query: ItemQuery): Promise<Item> {
         const cached_item = await this.external_item_storage.get_cached_item(item_query);
-        console.log(cached_item);
         return cached_item || this.build_item_from_wowhead_source(item_query);
     }
 
@@ -65,13 +64,13 @@ export class MessageHandler implements IMessageHandler {
 
     private async act_on_item_query(item_query: ItemQuery, message: Message): Promise<void> {
         const item = await this.item_query_to_item(item_query);
+        console.log(item.damage.damage_ranges);
         await this.external_item_storage.store_item(item);
         const item_richembed = this.richembed_item_factory.make_richembed_from_item(item);
         const spell_richembeds = this.richembed_spell_factory.make_richembeds_from_item(item);
         for (const richembed of [item_richembed, ...spell_richembeds]) {
             message.channel.send(richembed);
         }
-        this.external_item_storage.store_item(item);
     }
 
     public async act_on_message(message: Message): Promise<void[]> {

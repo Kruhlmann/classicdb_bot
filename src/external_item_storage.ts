@@ -10,17 +10,24 @@ import { DatabaseModelBuilder } from "./models";
 import { AttributeStatModel } from "./models/attributes";
 import { ItemBindingModel } from "./models/binding";
 import { ClassModel } from "./models/class";
+import { DamageTypeModel } from "./models/damage_type";
 import { DiscordGuildModel } from "./models/discord_guild";
 import { DiscordGuildConfigurationModel } from "./models/discord_guild_configuration";
 import { ExpansionModel } from "./models/expansion";
 import { ItemModel } from "./models/item";
 import { ItemQueryModel } from "./models/item_query";
 import { ItemQualityModel } from "./models/quality";
+import { ItemSlotModel } from "./models/slot";
+import { ItemTypeModel } from "./models/type";
+import { WeaponDamageModel } from "./models/weapon_damage";
+import { WeaponDamageRangeModel } from "./models/weapon_damage_range";
 import { AttributeLookupTable } from "./parsers/attributes";
 import { BindingLookupTable } from "./parsers/binding";
 import { ClassLookupTable } from "./parsers/class";
-import { timeout_after } from "./timeout";
+import { DamageTypeLookupTable } from "./parsers/damage_type";
 import { ItemQualityLookupTable } from "./parsers/quality";
+import { SlotLookupTable, TypeLookupTable } from "./parsers/slot_type";
+import { timeout_after } from "./timeout";
 
 export interface IExternalItemStorage {
     lookup(key: string): Promise<IItem | void>;
@@ -43,6 +50,11 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         ItemBindingModel,
         ClassModel,
         ItemQualityModel,
+        ItemSlotModel,
+        ItemTypeModel,
+        WeaponDamageModel,
+        WeaponDamageRangeModel,
+        DamageTypeModel,
     ];
 
     public constructor(
@@ -61,6 +73,8 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
     @timeout_after(2000)
     public async store_item(item: IItem): Promise<void> {
         if (await this.is_item_missing_from_external_storage(item)) {
+            console.log("Storing");
+            console.log(item.damage.damage_ranges);
             await this.store_missing_item(item);
             this.logger.log(`Stored missing item ${item.name}`);
         }
@@ -73,9 +87,19 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             },
             include: [
                 ExpansionModel,
+                ItemSlotModel,
+                ItemTypeModel,
+                ItemBindingModel,
+                ItemQualityModel,
+                ItemSlotModel,
                 {
-                    model: ItemBindingModel,
-                    as: "binding",
+                    model: WeaponDamageModel,
+                    include: [
+                        {
+                            model: WeaponDamageRangeModel,
+                            include: [DamageTypeModel],
+                        },
+                    ],
                 },
                 {
                     model: AttributeStatModel,
@@ -84,10 +108,6 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                 {
                     model: ClassModel,
                     as: "class_restrictions",
-                },
-                {
-                    model: ItemQualityModel,
-                    as: "quality",
                 },
             ],
         });
@@ -104,9 +124,19 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             },
             include: [
                 ExpansionModel,
+                ItemSlotModel,
+                ItemTypeModel,
+                ItemBindingModel,
+                ItemQualityModel,
+                ItemSlotModel,
                 {
-                    model: ItemBindingModel,
-                    as: "binding",
+                    model: WeaponDamageModel,
+                    include: [
+                        {
+                            model: WeaponDamageRangeModel,
+                            include: [DamageTypeModel],
+                        },
+                    ],
                 },
                 {
                     model: AttributeStatModel,
@@ -115,10 +145,6 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                 {
                     model: ClassModel,
                     as: "class_restrictions",
-                },
-                {
-                    model: ItemQualityModel,
-                    as: "quality",
                 },
             ],
         });
@@ -151,16 +177,45 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         return items_with_name_and_expansion.length === 0;
     }
 
-    private async store_missing_item(item: IItem) {
+    private async store_weapon_damage_for_item(item: IItem): Promise<WeaponDamageModel> {
+        const damage_type_lookup_table = new DamageTypeLookupTable();
+        const damage_range_promises = item.damage.damage_ranges.map(async (range) => {
+            const damage_type_string = damage_type_lookup_table.perform_reverse_lookup(range.type);
+            const damage_type = await DamageTypeModel.findOne({ where: { name: damage_type_string } });
+            console.log(`Sending ${damage_type.id} gotten from ${damage_type_string} ${range.type}`);
+            return {
+                low: range.low,
+                high: range.high,
+                damage_type_id: damage_type.id,
+            };
+        });
+        const damage_ranges = await Promise.all(damage_range_promises);
+        return WeaponDamageModel.create(
+            {
+                dps: item.damage.dps,
+                speed: item.damage.speed,
+                weapon_damage_ranges: damage_ranges,
+            },
+            { include: WeaponDamageRangeModel },
+        );
+    }
+
+    private async store_missing_item(item: IItem): Promise<void> {
         const attribute_lookup_table = new AttributeLookupTable();
         const class_lookup_table = new ClassLookupTable();
         const expansion_lookup_table = new ExpansionLookupTable();
         const item_quality_lookup_table = new ItemQualityLookupTable();
+        const slot_lookup_table = new SlotLookupTable();
+        const type_lookup_table = new TypeLookupTable();
 
         const expansion_string = expansion_lookup_table.perform_reverse_lookup(item.expansion);
-        const quality_string = item_quality_lookup_table.perform_reverse_lookup(item.quality);
         const expansion = await ExpansionModel.findOne({ where: { string_identifier: expansion_string } });
+        const quality_string = item_quality_lookup_table.perform_reverse_lookup(item.quality);
         const quality = await ItemQualityModel.findOne({ where: { name: quality_string } });
+        const type_string = type_lookup_table.perform_reverse_lookup(item.type);
+        const type = await ItemTypeModel.findOne({ where: { name: type_string } });
+        const slot_string = slot_lookup_table.perform_reverse_lookup(item.slot);
+        const slot = await ItemSlotModel.findOne({ where: { name: slot_string } });
         const database_attributes = item.attributes.map((attribute) => {
             const string_type = attribute_lookup_table.perform_reverse_lookup(attribute.type);
             return { type: string_type, value: attribute.value };
@@ -169,9 +224,9 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             const class_name = class_lookup_table.perform_reverse_lookup(class_restriction);
             return { name: class_name };
         });
-
         const binding_string = new BindingLookupTable().perform_reverse_lookup(item.binding);
         const binding = await ItemBindingModel.findOne({ where: { type: binding_string } });
+        const weapon_damage = await this.store_weapon_damage_for_item(item);
 
         await ItemModel.create(
             {
@@ -190,6 +245,9 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                 url: item.url,
                 expansion_id: expansion.id,
                 quality_id: quality.id,
+                slot_id: slot.id,
+                type_id: type.id,
+                weapon_damage_id: weapon_damage.id,
             },
             {
                 include: [

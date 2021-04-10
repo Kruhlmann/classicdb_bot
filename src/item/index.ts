@@ -1,6 +1,9 @@
 import { Expansion, ExpansionLookupTable } from "../expansion";
 import { AttributeStatModel } from "../models/attributes";
+import { ClassModel } from "../models/class";
 import { ItemModel } from "../models/item";
+import { ItemQualityModel } from "../models/quality";
+import { WeaponDamageModel } from "../models/weapon_damage";
 import { AttributeStat } from "../parsers/attributes";
 import { BindingLookupTable, ItemBinding } from "../parsers/binding";
 import { Class } from "../parsers/class";
@@ -8,11 +11,9 @@ import { ItemQuality, ItemQualityLookupTable } from "../parsers/quality";
 import { PVPRank } from "../parsers/rank";
 import { ReputationRequirement, ReputationState } from "../parsers/reputation";
 import { Skill, SkillRequirement } from "../parsers/skill";
-import { Slot, Type } from "../parsers/slot_type";
+import { Slot, SlotLookupTable, Type, TypeLookupTable } from "../parsers/slot_type";
 import { WeaponDamage } from "../parsers/weapon_damage";
 import { ISpell } from "../spell";
-import { ClassModel } from "../models/class";
-import { ItemQualityModel } from "../models/quality";
 
 export interface IItem {
     id: number;
@@ -131,6 +132,9 @@ export class Item {
         const binding = new BindingLookupTable().perform_lookup(model.binding.type);
         const classes = model.class_restrictions.map((model) => ClassModel.to_class(model));
         const quality = new ItemQualityLookupTable().perform_lookup(model.quality.name);
+        const slot = new SlotLookupTable().perform_lookup(model.item_slot.name);
+        const type = new TypeLookupTable().perform_lookup(model.item_type.name);
+        const weapon_damage = WeaponDamageModel.to_weapon_damage(model.weapon_damage);
 
         return new Item(
             model.item_id,
@@ -146,11 +150,11 @@ export class Item {
             model.name,
             quality,
             "",
-            Slot.BACK,
-            Type.AXE,
+            slot,
+            type,
             model.thumbnail,
             model.uniquely_equipped,
-            { dps: -1, damage_ranges: [], speed: -1 },
+            weapon_damage,
             { name: "", state: ReputationState.NONE },
             { skill: Skill.NONE, value: -1 },
             PVPRank.NONE,
