@@ -1,20 +1,12 @@
-import { Expansion, ExpansionLookupTable } from "../expansion";
-import { AttributeStatModel } from "../models/attributes";
-import { ClassModel } from "../models/class";
-import { ItemModel } from "../models/item";
-import { PVPRankModel } from "../models/pvp_rank";
-import { ItemQualityModel } from "../models/quality";
-import { ReputationRequirementModel } from "../models/reputation_requirement";
-import { SkillRequirementModel } from "../models/skill_requirement";
-import { WeaponDamageModel } from "../models/weapon_damage";
+import { Expansion } from "../expansion";
 import { AttributeStat } from "../parsers/attributes";
-import { BindingLookupTable, ItemBinding } from "../parsers/binding";
+import { ItemBinding } from "../parsers/binding";
 import { Class } from "../parsers/class";
-import { ItemQuality, ItemQualityLookupTable } from "../parsers/quality";
+import { ItemQuality } from "../parsers/quality";
 import { PVPRank } from "../parsers/rank";
-import { ReputationRequirement, ReputationState } from "../parsers/reputation";
-import { Skill, SkillRequirement } from "../parsers/skill";
-import { Slot, SlotLookupTable, Type, TypeLookupTable } from "../parsers/slot_type";
+import { ReputationRequirement } from "../parsers/reputation";
+import { SkillRequirement } from "../parsers/skill";
+import { Slot, Type } from "../parsers/slot_type";
 import { WeaponDamage } from "../parsers/weapon_damage";
 import { ISpell } from "../spell";
 
@@ -127,47 +119,5 @@ export class Item {
 
     public get complex_spells(): ISpell[] {
         return this.spells.filter((spell) => !spell.is_simple);
-    }
-
-    public static from_model(model: ItemModel): IItem {
-        const expansion = new ExpansionLookupTable().perform_lookup(model.expansion.string_identifier);
-        const attributes = model.attributes.map((model) => AttributeStatModel.to_attribute_stat(model));
-        const binding = new BindingLookupTable().perform_lookup(model.binding.type);
-        const classes = model.class_restrictions.map((model) => ClassModel.to_class(model));
-        const quality = new ItemQualityLookupTable().perform_lookup(model.quality.name);
-        const slot = new SlotLookupTable().perform_lookup(model.item_slot.name);
-        const type = new TypeLookupTable().perform_lookup(model.item_type.name);
-        const weapon_damage = WeaponDamageModel.to_weapon_damage(model.weapon_damage);
-        const reputation_requirement = ReputationRequirementModel.to_reputation_requirement(
-            model.reputation_requirement,
-        );
-        const skill_requirement = SkillRequirementModel.to_skill_requirement(model.skill_requirement);
-        const pvp_rank_requirement = PVPRankModel.to_pvp_rank(model.pvp_rank);
-
-        return new Item(
-            model.item_id,
-            model.armor,
-            attributes,
-            binding,
-            model.block_value,
-            classes,
-            model.durability,
-            expansion,
-            model.flavor_text,
-            model.level_requirement,
-            model.name,
-            quality,
-            "",
-            slot,
-            type,
-            model.thumbnail,
-            model.uniquely_equipped,
-            weapon_damage,
-            reputation_requirement,
-            skill_requirement,
-            pvp_rank_requirement,
-            model.url,
-            [],
-        );
     }
 }

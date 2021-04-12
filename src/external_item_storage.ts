@@ -36,6 +36,7 @@ import { PVPRankLookupTable } from "./parsers/rank";
 import { ReputationStateLookupTable } from "./parsers/reputation";
 import { SlotLookupTable, TypeLookupTable } from "./parsers/slot_type";
 import { timeout_after } from "./timeout";
+import { ItemFactory } from "./item/factory";
 
 export interface IExternalItemStorage {
     lookup(key: string): Promise<IItem | void>;
@@ -136,7 +137,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         if (!item_model) {
             return;
         }
-        return Item.from_model(item_model);
+        return ItemFactory.from_model(item_model);
     }
 
     private async get_cached_item_from_name_partial(name_partial: string): Promise<IItem | void> {
@@ -149,7 +150,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         if (!item_model) {
             return;
         }
-        return Item.from_model(item_model);
+        return ItemFactory.from_model(item_model);
     }
 
     public async get_cached_item(item_query: ItemQuery): Promise<IItem | void> {

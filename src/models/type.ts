@@ -22,7 +22,7 @@ export class ItemTypeModel extends Model {
         );
     }
 
-    public static to_item_quality(model: ItemTypeModel): Type {
+    public static to_item_type(model: ItemTypeModel): Type {
         return new TypeLookupTable().perform_lookup(model.name);
     }
 

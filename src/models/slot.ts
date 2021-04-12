@@ -22,7 +22,7 @@ export class ItemSlotModel extends Model {
         );
     }
 
-    public static to_item_quality(model: ItemSlotModel): Slot {
+    public static to_item_slot(model: ItemSlotModel): Slot {
         return new SlotLookupTable().perform_lookup(model.name);
     }
 

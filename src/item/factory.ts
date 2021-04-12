@@ -1,4 +1,16 @@
 import { Expansion } from "../expansion";
+import { AttributeStatModel } from "../models/attributes";
+import { ItemBindingModel } from "../models/binding";
+import { ClassModel } from "../models/class";
+import { ExpansionModel } from "../models/expansion";
+import { ItemModel } from "../models/item";
+import { PVPRankModel } from "../models/pvp_rank";
+import { ItemQualityModel } from "../models/quality";
+import { ReputationRequirementModel } from "../models/reputation_requirement";
+import { SkillRequirementModel } from "../models/skill_requirement";
+import { ItemSlotModel } from "../models/slot";
+import { ItemTypeModel } from "../models/type";
+import { WeaponDamageModel } from "../models/weapon_damage";
 import { ArmorValueParser } from "../parsers/armor";
 import { AttributeParser } from "../parsers/attributes";
 import { BindingParser } from "../parsers/binding";
@@ -96,7 +108,6 @@ export class ItemFactory implements IItemFactory {
         const block_value = new BlockValueParser(page_source).parse();
         const class_restrictions = new TBCDBClassParser(page_source).parse();
         const durability = new DurabilityParser(page_source).parse();
-        const expansion = Expansion.CLASSIC;
         const flavor_text = new FlavorTextParser(page_source).parse();
         const level_requirement = new LevelRequirementParser(page_source).parse();
         const rank_requirement = new PVPRankRequirementParser(page_source).parse();
@@ -121,7 +132,7 @@ export class ItemFactory implements IItemFactory {
             block_value,
             class_restrictions,
             durability,
-            expansion,
+            this.expansion,
             flavor_text,
             level_requirement,
             name,
@@ -137,6 +148,34 @@ export class ItemFactory implements IItemFactory {
             rank_requirement,
             page_url,
             spells,
+        );
+    }
+
+    public static from_model(model: ItemModel): IItem {
+        return new Item(
+            model.item_id,
+            model.armor,
+            model.attributes.map((model) => AttributeStatModel.to_attribute_stat(model)),
+            ItemBindingModel.to_item_binding(model.binding),
+            model.block_value,
+            model.class_restrictions.map((model) => ClassModel.to_class(model)),
+            model.durability,
+            ExpansionModel.to_expansion(model.expansion),
+            model.flavor_text,
+            model.level_requirement,
+            model.name,
+            ItemQualityModel.to_item_quality(model.quality),
+            "",
+            ItemSlotModel.to_item_slot(model.item_slot),
+            ItemTypeModel.to_item_type(model.item_type),
+            model.thumbnail,
+            model.uniquely_equipped,
+            WeaponDamageModel.to_weapon_damage(model.weapon_damage),
+            ReputationRequirementModel.to_reputation_requirement(model.reputation_requirement),
+            SkillRequirementModel.to_skill_requirement(model.skill_requirement),
+            PVPRankModel.to_pvp_rank(model.pvp_rank),
+            model.url,
+            [],
         );
     }
 }

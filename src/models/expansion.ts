@@ -1,5 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
+import { Expansion, ExpansionLookupTable } from "../expansion";
 import { default_model_options } from ".";
 
 export class ExpansionModel extends Model {
@@ -19,6 +20,10 @@ export class ExpansionModel extends Model {
             },
             { sequelize, modelName: "expansion", ...default_model_options },
         );
+    }
+
+    public static to_expansion(model: ExpansionModel): Expansion {
+        return new ExpansionLookupTable().perform_lookup(model.string_identifier);
     }
 
     public static async associate(): Promise<void> {}
