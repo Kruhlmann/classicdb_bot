@@ -9,6 +9,7 @@ export enum ItemBinding {
 
 export class BindingLookupTable extends LookupTable<ItemBinding> {
     protected lookup_table: Record<string, ItemBinding> = {
+        [""]: ItemBinding.NONE,
         pickup: ItemBinding.ON_PICKUP,
         equip: ItemBinding.ON_EQUIP,
     };

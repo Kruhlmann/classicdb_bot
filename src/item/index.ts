@@ -2,7 +2,10 @@ import { Expansion, ExpansionLookupTable } from "../expansion";
 import { AttributeStatModel } from "../models/attributes";
 import { ClassModel } from "../models/class";
 import { ItemModel } from "../models/item";
+import { PVPRankModel } from "../models/pvp_rank";
 import { ItemQualityModel } from "../models/quality";
+import { ReputationRequirementModel } from "../models/reputation_requirement";
+import { SkillRequirementModel } from "../models/skill_requirement";
 import { WeaponDamageModel } from "../models/weapon_damage";
 import { AttributeStat } from "../parsers/attributes";
 import { BindingLookupTable, ItemBinding } from "../parsers/binding";
@@ -14,7 +17,6 @@ import { Skill, SkillRequirement } from "../parsers/skill";
 import { Slot, SlotLookupTable, Type, TypeLookupTable } from "../parsers/slot_type";
 import { WeaponDamage } from "../parsers/weapon_damage";
 import { ISpell } from "../spell";
-import { ReputationRequirementModel } from "../models/reputation_requirement";
 
 export interface IItem {
     id: number;
@@ -139,6 +141,8 @@ export class Item {
         const reputation_requirement = ReputationRequirementModel.to_reputation_requirement(
             model.reputation_requirement,
         );
+        const skill_requirement = SkillRequirementModel.to_skill_requirement(model.skill_requirement);
+        const pvp_rank_requirement = PVPRankModel.to_pvp_rank(model.pvp_rank);
 
         return new Item(
             model.item_id,
@@ -160,8 +164,8 @@ export class Item {
             model.uniquely_equipped,
             weapon_damage,
             reputation_requirement,
-            { skill: Skill.NONE, value: -1 },
-            PVPRank.NONE,
+            skill_requirement,
+            pvp_rank_requirement,
             model.url,
             [],
         );

@@ -19,15 +19,15 @@ export class DamageStringFactory extends GameObjectPropertyStringFactory<{ damag
         const phys_high = this.game_object.damage.damage_ranges[0].high;
         const dps_string = `(**${this.game_object.damage.dps}** damage per second)`;
         const swing_damage_string = `damage every **${this.game_object.damage.speed.toFixed(2)}** seconds`;
-        result += `**+${phys_low} - ${phys_high}** ${swing_damage_string} ${dps_string}`;
+        result += `**${phys_low} - ${phys_high}** ${swing_damage_string} ${dps_string}`;
         return result;
     }
 
     private add_non_physical_damage_ranges_to_result_text(result: string): string {
-        for (const damage_range of this.game_object.damage.damage_ranges) {
-            if (damage_range.type === DamageType.PHYSICAL) {
-                continue;
-            }
+        const non_physical_damage_ranges = this.game_object.damage.damage_ranges.filter((range) => {
+            return range.type !== DamageType.PHYSICAL;
+        });
+        for (const damage_range of non_physical_damage_ranges) {
             const damage_type_string = new DamageTypeLookupTable().perform_reverse_lookup(damage_range.type);
             result += `\n**${damage_range.low} - ${damage_range.high}** ${capitalize_string(
                 damage_type_string,

@@ -24,6 +24,8 @@ export enum Skill {
     LOCKPICKING,
     POISONS,
     RIDING,
+    ARCHAEOLOGY,
+    INSCRIPTION,
 }
 
 export class SkillLookupTable extends LookupTable<Skill> {
@@ -45,6 +47,8 @@ export class SkillLookupTable extends LookupTable<Skill> {
         lockpicking: Skill.LOCKPICKING,
         poisons: Skill.POISONS,
         riding: Skill.RIDING,
+        archaeology: Skill.ARCHAEOLOGY,
+        inscription: Skill.INSCRIPTION,
     };
     protected readonly default_value = Skill.NONE;
 }

@@ -17,9 +17,12 @@ import { ExpansionModel } from "./models/expansion";
 import { FactionModel } from "./models/faction";
 import { ItemModel } from "./models/item";
 import { ItemQueryModel } from "./models/item_query";
+import { PVPRankModel } from "./models/pvp_rank";
 import { ItemQualityModel } from "./models/quality";
 import { ReputationLevelModel } from "./models/reputation_level";
 import { ReputationRequirementModel as ReputationRequirementModel } from "./models/reputation_requirement";
+import { SkillModel } from "./models/skill";
+import { SkillRequirementModel } from "./models/skill_requirement";
 import { ItemSlotModel } from "./models/slot";
 import { ItemTypeModel } from "./models/type";
 import { WeaponDamageModel } from "./models/weapon_damage";
@@ -29,6 +32,7 @@ import { BindingLookupTable } from "./parsers/binding";
 import { ClassLookupTable } from "./parsers/class";
 import { DamageTypeLookupTable } from "./parsers/damage_type";
 import { ItemQualityLookupTable } from "./parsers/quality";
+import { PVPRankLookupTable } from "./parsers/rank";
 import { ReputationStateLookupTable } from "./parsers/reputation";
 import { SlotLookupTable, TypeLookupTable } from "./parsers/slot_type";
 import { timeout_after } from "./timeout";
@@ -41,6 +45,40 @@ export interface IExternalItemStorage {
 }
 
 abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
+    protected readonly item_model_selector_inclusions = [
+        ExpansionModel,
+        ItemSlotModel,
+        ItemTypeModel,
+        ItemBindingModel,
+        ItemQualityModel,
+        ItemSlotModel,
+        PVPRankModel,
+        {
+            model: WeaponDamageModel,
+            include: [
+                {
+                    model: WeaponDamageRangeModel,
+                    include: [DamageTypeModel],
+                },
+            ],
+        },
+        {
+            model: ReputationRequirementModel,
+            include: [ReputationLevelModel, FactionModel],
+        },
+        {
+            model: SkillRequirementModel,
+            include: [SkillModel],
+        },
+        {
+            model: AttributeStatModel,
+            as: "attributes",
+        },
+        {
+            model: ClassModel,
+            as: "class_restrictions",
+        },
+    ];
     protected readonly database_connection: IPostgresDatabaseConnection;
     protected readonly logger: ILoggable;
     protected readonly model_initializer: DatabaseModelBuilder;
@@ -62,6 +100,9 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         ReputationRequirementModel,
         ReputationLevelModel,
         FactionModel,
+        SkillModel,
+        SkillRequirementModel,
+        PVPRankModel,
     ];
 
     public constructor(
@@ -90,35 +131,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             where: {
                 item_id: id,
             },
-            include: [
-                ExpansionModel,
-                ItemSlotModel,
-                ItemTypeModel,
-                ItemBindingModel,
-                ItemQualityModel,
-                ItemSlotModel,
-                {
-                    model: WeaponDamageModel,
-                    include: [
-                        {
-                            model: WeaponDamageRangeModel,
-                            include: [DamageTypeModel],
-                        },
-                    ],
-                },
-                {
-                    model: ReputationRequirementModel,
-                    include: [ReputationLevelModel, FactionModel],
-                },
-                {
-                    model: AttributeStatModel,
-                    as: "attributes",
-                },
-                {
-                    model: ClassModel,
-                    as: "class_restrictions",
-                },
-            ],
+            include: this.item_model_selector_inclusions,
         });
         if (!item_model) {
             return;
@@ -131,35 +144,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             where: {
                 name: { [Op.like]: "%" + name_partial + "%" },
             },
-            include: [
-                ExpansionModel,
-                ItemSlotModel,
-                ItemTypeModel,
-                ItemBindingModel,
-                ItemQualityModel,
-                ItemSlotModel,
-                {
-                    model: WeaponDamageModel,
-                    include: [
-                        {
-                            model: WeaponDamageRangeModel,
-                            include: [DamageTypeModel],
-                        },
-                    ],
-                },
-                {
-                    model: ReputationRequirementModel,
-                    include: [ReputationLevelModel, FactionModel],
-                },
-                {
-                    model: AttributeStatModel,
-                    as: "attributes",
-                },
-                {
-                    model: ClassModel,
-                    as: "class_restrictions",
-                },
-            ],
+            include: this.item_model_selector_inclusions,
         });
         if (!item_model) {
             return;
@@ -251,6 +236,9 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         const binding = await ItemBindingModel.findOne({ where: { type: binding_string } });
         const weapon_damage = await this.store_weapon_damage_for_item(item);
         const reputation_requirement = await this.store_reputation_requirement_for_item(item);
+        const skill_requirement = await SkillRequirementModel.store_for_item(item);
+        const pvp_rank_string = new PVPRankLookupTable().perform_reverse_lookup(item.rank_requirement);
+        const pvp_rank_requirement = await PVPRankModel.findOne({ where: { name: pvp_rank_string } });
 
         await ItemModel.create(
             {
@@ -273,6 +261,8 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                 type_id: type.id,
                 weapon_damage_id: weapon_damage.id,
                 reputation_requirement_id: reputation_requirement.id,
+                skill_requirement_id: skill_requirement.id,
+                pvp_rank_id: pvp_rank_requirement.id,
             },
             {
                 include: [

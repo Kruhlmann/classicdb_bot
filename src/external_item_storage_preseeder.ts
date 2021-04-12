@@ -4,8 +4,10 @@ import { DamageTypeModel } from "./models/damage_type";
 import { ExpansionModel } from "./models/expansion";
 import { ItemQualityModel } from "./models/quality";
 import { ReputationLevelModel } from "./models/reputation_level";
+import { SkillModel } from "./models/skill";
 import { ItemSlotModel } from "./models/slot";
 import { ItemTypeModel } from "./models/type";
+import { PVPRankModel } from "./models/pvp_rank";
 
 export interface IExternalItemStoragePreseeder {
     preseed(): Promise<void>;
@@ -121,6 +123,68 @@ export class PostgreSQLExternalItemStoragePreseeder implements IExternalItemStor
         });
     }
 
+    private preseed_skills(): Promise<void>[] {
+        return [
+            "",
+            "herbalism",
+            "mining",
+            "skinning",
+            "alchemy",
+            "blacksmithing",
+            "enchanting",
+            "engineering",
+            "jewelcrafting",
+            "leatherworking",
+            "tailoring",
+            "cooking",
+            "first aid",
+            "fishing",
+            "lockpicking",
+            "poisions",
+            "archaeology",
+            "riding",
+            "inscription",
+        ].map(async (name) => {
+            await SkillModel.findOrCreate({ where: { name } });
+        });
+    }
+
+    private preseed_pvp_ranks(): Promise<void>[] {
+        return [
+            "",
+            "none",
+            "private",
+            "scout",
+            "corporal",
+            "grunt",
+            "sergeant",
+            "master sergeant",
+            "senior sergeant",
+            "sergeant major",
+            "first sergeant",
+            "knight",
+            "stone guard",
+            "knight-lieutenant",
+            "blood guard",
+            "knight-captain",
+            "legionnaire",
+            "knight-champion",
+            "centurion",
+            "lieutenant commander",
+            "champion",
+            "commander",
+            "lieutenant general",
+            "marshal",
+            "general",
+            "field marshal",
+            "warlord",
+            "grand marshal",
+            "high warlord",
+        ].map(async (name) => {
+            await PVPRankModel.findOrCreate({ where: { name } });
+        });
+    }
+
     public async preseed(): Promise<void> {
         await Promise.all([
             ...this.preseed_expansions(),
@@ -130,6 +194,8 @@ export class PostgreSQLExternalItemStoragePreseeder implements IExternalItemStor
             ...this.preseed_item_types(),
             ...this.preseed_damage_types(),
             ...this.preseed_reputation_levels(),
+            ...this.preseed_skills(),
+            ...this.preseed_pvp_ranks(),
         ]);
         this.logger.debug("Pre-seeded database");
     }
