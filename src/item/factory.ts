@@ -9,6 +9,7 @@ import { ItemQualityModel } from "../models/quality";
 import { ReputationRequirementModel } from "../models/reputation_requirement";
 import { SkillRequirementModel } from "../models/skill_requirement";
 import { ItemSlotModel } from "../models/slot";
+import { SpellModel } from "../models/spell";
 import { ItemTypeModel } from "../models/type";
 import { WeaponDamageModel } from "../models/weapon_damage";
 import { ArmorValueParser } from "../parsers/armor";
@@ -21,7 +22,7 @@ import { FlavorTextParser } from "../parsers/flavor_text";
 import { LevelRequirementParser } from "../parsers/level";
 import { ClassicDBNameParser, TBCDBNameParser } from "../parsers/name";
 import { QualityParser } from "../parsers/quality";
-import { ClassicDBBeginsQuestParser, TBCDBBeginsQuestParser } from "../parsers/quest";
+import { ClassicDBBeginsQuestParser, IsPartOfQuestParser, TBCDBBeginsQuestParser } from "../parsers/quest";
 import { PVPRankRequirementParser } from "../parsers/rank";
 import { ReputationRequirementParser } from "../parsers/reputation";
 import { SkillRequirementParser } from "../parsers/skill";
@@ -58,6 +59,7 @@ export class ItemFactory implements IItemFactory {
         const class_restrictions = new ClassicDBClassParser(page_source).parse();
         const durability = new DurabilityParser(page_source).parse();
         const flavor_text = new FlavorTextParser(page_source).parse();
+        const is_quest_item = new IsPartOfQuestParser(page_source).parse();
         const level_requirement = new LevelRequirementParser(page_source).parse();
         const rank_requirement = new PVPRankRequirementParser(page_source).parse();
         const skill_requirement = new SkillRequirementParser(page_source).parse();
@@ -85,6 +87,7 @@ export class ItemFactory implements IItemFactory {
             this.expansion,
             flavor_text,
             level_requirement,
+            is_quest_item,
             name,
             quality,
             quest,
@@ -109,6 +112,7 @@ export class ItemFactory implements IItemFactory {
         const class_restrictions = new TBCDBClassParser(page_source).parse();
         const durability = new DurabilityParser(page_source).parse();
         const flavor_text = new FlavorTextParser(page_source).parse();
+        const is_quest_item = new IsPartOfQuestParser(page_source).parse();
         const level_requirement = new LevelRequirementParser(page_source).parse();
         const rank_requirement = new PVPRankRequirementParser(page_source).parse();
         const skill_requirement = new SkillRequirementParser(page_source).parse();
@@ -135,6 +139,7 @@ export class ItemFactory implements IItemFactory {
             this.expansion,
             flavor_text,
             level_requirement,
+            is_quest_item,
             name,
             quality,
             quest,
@@ -152,6 +157,7 @@ export class ItemFactory implements IItemFactory {
     }
 
     public static from_model(model: ItemModel): IItem {
+        const expansion = ExpansionModel.to_expansion(model.expansion);
         return new Item(
             model.item_id,
             model.armor,
@@ -160,12 +166,13 @@ export class ItemFactory implements IItemFactory {
             model.block_value,
             model.class_restrictions.map((model) => ClassModel.to_class(model)),
             model.durability,
-            ExpansionModel.to_expansion(model.expansion),
+            expansion,
             model.flavor_text,
             model.level_requirement,
+            model.is_quest_item,
             model.name,
             ItemQualityModel.to_item_quality(model.quality),
-            "",
+            model.starts_quest,
             ItemSlotModel.to_item_slot(model.item_slot),
             ItemTypeModel.to_item_type(model.item_type),
             model.thumbnail,
@@ -175,7 +182,7 @@ export class ItemFactory implements IItemFactory {
             SkillRequirementModel.to_skill_requirement(model.skill_requirement),
             PVPRankModel.to_pvp_rank(model.pvp_rank),
             model.url,
-            [],
+            model.spells.map((spell) => SpellModel.to_spell(spell, expansion)),
         );
     }
 }

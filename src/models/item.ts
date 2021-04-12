@@ -10,6 +10,7 @@ import { ItemQualityModel } from "./quality";
 import { ReputationRequirementModel } from "./reputation_requirement";
 import { SkillRequirementModel } from "./skill_requirement";
 import { ItemSlotModel } from "./slot";
+import { SpellModel } from "./spell";
 import { ItemTypeModel } from "./type";
 import { WeaponDamageModel } from "./weapon_damage";
 
@@ -23,7 +24,9 @@ export class ItemModel extends Model {
     public durability: number;
     public flavor_text: string;
     public level_requirement: number;
+    public is_quest_item: boolean;
     public quality: ItemQualityModel;
+    public starts_quest: string;
     public name: string;
     public thumbnail: string;
     public uniquely_equipped: boolean;
@@ -35,6 +38,7 @@ export class ItemModel extends Model {
     public reputation_requirement: ReputationRequirementModel;
     public skill_requirement: SkillRequirementModel;
     public pvp_rank: PVPRankModel;
+    public spells: SpellModel[];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public static async initialize(sequelize: Sequelize): Promise<Model<any, any>> {
@@ -46,15 +50,17 @@ export class ItemModel extends Model {
                     primaryKey: true,
                 },
                 item_id: { type: DataTypes.INTEGER, allowNull: false },
-                armor: { type: DataTypes.INTEGER },
-                block_value: { type: DataTypes.INTEGER },
-                durability: { type: DataTypes.INTEGER },
-                flavor_text: { type: DataTypes.STRING },
-                level_requirement: { type: DataTypes.INTEGER },
-                name: { type: DataTypes.STRING },
-                thumbnail: { type: DataTypes.STRING },
-                uniquely_equipped: { type: DataTypes.BOOLEAN },
-                url: { type: DataTypes.STRING },
+                armor: { type: DataTypes.INTEGER, allowNull: false },
+                block_value: { type: DataTypes.INTEGER, allowNull: false },
+                durability: { type: DataTypes.INTEGER, allowNull: false },
+                flavor_text: { type: DataTypes.STRING, allowNull: false },
+                level_requirement: { type: DataTypes.INTEGER, allowNull: false },
+                is_quest_item: { type: DataTypes.BOOLEAN, allowNull: false },
+                starts_quest: { type: DataTypes.STRING, allowNull: false },
+                name: { type: DataTypes.STRING, allowNull: false },
+                thumbnail: { type: DataTypes.STRING, allowNull: false },
+                uniquely_equipped: { type: DataTypes.BOOLEAN, allowNull: false },
+                url: { type: DataTypes.STRING, allowNull: false },
             },
             { sequelize, modelName: "item", ...default_model_options },
         );
@@ -73,6 +79,7 @@ export class ItemModel extends Model {
             ItemModel.belongsTo(PVPRankModel, { foreignKey: "pvp_rank_id" }),
             ItemModel.hasMany(AttributeStatModel, { as: "attributes", foreignKey: "item_id", constraints: false }),
             ItemModel.hasMany(ClassModel, { as: "class_restrictions", foreignKey: "item_id", constraints: false }),
+            ItemModel.hasMany(SpellModel, { as: "spells", foreignKey: "item_id", constraints: false }),
         ]);
     }
 }

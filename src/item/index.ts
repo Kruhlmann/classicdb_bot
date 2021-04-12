@@ -20,10 +20,11 @@ export interface IItem {
     durability: number;
     expansion: Expansion;
     flavor_text: string;
+    is_quest_item: boolean;
     level_requirement: number;
     name: string;
     quality: ItemQuality;
-    quest: string | boolean;
+    starts_quest: string;
     slot: Slot;
     type: Type;
     thumbnail: string;
@@ -48,10 +49,11 @@ export class Item {
     public readonly durability: number;
     public readonly expansion: Expansion;
     public readonly flavor_text: string;
+    public readonly is_quest_item: boolean;
     public readonly level_requirement: number;
     public readonly name: string;
     public readonly quality: ItemQuality;
-    public readonly quest: string | boolean;
+    public readonly starts_quest: string;
     public readonly slot: Slot;
     public readonly type: Type;
     public readonly thumbnail: string;
@@ -74,9 +76,10 @@ export class Item {
         expansion: Expansion,
         flavor_text: string,
         level_requirement: number,
+        is_quest_item: boolean,
         name: string,
         quality: ItemQuality,
-        quest: string | boolean,
+        quest: string,
         slot: Slot,
         type: Type,
         thumbnail: string,
@@ -97,10 +100,11 @@ export class Item {
         this.durability = durability;
         this.expansion = expansion;
         this.flavor_text = flavor_text;
+        this.is_quest_item = is_quest_item;
         this.level_requirement = level_requirement;
         this.name = name;
         this.quality = quality;
-        this.quest = quest;
+        this.starts_quest = quest;
         this.slot = slot;
         this.type = type;
         this.thumbnail = thumbnail;

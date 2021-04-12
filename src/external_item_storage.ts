@@ -3,7 +3,8 @@ import { Op } from "sequelize";
 
 import { IPostgresDatabaseConnection, PostgresDatabaseConnection } from "./database";
 import { ExpansionLookupTable } from "./expansion";
-import { IItem, Item } from "./item";
+import { IItem } from "./item";
+import { ItemFactory } from "./item/factory";
 import { ILoggable } from "./logging";
 import { ItemQuery, ItemQueryType } from "./message/query_extractor";
 import { DatabaseModelBuilder } from "./models";
@@ -24,6 +25,7 @@ import { ReputationRequirementModel as ReputationRequirementModel } from "./mode
 import { SkillModel } from "./models/skill";
 import { SkillRequirementModel } from "./models/skill_requirement";
 import { ItemSlotModel } from "./models/slot";
+import { SpellModel } from "./models/spell";
 import { ItemTypeModel } from "./models/type";
 import { WeaponDamageModel } from "./models/weapon_damage";
 import { WeaponDamageRangeModel } from "./models/weapon_damage_range";
@@ -36,7 +38,6 @@ import { PVPRankLookupTable } from "./parsers/rank";
 import { ReputationStateLookupTable } from "./parsers/reputation";
 import { SlotLookupTable, TypeLookupTable } from "./parsers/slot_type";
 import { timeout_after } from "./timeout";
-import { ItemFactory } from "./item/factory";
 
 export interface IExternalItemStorage {
     lookup(key: string): Promise<IItem | void>;
@@ -79,6 +80,10 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
             model: ClassModel,
             as: "class_restrictions",
         },
+        {
+            model: SpellModel,
+            as: "spells",
+        },
     ];
     protected readonly database_connection: IPostgresDatabaseConnection;
     protected readonly logger: ILoggable;
@@ -104,6 +109,7 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         SkillModel,
         SkillRequirementModel,
         PVPRankModel,
+        SpellModel,
     ];
 
     public constructor(
@@ -240,6 +246,18 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         const skill_requirement = await SkillRequirementModel.store_for_item(item);
         const pvp_rank_string = new PVPRankLookupTable().perform_reverse_lookup(item.rank_requirement);
         const pvp_rank_requirement = await PVPRankModel.findOne({ where: { name: pvp_rank_string } });
+        const database_spells = item.spells.map((spell) => {
+            return {
+                spell_id: spell.id,
+                name: spell.name,
+                description: spell.description,
+                url: spell.url,
+                thumbnail_url: spell.thumbnail_url,
+                cast_time: spell.cast_time,
+                range: spell.range,
+                trigger: spell.trigger,
+            };
+        });
 
         await ItemModel.create(
             {
@@ -252,10 +270,13 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                 durability: item.durability,
                 flavor_text: item.flavor_text,
                 level_requirement: item.level_requirement,
+                starts_quest: item.starts_quest,
+                is_quest_item: item.is_quest_item,
                 name: item.name,
                 thumbnail: item.thumbnail,
                 uniquely_equipped: item.uniquely_equipped,
                 url: item.url,
+                spells: database_spells,
                 expansion_id: expansion.id,
                 quality_id: quality.id,
                 slot_id: slot.id,
@@ -274,6 +295,10 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
                     {
                         model: ClassModel,
                         as: "class_restrictions",
+                    },
+                    {
+                        model: SpellModel,
+                        as: "spells",
                     },
                 ],
             },

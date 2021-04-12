@@ -14,6 +14,7 @@ import { DurabilityStringFactory } from "./string_factories/durability";
 import { EquipmentStringFactory } from "./string_factories/equipment";
 import { FlavorTextStringFactory } from "./string_factories/flavor_text";
 import { LevelRequirementStringFactory } from "./string_factories/level";
+import { QuestStartStringFactory, QuestItemStringFactory } from "./string_factories/quest";
 import { RangeStringFactory } from "./string_factories/range";
 import { PVPRankRequirementStringFactory } from "./string_factories/rank";
 import { ReputationRequirementStringFactory } from "./string_factories/reputation";
@@ -40,6 +41,7 @@ export interface IRichEmbedSpellFactory {
 
 class RichEmbedItemDescriptionFactory {
     public build_richembed_description_from_item(item: IItem): string {
+        console.log(item);
         const binding_string = new ItemBindingStringFactory(item).build();
         const unique_string = new UniqueStringFactory(item).build();
         const equipment_string = new EquipmentStringFactory(item).build();
@@ -55,9 +57,12 @@ class RichEmbedItemDescriptionFactory {
         const reputation_requirement_string = new ReputationRequirementStringFactory(item).build();
         const flavor_text_string = new FlavorTextStringFactory(item).build();
         const spell_summary_text_string = new SpellSummaryTextStringFactory(item).build();
+        const quest_start_string = new QuestStartStringFactory(item).build();
+        const is_quest_item_string = new QuestItemStringFactory(item).build();
 
         return [
             binding_string,
+            is_quest_item_string,
             unique_string,
             equipment_string,
             damage_string,
@@ -71,6 +76,7 @@ class RichEmbedItemDescriptionFactory {
             skill_requirement_string,
             reputation_requirement_string,
             flavor_text_string,
+            quest_start_string,
             spell_summary_text_string,
         ]
             .filter((line) => line !== "")
