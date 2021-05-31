@@ -1,6 +1,6 @@
 FROM node:10-alpine
 
-RUN apk update && apk add make git apk add python make gcc linux-headers libc-dev g++ musl-dev
+RUN apk update && apk add make git python make gcc linux-headers libc-dev g++ musl-dev
 
 WORKDIR /usr/app
 
@@ -13,8 +13,6 @@ USER "$USER"
 COPY --chown="$USER:$USER" package.json .
 COPY --chown="$USER:$USER" yarn.lock .
 COPY --chown="$USER:$USER" Makefile .
-COPY --chown="$USER:$USER" make make
-COPY --chown="$USER:$USER" lib lib
 RUN mkdir -p ./.cache/yarn
 RUN make node_modules
 
