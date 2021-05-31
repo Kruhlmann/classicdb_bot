@@ -1,6 +1,7 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
 import { default_model_options } from ".";
+import { DiscordGuildModel } from "./discord_guild";
 import { ItemModel } from "./item";
 
 export class ItemQueryModel extends Model {
@@ -13,7 +14,6 @@ export class ItemQueryModel extends Model {
                     defaultValue: DataTypes.UUIDV4,
                     primaryKey: true,
                 },
-                guild_id: { type: DataTypes.STRING, unique: true },
             },
             { sequelize, modelName: "query", ...default_model_options },
         );
@@ -21,8 +21,8 @@ export class ItemQueryModel extends Model {
 
     public static async associate(): Promise<void> {
         await Promise.all([
-            //ItemQueryModel.belongsTo(DiscordGuildModel, { foreignKey: "guild_id" }),
-            //ItemQueryModel.hasOne(ItemModel, { foreignKey: "item_id" }),
+            ItemQueryModel.belongsTo(DiscordGuildModel, { foreignKey: "guild_id" }),
+            ItemQueryModel.belongsTo(ItemModel, { foreignKey: "item_id" }),
         ]);
     }
 }

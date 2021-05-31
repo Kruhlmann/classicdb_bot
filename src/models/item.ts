@@ -15,6 +15,7 @@ import { ItemTypeModel } from "./type";
 import { WeaponDamageModel } from "./weapon_damage";
 
 export class ItemModel extends Model {
+    public id: string;
     public item_id: number;
     public armor: number;
     public attributes: AttributeStatModel[];

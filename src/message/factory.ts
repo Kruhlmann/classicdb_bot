@@ -20,6 +20,7 @@ class CodeMarkdownRemover implements ICodeMarkdownRemover {
         return result;
     }
 }
+
 export class MessageFactory {
     private readonly code_markdown_remover: ICodeMarkdownRemover;
 

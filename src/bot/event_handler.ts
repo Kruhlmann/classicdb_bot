@@ -44,7 +44,9 @@ export class DiscordEventHandler implements IDiscordEventHandler {
             );
             const message_is_relevant = this.message_relevancy_evaluator.is_message_relevant(message);
             if (message_is_relevant) {
-                this.message_handler.act_on_message(message);
+                this.message_handler.act_on_message(message).catch((error) => {
+                    this.logger.error(error.stack);
+                });
             }
         });
     }

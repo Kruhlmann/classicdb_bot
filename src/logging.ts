@@ -1,5 +1,31 @@
 import * as fs from "fs";
 
+enum TerminalColorCode {
+    RESET = "\u001B[0m",
+    BRIGHT = "\u001B[1m",
+    DIM = "\u001B[2m",
+    UNDERSCORE = "\u001B[4m",
+    BLINK = "\u001B[5m",
+    REVERSE = "\u001B[7m",
+    HIDDEN = "\u001B[8m",
+    FGBLACK = "\u001B[30m",
+    FGRED = "\u001B[31m",
+    FGGREEN = "\u001B[32m",
+    FGYELLOW = "\u001B[33m",
+    FGBLUE = "\u001B[34m",
+    FGMAGENTA = "\u001B[35m",
+    FGCYAN = "\u001B[36m",
+    FGWHITE = "\u001B[37m",
+    BGBLACK = "\u001B[40m",
+    BGRED = "\u001B[41m",
+    BGGREEN = "\u001B[42m",
+    BGYELLOW = "\u001B[43m",
+    BGBLUE = "\u001B[44m",
+    BGMAGENTA = "\u001B[45m",
+    BGCYAN = "\u001B[46m",
+    BGWHITE = "\u001B[47m",
+}
+
 export type OutputDeviceLoggerOptions = {
     debug: boolean;
     log: boolean;
@@ -88,31 +114,35 @@ export abstract class OutputDeviceLogger implements ILoggable {
             return;
         }
         const preformatted_buffer = this.preformatter.preformat(buffer);
-        this.output_device.write(`[D] [${this.get_caller_filename()}] ${preformatted_buffer}`);
+        const prefix = `${TerminalColorCode.FGCYAN}[D]${TerminalColorCode.RESET}`;
+        this.output_device.write(`${prefix} [${this.get_caller_filename()}] ${preformatted_buffer}`);
     }
 
     public log(buffer: string): void {
         if (!this.options.log) {
             return;
         }
+        const prefix = `${TerminalColorCode.FGWHITE}[I]${TerminalColorCode.RESET}`;
         const preformatted_buffer = this.preformatter.preformat(buffer);
-        this.output_device.write(`[I] [${this.get_caller_filename()}] ${preformatted_buffer}`);
+        this.output_device.write(`${prefix} [${this.get_caller_filename()}] ${preformatted_buffer}`);
     }
 
     public warning(buffer: string): void {
         if (!this.options.warning) {
             return;
         }
+        const prefix = `${TerminalColorCode.FGYELLOW}[W]${TerminalColorCode.RESET}`;
         const preformatted_buffer = this.preformatter.preformat(buffer);
-        this.output_device.write(`[W] [${this.get_caller_filename()}] ${preformatted_buffer}`);
+        this.output_device.write(`${prefix} [${this.get_caller_filename()}] ${preformatted_buffer}`);
     }
 
     public error(buffer: string): void {
         if (!this.options.error) {
             return;
         }
+        const prefix = `${TerminalColorCode.FGRED}[E]${TerminalColorCode.RESET}`;
         const preformatted_buffer = this.preformatter.preformat(buffer);
-        this.output_device.write(`[E] [${this.get_caller_filename()}] ${preformatted_buffer}`);
+        this.output_device.write(`${prefix} [${this.get_caller_filename()}] ${preformatted_buffer}`);
     }
 
     protected get_caller_filename(): string {
