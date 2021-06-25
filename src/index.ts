@@ -65,7 +65,7 @@ class ProductionMain extends Main {
     public async main() {
         this.logger.log(`Starting classicdb bot v${version} in production mode`);
         this.validate_environment();
-        this.error_reporter.initialize();
+        //this.error_reporter.initialize();
         await this.external_item_storage.initialize();
         await this.external_item_storage_preseeder.preseed();
         await this.bot.start();

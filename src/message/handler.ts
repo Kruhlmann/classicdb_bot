@@ -121,7 +121,7 @@ export class MessageHandler implements IMessageHandler {
 
     private async get_actions_from_message(message: Message): Promise<Promise<void>[]> {
         const item_queries = await this.get_all_item_queries_from_message(message).catch((error) => {
-            this.logger.error("Error extracting queries from message ${message.content}");
+            this.logger.error(`Error extracting queries from message ${message.content}`);
             throw error;
         });
         return item_queries.map(async (item_query) => {
