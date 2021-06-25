@@ -12,7 +12,9 @@
         "lib": ["esnext"],
         "outDir": "dist",
         "moduleResolution": "node",
-        "allowJs": true
+        "experimentalDecorators": true,
+        "allowJs": true,
+        "target": "es6"
     },
     "include": [
         "src/**/*.ts"
