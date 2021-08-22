@@ -24,19 +24,17 @@ export class DiscordGuildModel extends Model {
     }
 
     public static async get_default_expansion(discord_guild_id: string): Promise<Expansion> {
-        try {
-            const guild = await DiscordGuildModel.findOne({ where: { guild_id: discord_guild_id } });
-            const config = await DiscordGuildConfigurationModel.findOne({
-                where: { discord_guild_id: guild.id },
-                include: [ExpansionModel],
-            });
-            const expansion_string = config.expansion.string_identifier;
-            const lookup_table = new ExpansionLookupTable();
-            return lookup_table.perform_lookup(expansion_string);
-        } catch (err) {
-            console.error(err);
+        const guild = await DiscordGuildModel.findOne({ where: { guild_id: discord_guild_id } });
+        const config = await DiscordGuildConfigurationModel.findOne({
+            where: { discord_guild_id: guild.id },
+            include: [ExpansionModel],
+        });
+        if (config === null) {
             return Expansion.TBC;
         }
+        const expansion_string = config.expansion.string_identifier;
+        const lookup_table = new ExpansionLookupTable();
+        return lookup_table.perform_lookup(expansion_string);
     }
 
     public static async associate(): Promise<void> {}
