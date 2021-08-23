@@ -5,7 +5,6 @@ import { ExpansionLookupTable } from "./expansion";
 import { IItem } from "./item";
 import { ItemFactory } from "./item/factory";
 import { ILoggable } from "./logging";
-import { ItemQuery, ItemQueryType } from "./message/query_extractor";
 import { DatabaseModelBuilder } from "./models";
 import { AttributeStatModel } from "./models/attributes";
 import { ItemBindingModel } from "./models/binding";
