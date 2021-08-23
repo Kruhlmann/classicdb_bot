@@ -26,6 +26,7 @@ module.exports = {
         "@typescript-eslint/no-unused-vars": [2, { args: "none" }],
         "@typescript-eslint/interface-name-prefix": "off",
         "@typescript-eslint/prefer-interface": "off",
+        "@typescript-eslint/indent": "off",
         "tsdoc/syntax": "error",
         "unicorn/filename-case": "off",
         "simple-import-sort/imports": "error",

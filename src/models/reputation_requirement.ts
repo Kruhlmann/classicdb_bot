@@ -1,6 +1,6 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
-import { ReputationState, ReputationStateLookupTable, ReputationRequirement } from "../parsers/reputation";
+import { ReputationRequirement, ReputationStateLookupTable } from "../parsers/reputation";
 import { default_model_options } from ".";
 import { FactionModel } from "./faction";
 import { ReputationLevelModel } from "./reputation_level";

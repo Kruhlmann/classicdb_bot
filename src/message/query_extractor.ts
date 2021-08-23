@@ -16,6 +16,7 @@ export interface ItemQuery {
 abstract class QueryExtractor {
     protected abstract readonly pattern: RegExp;
 
+    // eslint-disable-next-line complexity
     public extract(source_string: string): ItemQuery[] {
         const results: ItemQuery[] = [];
 
@@ -34,6 +35,7 @@ abstract class QueryExtractor {
         return results;
     }
 
+    // eslint-disable-next-line complexity
     public get_query_type(query: string): ItemQueryType {
         if (query === "") {
             return ItemQueryType.NONE;

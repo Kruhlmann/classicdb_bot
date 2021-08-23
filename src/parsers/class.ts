@@ -48,6 +48,7 @@ export class ClassicDBClassParser extends HTMLParser<Class[]> {
 export class TBCDBClassParser extends HTMLParser<Class[]> {
     public static class_pattern = /<br \/>\s*?Classes: (.*?)\s*?<br \/>/;
 
+    // eslint-disable-next-line complexity
     public parse(): Class[] {
         const class_regex_matches = this.page_html_source.match(TBCDBClassParser.class_pattern);
         if (!class_regex_matches || class_regex_matches.length < 2) {

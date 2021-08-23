@@ -87,6 +87,7 @@ export abstract class MultiRegexHTMLTooltipBodyParser<ParserResultType> extends 
     protected abstract postformat(parse_result: string[]): ParserResultType | undefined;
 }
 
+// eslint-disable-next-line @typescript-eslint/indent
 export abstract class MultiRegexHTMLEffectTooltipBodyParser<ParserResultType> extends HTMLEffectTooltipBodyParser<
     ParserResultType[]
 > {

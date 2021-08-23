@@ -1,8 +1,8 @@
 import { DataTypes, Model, Sequelize } from "sequelize";
 
+import { AttributeLookupTable, AttributeStat } from "../parsers/attributes";
 import { default_model_options } from ".";
 import { ItemModel } from "./item";
-import { AttributeStat, AttributeLookupTable } from "../parsers/attributes";
 
 export class AttributeStatModel extends Model {
     public id: number;

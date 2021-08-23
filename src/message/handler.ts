@@ -73,9 +73,9 @@ export class MessageHandler implements IMessageHandler {
             });
         }
         return this.tbc_wowhead.search(item_query.query).catch((error) => {
-                this.logger.error(`Error while searching wowhead TBC for item ${item_query.query}`);
-                throw error;
-            });;
+            this.logger.error(`Error while searching wowhead TBC for item ${item_query.query}`);
+            throw error;
+        });
     }
 
     private async store_item_query(item_id: string, discord_guild_id: string): Promise<void> {

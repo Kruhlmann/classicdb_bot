@@ -14,6 +14,7 @@ export class MessageRelevancyEvaluater implements IMessageRelevancyEvaluater {
         this.discord_api_client = discord_api_client;
     }
 
+    // eslint-disable-next-line complexity
     public is_message_relevant(message?: IMessage): boolean {
         if (!message) {
             return false;
