@@ -58,15 +58,24 @@ export class MessageHandler implements IMessageHandler {
     }
 
     public async item_query_to_item(item_query: ItemQuery): Promise<IItem> {
-        const cached_item = await this.external_item_storage.get_cached_item(item_query.query);
+        const cached_item = await this.external_item_storage.get_cached_item(item_query.query).catch((error) => {
+            this.logger.error(`Error while performing external item storage lookup on "${item_query.query}"`);
+            throw error;
+        });
         return cached_item || this.build_item_from_wowhead_source(item_query);
     }
 
     private async build_item_from_wowhead_source(item_query: ItemQuery): Promise<IItem> {
         if (item_query.expansion === Expansion.CLASSIC) {
-            return this.classic_wowhead.search(item_query.query);
+            return this.classic_wowhead.search(item_query.query).catch((error) => {
+                this.logger.error(`Error while searching wowhead CLASSIC for item ${item_query.query}`);
+                throw error;
+            });
         }
-        return this.tbc_wowhead.search(item_query.query);
+        return this.tbc_wowhead.search(item_query.query).catch((error) => {
+                this.logger.error(`Error while searching wowhead TBC for item ${item_query.query}`);
+                throw error;
+            });;
     }
 
     private async store_item_query(item_id: string, discord_guild_id: string): Promise<void> {
@@ -96,14 +105,14 @@ export class MessageHandler implements IMessageHandler {
 
     private async act_on_item_query(item: Item, message: Message): Promise<ItemModel> {
         const item_model = await this.external_item_storage.store_item(item).catch((error) => {
-            this.logger.error("Error while storing item");
+            this.logger.error(`Error while storing item ${item}`);
             throw error;
         });
         const item_richembed = this.richembed_item_factory.make_richembed_from_item(item);
         const spell_richembeds = this.richembed_spell_factory.make_richembeds_from_item(item);
         for (const richembed of [item_richembed, ...spell_richembeds]) {
             message.channel.send(richembed).catch((error) => {
-                this.logger.error("Error while sending message");
+                this.logger.error(`Error while sending richembed message ${richembed.title}`);
                 throw error;
             });
         }
@@ -125,12 +134,10 @@ export class MessageHandler implements IMessageHandler {
             throw error;
         });
         return item_queries.map(async (item_query) => {
-            try {
-                return this.act_on_item_query_if_item_is_defined(item_query, message);
-            } catch (error) {
+            return this.act_on_item_query_if_item_is_defined(item_query, message).catch((error) => {
                 this.logger.error(`Error while acting on item query ${JSON.stringify(item_query)}`);
                 throw error;
-            }
+            });
         });
     }
 

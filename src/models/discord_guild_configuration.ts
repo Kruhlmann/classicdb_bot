@@ -17,7 +17,6 @@ export class DiscordGuildConfigurationModel extends Model {
                     defaultValue: DataTypes.UUIDV4,
                     primaryKey: true,
                 },
-                memes_enabled: { type: DataTypes.BOOLEAN, defaultValue: false },
             },
             { sequelize, modelName: "discord_guild_configuration", ...default_model_options },
         );

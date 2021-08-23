@@ -14,8 +14,13 @@ $(DIST):
 
 $(DIST)/$(SRC)%.js: $(SRC)%.ts $(DIST)
 
-$(ENTRYPOINT): $(JS_ARTIFACTS) node_modules
+yarn.lock:
+	yarn install
+
+$(JS_ARTIFACTS): node_modules
 	yarn tsc
+
+$(ENTRYPOINT): $(JS_ARTIFACTS)
 
 node_modules: package.json yarn.lock
 	yarn install
@@ -23,6 +28,7 @@ node_modules: package.json yarn.lock
 build: $(ENTRYPOINT) Makefile
 
 run: build
+	cp ./override_client_data_manager.js node_modules/discord.js/src/client/ClientDataManager.js
 	node $(ENTRYPOINT)
 
 lint: node_modules

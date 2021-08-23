@@ -1,4 +1,3 @@
-import * as fs from "fs";
 import { Op } from "sequelize";
 
 import { IPostgresDatabaseConnection, PostgresDatabaseConnection } from "./database";
@@ -120,9 +119,10 @@ abstract class PostgreSQLExternalItemStorage implements IExternalItemStorage {
         host = "localhost",
         port = 5432,
     ) {
+        this.logger = logger;
+        this.logger.log(`Connection to db ${username}:${password.replace(/./g, "*")}@${host}:${port}/${database_name}`);
         this.database_connection = new PostgresDatabaseConnection(username, password, database_name, host, port);
         this.model_initializer = new DatabaseModelBuilder(this.database_connection.database, logger);
-        this.logger = logger;
     }
 
     public async get_cached_item(search_term: string): Promise<IItem | void> {

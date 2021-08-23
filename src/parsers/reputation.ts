@@ -40,7 +40,7 @@ export class ReputationRequirementParser extends MonoRegexHTMLTooltipBodyParser<
     protected readonly default_value = { name: "", state: ReputationState.NONE };
 
     protected postformat(parse_result: string[]): ReputationRequirement {
-        const name = parse_result[1];
+        const name = parse_result[1].trim();
         const state = new ReputationStateLookupTable().perform_lookup(parse_result[2]);
         return { name, state };
     }

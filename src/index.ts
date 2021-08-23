@@ -1,7 +1,6 @@
 import { version } from "../package.json";
-import { ClassicDBBotArgumentParser } from "./argparser";
 import { ClassicDBBot, IClassicDBBot } from "./bot";
-import { ClassicDBBotEnvironmentValidator, IEnvironmentValidator } from "./environment_validator";
+import { ClassicDBBotProductionEnvironmentValidator, ClassicDBBotDevelopmentEnvironmentValidator, IEnvironmentValidator } from "./environment_validator";
 import {
     IExternalItemStorage,
     PersistentPostgreSQLExternalItemStorage,
@@ -11,7 +10,6 @@ import {
     IExternalItemStoragePreseeder,
     PostgreSQLExternalItemStoragePreseeder,
 } from "./external_item_storage_preseeder";
-import { IGlobalErrorReporter } from "./global_error_reporter";
 import { ILoggable, ISODatePreformatter, SynchronousFileOutputLogger } from "./logging";
 
 abstract class Main {
@@ -23,13 +21,14 @@ abstract class Main {
 
     public constructor(
         logger: ILoggable,
-        external_item_storage: IExternalItemStorage,
         external_item_storage_preseeder: IExternalItemStoragePreseeder,
+        environment_validator: IEnvironmentValidator,
     ) {
         this.logger = logger;
-        this.environment_validator = new ClassicDBBotEnvironmentValidator();
-        this.external_item_storage = external_item_storage;
         this.external_item_storage_preseeder = external_item_storage_preseeder;
+        this.environment_validator = environment_validator;
+        this.validate_environment();
+        this.external_item_storage= this.create_external_item_storage();
         this.bot = new ClassicDBBot(process.env["CLASSICDB_BOT_TOKEN"], this.logger, this.external_item_storage);
     }
 
@@ -42,30 +41,32 @@ abstract class Main {
         }
     }
 
+    protected abstract create_external_item_storage(): IExternalItemStorage;
+
     public abstract main(): Promise<void>;
 }
 
 class ProductionMain extends Main {
-    private readonly error_reporter: IGlobalErrorReporter;
-
     public constructor() {
-        const log_path = new ClassicDBBotArgumentParser().parse().log_file;
         const preformatter = new ISODatePreformatter();
-        const logger = new SynchronousFileOutputLogger(log_path, preformatter, false);
+        const logger = new SynchronousFileOutputLogger("/dev/stdout", preformatter, true);
+        const environment_validator = new ClassicDBBotProductionEnvironmentValidator(logger);
         const external_item_storage_preseeder = new PostgreSQLExternalItemStoragePreseeder(logger);
-        const external_item_storage = new PersistentPostgreSQLExternalItemStorage(
-            logger,
-            "postgres",
-            "postgres",
-            "classicdb_bot_prod",
-        );
-        super(logger, external_item_storage, external_item_storage_preseeder);
+        super(logger, external_item_storage_preseeder, environment_validator);
+    }
+
+    protected create_external_item_storage(): IExternalItemStorage {
+        return new PersistentPostgreSQLExternalItemStorage(
+            this.logger,
+            process.env["POSTGRES_USER"],
+            process.env["POSTGRES_PASSWORD"],
+            process.env["POSTGRES_DB"],
+            process.env["DB_HOST"],
+        )
     }
 
     public async main() {
         this.logger.log(`Starting classicdb bot v${version} in production mode`);
-        this.validate_environment();
-        //this.error_reporter.initialize();
         await this.external_item_storage.initialize();
         await this.external_item_storage_preseeder.preseed();
         await this.bot.start();
@@ -74,23 +75,24 @@ class ProductionMain extends Main {
 
 class DevelopmentMain extends Main {
     public constructor() {
-        const log_path = new ClassicDBBotArgumentParser().parse().log_file;
         const preformatter = new ISODatePreformatter();
-        const logger = new SynchronousFileOutputLogger(log_path, preformatter, true);
+        const logger = new SynchronousFileOutputLogger("/dev/stdout", preformatter, true);
+        const environment_validator = new ClassicDBBotDevelopmentEnvironmentValidator(logger);
         const external_item_storage_preseeder = new PostgreSQLExternalItemStoragePreseeder(logger);
-        const external_item_storage = new TemporalPostgreSQLExternalItemStorage(
-            logger,
+        super(logger, external_item_storage_preseeder, environment_validator);
+    }
+
+    protected create_external_item_storage(): IExternalItemStorage {
+        return new TemporalPostgreSQLExternalItemStorage(
+            this.logger,
             "postgres",
             "postgres",
             "classicdb_bot_dev",
         );
-        super(logger, external_item_storage, external_item_storage_preseeder);
     }
 
     public async main() {
         this.logger.log(`Starting classicdb bot v${version} in development mode`);
-        this.validate_environment();
-        this.environment_validator.validate_environment();
         await this.external_item_storage.initialize();
         await this.external_item_storage_preseeder.preseed();
         await this.bot.start();

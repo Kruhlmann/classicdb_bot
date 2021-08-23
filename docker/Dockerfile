@@ -19,4 +19,4 @@ RUN make node_modules
 COPY --chown="$USER:$USER" . .
 RUN make build
 
-ENTRYPOINT ["node", "dist/src/index.js"]
+ENTRYPOINT ["make", "run"]
