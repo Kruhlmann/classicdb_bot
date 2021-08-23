@@ -22,5 +22,5 @@ jobs:
                   docker build --cache-from $ONBUILD -t $ONBUILD -f docker/Dockerfile .
                   docker push $IMAGE
               env:
-                  ONBUILD: kruhlmann/classicdb:onbuild
+                  ONBUILD: kruhlmann/classicdb:latest
                   IMAGE: kruhlmann/classicdb
