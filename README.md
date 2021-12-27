@@ -8,7 +8,7 @@
 ## Setup
 
 <p align="center">
-  <a href="https://discordapp.com/oauth2/authorize?client_id=545640068056875048&scope=bot&permissions=0">
+  <a href="https://discordapp.com/oauth2/authorize?client_id=545640068056875048&scope=bot&permissions=2147534848">
     <img src="doc/connect.png" />
   </a>
 </p>
