@@ -1,4 +1,6 @@
-export const WOW_ITEM_COLORS: Record<string, string> = {
+import { HexColorString } from "discord.js";
+
+export const WOW_ITEM_COLORS: Record<string, HexColorString> = {
     POOR: "#9d9d9d",
     COMMON: "#ffffff",
     UNCOMMON: "#1eff00",

@@ -1,7 +1,7 @@
 SRC=src
 TST=test
 DIST=dist
-ENTRYPOINT=$(DIST)/$(SRC)/index.js
+ENTRYPOINT=$(DIST)/index.js
 
 TSC=./node_modules/.bin/tsc
 TSC_WATCH=./node_modules/.bin/tsc-watch
@@ -10,7 +10,7 @@ JEST=./node_modules/.bin/jest
 
 TSC_FLAGS=--skipLibCheck
 INSTALL_FLAGS=--frozen-lockfile
-TSC_WATCH_FLAGS=--onSuccess "node $(ENTRYPOINT)"
+TSC_WATCH_FLAGS=$(TSC_FLAGS) --onSuccess "node $(ENTRYPOINT)"
 JEST_FLAGS=--verbose \
 		   --coverage \
 		   --config jest.config.js \

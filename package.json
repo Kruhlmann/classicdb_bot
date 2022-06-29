@@ -37,7 +37,7 @@
     "dependencies": {
         "@discordjs/builders": "^0.15.0",
         "@discordjs/rest": "^0.5.0",
-        "@kruhlmann/battlenetjs": "^1.0.7",
+        "@kruhlmann/battlenetjs": "1.0.11",
         "@sentry/node": "^7.3.1",
         "discord.js": "^13.8.1"
     }

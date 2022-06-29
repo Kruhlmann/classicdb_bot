@@ -1,6 +1,6 @@
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
-import { Client } from "discord.js";
+import { Client, MessageEmbed } from "discord.js";
 import { SingleInstanceStartable } from "../concurrency/single_instance_startable";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { EmbedBuilder } from "../message/embed_builder";
@@ -49,9 +49,12 @@ export class ClassicDBBot extends SingleInstanceStartable {
             new SlashCommandBuilder()
                 .setName("item")
                 .setDescription("Search for an item.")
-                .addStringOption((option) =>
-                    option.setName("query").setDescription("Item name or ID").setRequired(true),
-                ),
+                .addStringOption((option) => {
+                    return option
+                        .setName("query")
+                        .setDescription("Item name or ID")
+                        .setRequired(true);
+                }),
         ].map((command) => command.toJSON());
         try {
             await this.rest_api.put(Routes.applicationCommands(this.client_id), { body: commands });
@@ -80,17 +83,33 @@ export class ClassicDBBot extends SingleInstanceStartable {
                 : this.battlenet.get_item_by_name(query);
             await item_promise
                 .then((item: any) => {
-                    console.log(item);
                     this.logger.debug(`Found item '${item.name}' for query '${query}'`);
                     const embed = new EmbedBuilder()
-                        .set_quality(item.quality.type)
+                        .set_quality(item.quality)
                         .set_name(item.name)
-                        .set_name(item.name)
+                        .set_url(`https://tbc.wowhead.com/item=${item.id}`)
+                        .set_icon(item.thumbnail)
+                        .set_binding(item.preview_item.binding)
+                        .set_unique(item.preview_item.unique_equipped)
+                        .set_inventory_class(item.preview_item.inventory_type, item.item_subclass, item.preview_item.is_subclass_hidden)
+                        .set_armor(item.preview_item.armor)
+                        .set_shield_block(item.preview_item.shield_block)
+                        .set_weapon(item.preview_item.weapon)
+                        .set_stats(item.preview_item.stats)
+                        .set_durability(item.preview_item.durability)
+                        .set_class_requirement(item.preview_item.requirements)
+                        .set_faction_requirement(item.preview_item.requirements)
+                        .set_level_requirement(item.preview_item.requirements)
+                        .set_spells(item.preview_item.spells)
+                        .set_description(item.description)
+                        .set_itemset(item.preview_item.set)
+                        .set_version("The Burning Crusade")
+                        .set_footer("https://i.imgur.com/s2EteHD.png", "https://discord.gg/mRUEPnp")
                         .get();
                     return interaction.editReply({ embeds: [embed] });
                 })
-                .catch(() => {
-                    this.logger.debug(`Found no item for query ${query}`);
+                .catch((error: Error) => {
+                    this.logger.debug(`Found no item for query ${query} (${error})`);
                     return interaction.editReply("Sorry bud, I couldn't find that item.");
                 });
         });

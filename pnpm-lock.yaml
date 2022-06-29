@@ -3,7 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@discordjs/builders': ^0.15.0
   '@discordjs/rest': ^0.5.0
-  '@kruhlmann/battlenetjs': ^1.0.7
+  '@kruhlmann/battlenetjs': 1.0.11
   '@sentry/node': ^7.3.1
   '@types/jest': ^28.1.3
   '@types/node': ^18.0.0
@@ -27,7 +27,7 @@ specifiers:
 dependencies:
   '@discordjs/builders': 0.15.0
   '@discordjs/rest': 0.5.0
-  '@kruhlmann/battlenetjs': 1.0.7
+  '@kruhlmann/battlenetjs': 1.0.11
   '@sentry/node': 7.3.1
   discord.js: 13.8.1
 
@@ -750,8 +750,8 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /@kruhlmann/battlenetjs/1.0.7:
-    resolution: {integrity: sha512-yEUS+Li95BLdTB5p/KbEM9Ei+pRXEdeeergT1Ztbdllc2ffEMbxmIhJIoMB3satWU+DvjA95yhs2CjtPHO3t6A==}
+  /@kruhlmann/battlenetjs/1.0.11:
+    resolution: {integrity: sha512-k9Lc1HqAE/hSi89VFpc5YGvi/uOxzFmBa3Ls2ALfdmdd1UHRl3v9PNLoH6kRwnrR5QzGRcewH+McW58KoKlwww==}
     engines: {node: ^14.17.0}
     dev: false
 
