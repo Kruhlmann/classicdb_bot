@@ -8,3 +8,11 @@ import { DevelopmentMain } from "./main/dev";
 const logger: Logger = new STDOutputLogger(new ISODatePreformatter());
 const environment_validator: EnvironmentValidator = new ClassicDBBotEnvironmentValidator(logger);
 new DevelopmentMain(logger, environment_validator).main();
+
+process.on("uncaughtException", (error) => {
+    logger.error(`Global uncaught exception ${error}`);
+});
+
+process.on("unhandledRejection", (error) => {
+    logger.error(`Global unhandled rejection ${error}`);
+});

@@ -65,9 +65,27 @@ export class ClassicDBBot extends SingleInstanceStartable {
         this.discord_api_client.once("ready", (client: { user: { tag: string } }) => {
             this.logger.log(`Bot logged in as '${client.user.tag}'.`);
         });
-        this.discord_api_client.on("interactionCreate", async (_interaction) => {
-            const item = await this.battlenet.get_item_by_id(19_019);
-            console.log(item.name);
+        this.discord_api_client.on("interactionCreate", async (interaction) => {
+            if (!interaction.isCommand()) {
+                return;
+            }
+            if (interaction.commandName !== "item") {
+                return;
+            }
+            await interaction.deferReply();
+            const query = interaction.options.getString("query").trim();
+            const item_promise = /^-?\d+$/.test(query)
+                ? this.battlenet.get_item_by_id(Number.parseInt(query))
+                : this.battlenet.get_item_by_name(query);
+            await item_promise
+                .then((item: any) => {
+                    this.logger.debug(`Found item ${item.name} for query ${query}`);
+                    return interaction.editReply(item.name);
+                })
+                .catch(() => {
+                    this.logger.debug(`Found no item for query ${query}`);
+                    return interaction.editReply("Sorry bud, I couldn't find that item.");
+                });
         });
     }
 
