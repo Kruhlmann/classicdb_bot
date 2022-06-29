@@ -3,6 +3,7 @@ import { Routes } from "discord-api-types/v9";
 import { Client } from "discord.js";
 import { SingleInstanceStartable } from "../concurrency/single_instance_startable";
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { EmbedBuilder } from "../message/embed_builder";
 import { Logger } from "../logging/logger";
 const {
     BattleNetClient,
@@ -79,8 +80,14 @@ export class ClassicDBBot extends SingleInstanceStartable {
                 : this.battlenet.get_item_by_name(query);
             await item_promise
                 .then((item: any) => {
-                    this.logger.debug(`Found item ${item.name} for query ${query}`);
-                    return interaction.editReply(item.name);
+                    console.log(item);
+                    this.logger.debug(`Found item '${item.name}' for query '${query}'`);
+                    const embed = new EmbedBuilder()
+                        .set_quality(item.quality.type)
+                        .set_name(item.name)
+                        .set_name(item.name)
+                        .get();
+                    return interaction.editReply({ embeds: [embed] });
                 })
                 .catch(() => {
                     this.logger.debug(`Found no item for query ${query}`);
