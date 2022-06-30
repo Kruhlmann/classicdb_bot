@@ -83,11 +83,11 @@ export class ClassicDBBot extends SingleInstanceStartable {
                 : this.battlenet.get_item_by_name(query);
             await item_promise
                 .then((item: any) => {
+                    this.logger.debug(`Found item '${item.preview_item.name}' for query '${query}'`);
                     item = this.item_preprocessor.preprocess(item);
-                    this.logger.debug(`Found item '${item.name}' for query '${query}'`);
                     const embed = new EmbedBuilder()
-                        .set_quality(item.quality)
-                        .set_name(item.name)
+                        .set_quality(item.preview_item.quality)
+                        .set_name(item.preview_item.name)
                         .set_url(`https://tbc.wowhead.com/item=${item.id}`)
                         .set_icon(item.thumbnail)
                         .set_binding(item.preview_item.binding)
