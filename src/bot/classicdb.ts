@@ -5,6 +5,7 @@ import { SingleInstanceStartable } from "../concurrency/single_instance_startabl
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { EmbedBuilder } from "../message/embed_builder";
 import { Logger } from "../logging/logger";
+import { ItemPreprocessor } from "../preprocessor/item";
 const {
     BattleNetClient,
     BattleNetOauthService,
@@ -20,6 +21,7 @@ export class ClassicDBBot extends SingleInstanceStartable {
     protected readonly rest_api: REST;
     protected readonly slash_commands: unknown[];
     protected readonly discord_api_client: Client;
+    protected readonly item_preprocessor: ItemPreprocessor;
     protected readonly battlenet: typeof BattleNetClient;
 
     public constructor(
@@ -41,6 +43,7 @@ export class ClassicDBBot extends SingleInstanceStartable {
             BattleNetRegion.NORTH_AMERICA,
         );
         const service = new BattleNetOauthService(process.env.BATTLENET_CLIENT_ID, process.env.BATTLENET_CLIENT_SECRET);
+        this.item_preprocessor = new ItemPreprocessor();
         this.battlenet = new BattleNetClient(service, ns);
     }
 
@@ -50,10 +53,7 @@ export class ClassicDBBot extends SingleInstanceStartable {
                 .setName("item")
                 .setDescription("Search for an item.")
                 .addStringOption((option) => {
-                    return option
-                        .setName("query")
-                        .setDescription("Item name or ID")
-                        .setRequired(true);
+                    return option.setName("query").setDescription("Item name or ID").setRequired(true);
                 }),
         ].map((command) => command.toJSON());
         try {
@@ -83,6 +83,7 @@ export class ClassicDBBot extends SingleInstanceStartable {
                 : this.battlenet.get_item_by_name(query);
             await item_promise
                 .then((item: any) => {
+                    item = this.item_preprocessor.preprocess(item);
                     this.logger.debug(`Found item '${item.name}' for query '${query}'`);
                     const embed = new EmbedBuilder()
                         .set_quality(item.quality)
@@ -91,7 +92,11 @@ export class ClassicDBBot extends SingleInstanceStartable {
                         .set_icon(item.thumbnail)
                         .set_binding(item.preview_item.binding)
                         .set_unique(item.preview_item.unique_equipped)
-                        .set_inventory_class(item.preview_item.inventory_type, item.item_subclass, item.preview_item.is_subclass_hidden)
+                        .set_inventory_class(
+                            item.preview_item.inventory_type,
+                            item.item_subclass,
+                            item.preview_item.is_subclass_hidden,
+                        )
                         .set_armor(item.preview_item.armor)
                         .set_shield_block(item.preview_item.shield_block)
                         .set_weapon(item.preview_item.weapon)
@@ -121,7 +126,7 @@ export class ClassicDBBot extends SingleInstanceStartable {
         await this.register_slash_commands(this.slash_commands);
         await this.discord_api_client
             .login(this.token)
-            .then(() => {})
+            .then(() => { })
             .catch((error) => {
                 this.logger.error(`Bot unable to authenticate ${error}`);
                 throw error;
