@@ -45,7 +45,7 @@
         "erlpack": "github:discordapp/erlpack",
         "jest": "^26.6.3",
         "libsodium-wrappers": "^0.7.4",
-        "moment": "^2.29.2",
+        "moment": "^2.29.4",
         "node-opus": "^0.2.7",
         "opusscript": "^0.0.6",
         "pg": "^8.5.1",
