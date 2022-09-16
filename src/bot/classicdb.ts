@@ -6,13 +6,17 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { EmbedBuilder } from "../message/embed_builder";
 import { Logger } from "../logging/logger";
 import { ItemPreprocessor } from "../preprocessor/item";
-const {
-    BattleNetClient,
-    BattleNetOauthService,
-    BattleNetNamespace,
-    BattleNetBaseNamespace,
-    BattleNetRegion,
-} = require("@kruhlmann/battlenetjs");
+import { get_autocomplete, get_items } from "../item/storage";
+import { SellPrice } from "../item/sell_price";
+import { QualityColor } from "../item/quality_color";
+import { SocketDescriptionFieldParser } from "../item/description/socket";
+import { DescriptionFieldParser } from "../item/description/field_parser";
+import { SocketBonusDescriptionFieldParser } from "../item/description/socket_bonus";
+import { MiscTextDescriptionFieldParser } from "../item/description/misc_text";
+import { PoorTextDescriptionFieldParser } from "../item/description/poor_text";
+import { UncommonTextDescriptionFieldParser } from "../item/description/uncommon_text";
+import { EpicTextDescriptionFieldParser } from "../item/description/epic_text";
+import { IndentTextDescriptionFieldParser } from "../item/description/indent_text";
 
 export class ClassicDBBot extends SingleInstanceStartable {
     protected readonly token: string;
@@ -22,7 +26,6 @@ export class ClassicDBBot extends SingleInstanceStartable {
     protected readonly slash_commands: unknown[];
     protected readonly discord_api_client: Client;
     protected readonly item_preprocessor: ItemPreprocessor;
-    protected readonly battlenet: typeof BattleNetClient;
 
     public constructor(
         token: string,
@@ -38,13 +41,7 @@ export class ClassicDBBot extends SingleInstanceStartable {
         this.discord_api_client = new Client({ intents: [] });
         this.rest_api = new REST({ version: rest_api_version }).setToken(this.token);
         this.slash_commands = slash_commands;
-        const ns = new BattleNetNamespace(
-            BattleNetBaseNamespace.WOW_CLASSIC_PROGRESSION,
-            BattleNetRegion.NORTH_AMERICA,
-        );
-        const service = new BattleNetOauthService(process.env.BATTLENET_CLIENT_ID, process.env.BATTLENET_CLIENT_SECRET);
         this.item_preprocessor = new ItemPreprocessor();
-        this.battlenet = new BattleNetClient(service, ns);
     }
 
     public async register_slash_commands(slash_commands: unknown[]): Promise<void> {
@@ -53,7 +50,11 @@ export class ClassicDBBot extends SingleInstanceStartable {
                 .setName("item")
                 .setDescription("Search for an item.")
                 .addStringOption((option) => {
-                    return option.setName("query").setDescription("Item name or ID").setRequired(true);
+                    return option
+                        .setName("query")
+                        .setDescription("Item name or ID")
+                        .setRequired(true)
+                        .setAutocomplete(true);
                 }),
         ].map((command) => command.toJSON());
         try {
@@ -70,6 +71,24 @@ export class ClassicDBBot extends SingleInstanceStartable {
             this.logger.log(`Bot logged in as '${client.user.tag}'.`);
         });
         this.discord_api_client.on("interactionCreate", async (interaction) => {
+            if (interaction.isAutocomplete()) {
+                if (interaction.commandName !== "item") {
+                    this.logger.warning(`Unknown autocomplete command '${interaction.commandName}'`);
+                    return;
+                }
+                const user_input = interaction.options.getFocused().toLowerCase();
+                let choices: { name: string; value: string }[] = [];
+                const autocomplete = get_autocomplete();
+                for (const key of Object.keys(autocomplete)) {
+                    if (key.includes(user_input)) {
+                        choices.push(autocomplete[key]);
+                    }
+                    if (choices.length === 25) {
+                        break;
+                    }
+                }
+                await interaction.respond(choices);
+            }
             if (!interaction.isCommand()) {
                 return;
             }
@@ -78,45 +97,55 @@ export class ClassicDBBot extends SingleInstanceStartable {
             }
             await interaction.deferReply();
             const query = interaction.options.getString("query").trim();
-            const item_promise = /^-?\d+$/.test(query)
-                ? this.battlenet.get_item_by_id(Number.parseInt(query))
-                : this.battlenet.get_item_by_name(query);
-            await item_promise
-                .then((item: any) => {
-                    this.logger.debug(`Found item '${item.preview_item.name}' for query '${query}'`);
-                    item = this.item_preprocessor.preprocess(item);
-                    const embed = new EmbedBuilder()
-                        .set_quality(item.preview_item.quality)
-                        .set_name(item.preview_item.name)
-                        .set_url(`https://tbc.wowhead.com/item=${item.id}`)
-                        .set_icon(item.thumbnail)
-                        .set_binding(item.preview_item.binding)
-                        .set_unique(item.preview_item.unique_equipped)
-                        .set_inventory_class(
-                            item.preview_item.inventory_type,
-                            item.item_subclass,
-                            item.preview_item.is_subclass_hidden,
-                        )
-                        .set_armor(item.preview_item.armor)
-                        .set_shield_block(item.preview_item.shield_block)
-                        .set_weapon(item.preview_item.weapon)
-                        .set_stats(item.preview_item.stats)
-                        .set_durability(item.preview_item.durability)
-                        .set_class_requirement(item.preview_item.requirements)
-                        .set_faction_requirement(item.preview_item.requirements)
-                        .set_level_requirement(item.preview_item.requirements)
-                        .set_spells(item.preview_item.spells)
-                        .set_description(item.description)
-                        .set_itemset(item.preview_item.set)
-                        .set_version("The Burning Crusade")
-                        .set_footer("https://i.imgur.com/s2EteHD.png", "https://discord.gg/mRUEPnp")
-                        .get();
-                    return interaction.editReply({ embeds: [embed] });
-                })
-                .catch((error: Error) => {
-                    this.logger.debug(`Found no item for query ${query} (${error})`);
-                    return interaction.editReply("Sorry bud, I couldn't find that item.");
-                });
+            const found_item = /^-?\d+$/.test(query)
+                ? get_items().find((item) => item.itemId.toString() === query)
+                : get_items().find((item) => item.name.toLowerCase().includes(query.toLowerCase()));
+            if (found_item === undefined) {
+                this.logger.debug(`Found no item for query ${query}.`);
+                interaction.editReply("Sorry bud, I couldn't find that item.");
+                return;
+            }
+            const description_fields: string[] = [];
+            found_item.tooltip.shift(); // Remove name tooltip field.
+            found_item.tooltip.shift(); // Remove phase tooltip field.
+
+            const field_parsers: DescriptionFieldParser[] = [
+                new SocketDescriptionFieldParser("Prismatic", "<:socketprismatic:1020311745765576734>"),
+                new SocketDescriptionFieldParser("Meta", "<:socketmeta:1020311695060635668>"),
+                new SocketDescriptionFieldParser("Red", "<:socketred:1020311708583071805> "),
+                new SocketDescriptionFieldParser("Blue", "<:socketblue:1020311671677386792>"),
+                new SocketDescriptionFieldParser("Yellow", "<:socketyellow:1020311732519981136>"),
+                new SocketBonusDescriptionFieldParser(),
+                new MiscTextDescriptionFieldParser(),
+                new PoorTextDescriptionFieldParser(),
+                new UncommonTextDescriptionFieldParser(),
+                new EpicTextDescriptionFieldParser(get_items()),
+                new IndentTextDescriptionFieldParser(get_items()),
+            ];
+
+            for (const field of found_item.tooltip) {
+                const relevant_parsers = field_parsers.filter((parser) => parser.qualifies(field));
+                let label = field.label;
+                for (const parser of relevant_parsers) {
+                    label = parser.mutate_label(field);
+                }
+
+                if (field.format === "alignRight" && description_fields.length > 0) {
+                    let last_field = description_fields.pop();
+                    description_fields.push(`${last_field} ${label}`);
+                } else {
+                    description_fields.push(label);
+                }
+            }
+            description_fields.push(`Sell price: ${new SellPrice(found_item.sellPrice)}`);
+            const embed = new MessageEmbed()
+                .setTitle(found_item.name)
+                .setURL(`https://wowhead.com/wotlk/item=${found_item.itemId}/`)
+                .setColor(new QualityColor(found_item.quality).get_color())
+                .setThumbnail(`https://wow.zamimg.com/images/wow/icons/large/${found_item.icon}.jpg`)
+                .setDescription(description_fields.join("\n"));
+            await interaction.editReply({ embeds: [embed] });
+            return;
         });
     }
 
@@ -126,7 +155,9 @@ export class ClassicDBBot extends SingleInstanceStartable {
         await this.register_slash_commands(this.slash_commands);
         await this.discord_api_client
             .login(this.token)
-            .then(() => { })
+            .then(() => {
+                this.logger.debug("Authentication successful");
+            })
             .catch((error) => {
                 this.logger.error(`Bot unable to authenticate ${error}`);
                 throw error;

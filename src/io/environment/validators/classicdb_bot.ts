@@ -6,7 +6,5 @@ export class ClassicDBBotEnvironmentValidator extends EnvironmentValidator {
         "CLASSICDB_BOT_CLIENT_ID",
         "CLASSICDB_BOT_PROD",
         "CLASSICDB_BOT_DISCORD_REST_VERSION",
-        "BATTLENET_CLIENT_ID",
-        "BATTLENET_CLIENT_SECRET",
     ];
 }
