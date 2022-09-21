@@ -4,4 +4,4 @@ coverage/
 .pnpm-debug.log
 .env
 junit.xml
-data.json
+tags

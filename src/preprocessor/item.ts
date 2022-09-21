@@ -38,14 +38,14 @@ export class ItemPreprocessor {
     }
 
     public preprocess(item: any): any {
-        if (item.stats !== undefined) {
+        if (item.preview_item.stats !== undefined) {
             for (const preprocessor of this.stat_preprocessors) {
                 let stat_index = item.preview_item.stats.length;
                 while (stat_index--) {
                     item = preprocessor.preprocess(item, stat_index);
                 }
             }
-            return item;
         }
+        return item;
     }
 }
