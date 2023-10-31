@@ -35,7 +35,7 @@ lint: node_modules
 	$(ESLINT) $(TS_SOURCES) $(TEST_SOURCES)
 
 fix: node_modules
-	$(ESLINT) $(TS_SOURCES) $(TEST_SOURCES)
+	$(ESLINT) --fix $(TS_SOURCES) $(TEST_SOURCES)
 
 dev: node_modules data.json
 	$(TSC_WATCH) $(TSC_WATCH_FLAGS)

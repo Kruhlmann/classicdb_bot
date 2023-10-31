@@ -1,15 +1,14 @@
-import { readFileSync } from "fs";
+import { readFileSync } from "node:fs";
+import * as path from "node:path";
+
 import { Item } from "./item";
-import * as path from "node:path"
 
 let items: Item[] = [];
 let autocomplete: Record<string, { name: string; value: string }>;
 
 export function get_items(): Item[] {
     if (items.length === 0) {
-        items = JSON.parse(
-            readFileSync(path.join(__dirname, '../../data.json')).toString(),
-        );
+        items = JSON.parse(readFileSync(path.join(__dirname, "../../data.json")).toString());
     }
     return items;
 }

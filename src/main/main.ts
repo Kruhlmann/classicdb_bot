@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+
 import { ClassicDBBot } from "../bot/classicdb";
 import { EnvironmentValidator } from "../io/environment/validators/validator";
 import { Logger } from "../logging/logger";

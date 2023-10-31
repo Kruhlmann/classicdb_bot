@@ -1,22 +1,23 @@
-import { REST } from "@discordjs/rest";
-import { Routes } from "discord-api-types/v9";
-import { Client, MessageEmbed } from "discord.js";
-import { SingleInstanceStartable } from "../concurrency/single_instance_startable";
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { EmbedBuilder } from "../message/embed_builder";
-import { Logger } from "../logging/logger";
-import { ItemPreprocessor } from "../preprocessor/item";
-import { get_autocomplete, get_items } from "../item/storage";
-import { SellPrice } from "../item/sell_price";
-import { QualityColor } from "../item/quality_color";
-import { SocketDescriptionFieldParser } from "../item/description/socket";
+import { REST } from "@discordjs/rest";
+import { Client, MessageEmbed } from "discord.js";
+import { Routes } from "discord-api-types/v9";
+
+import { SingleInstanceStartable } from "../concurrency/single_instance_startable";
+import { EpicTextDescriptionFieldParser } from "../item/description/epic_text";
 import { DescriptionFieldParser } from "../item/description/field_parser";
-import { SocketBonusDescriptionFieldParser } from "../item/description/socket_bonus";
+import { IndentTextDescriptionFieldParser } from "../item/description/indent_text";
 import { MiscTextDescriptionFieldParser } from "../item/description/misc_text";
 import { PoorTextDescriptionFieldParser } from "../item/description/poor_text";
+import { SocketDescriptionFieldParser } from "../item/description/socket";
+import { SocketBonusDescriptionFieldParser } from "../item/description/socket_bonus";
 import { UncommonTextDescriptionFieldParser } from "../item/description/uncommon_text";
-import { EpicTextDescriptionFieldParser } from "../item/description/epic_text";
-import { IndentTextDescriptionFieldParser } from "../item/description/indent_text";
+import { QualityColor } from "../item/quality_color";
+import { SellPrice } from "../item/sell_price";
+import { get_autocomplete, get_items } from "../item/storage";
+import { Logger } from "../logging/logger";
+import { EmbedBuilder } from "../message/embed_builder";
+import { ItemPreprocessor } from "../preprocessor/item";
 
 export class ClassicDBBot extends SingleInstanceStartable {
     protected readonly token: string;
@@ -77,7 +78,7 @@ export class ClassicDBBot extends SingleInstanceStartable {
                     return;
                 }
                 const user_input = interaction.options.getFocused().toLowerCase();
-                let choices: { name: string; value: string }[] = [];
+                const choices: { name: string; value: string }[] = [];
                 const autocomplete = get_autocomplete();
                 for (const key of Object.keys(autocomplete)) {
                     if (key.includes(user_input)) {
@@ -131,7 +132,7 @@ export class ClassicDBBot extends SingleInstanceStartable {
                 }
 
                 if (field.format === "alignRight" && description_fields.length > 0) {
-                    let last_field = description_fields.pop();
+                    const last_field = description_fields.pop();
                     description_fields.push(`${last_field} ${label}`);
                 } else {
                     description_fields.push(label);

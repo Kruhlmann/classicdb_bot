@@ -22,3 +22,17 @@ To have an item linked simply type the name of the item in the `/item` command.
 Typing a partial name will give you autocomplete suggestions.
 
 ![Showcase](doc/showcase.png)
+
+### Docker compose file
+
+```yml
+version: '3'
+services:
+  classicdb_bot:
+    image: cr.kruhlmann.dev/classicdb_bot
+    environment:
+      - CLASSICDB_BOT_TOKEN=<your_bot_token>
+      - CLASSICDB_BOT_CLIENT_ID=<your_client_id>
+      - CLASSICDB_BOT_PROD=1
+      - CLASSICDB_BOT_DISCORD_REST_VERSION=9
+```

@@ -4,7 +4,7 @@ export class SellPrice {
     protected readonly copper_price: number;
 
     public constructor(price: number) {
-        this.gold_price = Math.floor(price / 10000) % 100;
+        this.gold_price = Math.floor(price / 10_000) % 100;
         this.silver_price = Math.floor(price / 100) % 100;
         this.copper_price = Math.floor(price) % 100;
     }
