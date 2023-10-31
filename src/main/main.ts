@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder } from "discord.js";
 
 import { ClassicDBBot } from "../bot/classicdb";
 import { EnvironmentValidator } from "../io/environment/validators/validator";

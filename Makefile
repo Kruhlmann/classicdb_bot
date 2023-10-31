@@ -8,7 +8,7 @@ TSC_WATCH=./node_modules/.bin/tsc-watch
 ESLINT=./node_modules/.bin/eslint
 JEST=./node_modules/.bin/jest
 
-TSC_FLAGS=--skipLibCheck
+TSC_FLAGS=
 INSTALL_FLAGS=--frozen-lockfile
 TSC_WATCH_FLAGS=$(TSC_FLAGS) --onSuccess "node $(ENTRYPOINT)"
 JEST_FLAGS=--verbose \

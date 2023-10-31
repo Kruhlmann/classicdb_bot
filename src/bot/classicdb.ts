@@ -1,6 +1,4 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { REST } from "@discordjs/rest";
-import { Client, MessageEmbed } from "discord.js";
+import { Client, EmbedBuilder, SlashCommandBuilder, REST } from "discord.js";
 import { Routes } from "discord-api-types/v9";
 
 import { SingleInstanceStartable } from "../concurrency/single_instance_startable";
@@ -16,7 +14,6 @@ import { QualityColor } from "../item/quality_color";
 import { SellPrice } from "../item/sell_price";
 import { get_autocomplete, get_items } from "../item/storage";
 import { Logger } from "../logging/logger";
-import { EmbedBuilder } from "../message/embed_builder";
 import { ItemPreprocessor } from "../preprocessor/item";
 
 export class ClassicDBBot extends SingleInstanceStartable {
@@ -97,7 +94,7 @@ export class ClassicDBBot extends SingleInstanceStartable {
                 return;
             }
             await interaction.deferReply();
-            const query = interaction.options.getString("query").trim();
+            const query = (interaction.options as any).getString("query").trim();
             const found_item = /^-?\d+$/.test(query)
                 ? get_items().find((item) => item.itemId.toString() === query)
                 : get_items().find((item) => item.name.toLowerCase().includes(query.toLowerCase()));
@@ -139,7 +136,7 @@ export class ClassicDBBot extends SingleInstanceStartable {
                 }
             }
             description_fields.push(`Sell price: ${new SellPrice(found_item.sellPrice)}`);
-            const embed = new MessageEmbed()
+            const embed = new EmbedBuilder()
                 .setTitle(found_item.name)
                 .setURL(`https://wowhead.com/wotlk/item=${found_item.itemId}/`)
                 .setColor(new QualityColor(found_item.quality).get_color())
