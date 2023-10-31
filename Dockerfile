@@ -3,6 +3,7 @@ RUN apt update \
     && apt-get install -y --no-install-recommends make git \
     && npm install --global pnpm
 WORKDIR /usr/app
+COPY data.json .
 COPY Makefile .
 COPY package.json .
 COPY pnpm-lock.yaml .
