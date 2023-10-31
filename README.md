@@ -20,9 +20,7 @@ You can support me by contributing to the code base, creating valuable issues or
 
 ## Usage
 
-To have an item linked simply type the name of the item in square brackets.
-Typing a partial name will result in the first item avaliable being fetched.
-
-As such typing `[thunder]` will result in the following output:
+To have an item linked simply type the name of the item in the `/item` command.
+Typing a partial name will give you autocomplete suggestions.
 
 ![Showcase](doc/showcase.png)
