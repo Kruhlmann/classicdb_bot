@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
 import { Item } from "./item";
+import * as path from "node:path"
 
 let items: Item[] = [];
 let autocomplete: Record<string, { name: string; value: string }>;
@@ -7,7 +8,7 @@ let autocomplete: Record<string, { name: string; value: string }>;
 export function get_items(): Item[] {
     if (items.length === 0) {
         items = JSON.parse(
-            readFileSync("/home/ges/doc/src/github.com/kruhlmann/neo_classicdb_bot/data.json").toString(),
+            readFileSync(path.join(__dirname, '../../data.json')).toString(),
         );
     }
     return items;
