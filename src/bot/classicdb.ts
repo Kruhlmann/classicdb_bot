@@ -1,4 +1,4 @@
-import { Client, EmbedBuilder, SlashCommandBuilder, REST } from "discord.js";
+import { Client, EmbedBuilder, REST, SlashCommandBuilder } from "discord.js";
 import { Routes } from "discord-api-types/v9";
 
 import { SingleInstanceStartable } from "../concurrency/single_instance_startable";
