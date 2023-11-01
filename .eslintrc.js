@@ -6,6 +6,7 @@ module.exports = {
         "plugin:@typescript-eslint/recommended",
         "./node_modules/gts/",
         "plugin:unicorn/recommended",
+        "plugin:import/recommended"
     ],
     env: {
         es6: true,

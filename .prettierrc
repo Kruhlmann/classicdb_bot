@@ -6,13 +6,8 @@
     "singleQuote":false,
     "trailingComma":"all",
     "bracketSpacing":true,
-    "jsxBracketSameLine":false,
     "arrowParens":"always",
     "requirePragma":false,
     "insertPragma":false,
     "proseWrap":"always",
-    "svelteSortOrder" : "scripts-markup-styles",
-    "svelteStrictMode": true,
-    "svelteBracketNewLine": true,
-    "svelteAllowShorthand": false,
 }

@@ -4,13 +4,13 @@ import { ItemQuality } from "./quality";
 
 export class QualityColor {
     protected static readonly QUALITY_COLOR_TABLE: Record<ItemQuality, ColorResolvable> = {
-        Poor: 0x9D_9D_9D,
-        Common: 0xFF_FF_FF,
-        Uncommon: 0x1E_FF_00,
-        Rare: 0x00_70_DD,
-        Epic: 0xA3_35_EE,
-        Legendary: 0xFF_80_00,
-        Artifact: 0xE6_CC_80,
+        Poor: 0x9d_9d_9d,
+        Common: 0xff_ff_ff,
+        Uncommon: 0x1e_ff_00,
+        Rare: 0x00_70_dd,
+        Epic: 0xa3_35_ee,
+        Legendary: 0xff_80_00,
+        Artifact: 0xe6_cc_80,
     };
     protected readonly quality: ItemQuality;
 

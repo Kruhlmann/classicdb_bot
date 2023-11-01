@@ -6,6 +6,7 @@ ENTRYPOINT=$(DIST)/index.js
 TSC=./node_modules/.bin/tsc
 TSC_WATCH=./node_modules/.bin/tsc-watch
 ESLINT=./node_modules/.bin/eslint
+PRETTIER=./node_modules/.bin/prettier
 JEST=./node_modules/.bin/jest
 
 TSC_FLAGS=
@@ -33,8 +34,10 @@ node_modules: package.json pnpm-lock.yaml
 
 lint: node_modules
 	$(ESLINT) $(TS_SOURCES) $(TEST_SOURCES)
+	$(PRETTIER) $(TS_SOURCES) $(TEST_SOURCES)
 
 fix: node_modules
+	$(PRETTIER) --write $(TS_SOURCES) $(TEST_SOURCES)
 	$(ESLINT) --fix $(TS_SOURCES) $(TEST_SOURCES)
 
 dev: node_modules data.json
